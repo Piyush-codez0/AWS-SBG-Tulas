@@ -4,6 +4,8 @@ import * as React from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { PixelHeading } from "@/components/ui/pixel-heading-character";
+import { Spotlight } from "@/components/ui/spotlight";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -30,24 +32,34 @@ export function Gallery() {
       scrollTrigger: {
         trigger: ".gallery-header-container",
         start: "top 85%",
+        toggleActions: "play none none reverse",
       },
     });
+
+    // Set initial hidden state so gallery items stay hidden until reaching viewport
+    gsap.set(".gallery-item", { opacity: 0, scale: 0.9, y: 30 });
 
     // Batched Gallery Items reveal for optimized staggered loading
     ScrollTrigger.batch(".gallery-item", {
       onEnter: (elements) => {
-        gsap.fromTo(elements, 
-          { opacity: 0, scale: 0.9, y: 30 },
-          { 
-            opacity: 1, 
-            scale: 1, 
-            y: 0, 
-            duration: 0.6,
-            stagger: 0.1,
-            ease: "power3.out",
-            overwrite: true
-          }
-        );
+        gsap.to(elements, { 
+          opacity: 1, 
+          scale: 1, 
+          y: 0, 
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power3.out",
+          overwrite: true
+        });
+      },
+      onLeaveBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 0,
+          scale: 0.9,
+          y: 30,
+          duration: 0.4,
+          overwrite: true
+        });
       },
       start: "top 90%",
     });
@@ -62,6 +74,7 @@ export function Gallery() {
 
   return (
     <section ref={containerRef} id="gallery" className="bg-grid bg-noise relative overflow-hidden bg-bg min-h-screen">
+      <Spotlight className="-top-24 left-32 md:-top-20 md:left-60" fill="#A78BFA" />
       {/* Headline ambient glow */}
       <div
         aria-hidden
@@ -70,7 +83,7 @@ export function Gallery() {
       {/* Secondary glow */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-0 bottom-1/4 h-[380px] w-[380px] -translate-x-1/3 rounded-full bg-secondary/8 blur-[120px]"
+        className="pointer-events-none absolute right-0 top-1/3 h-[480px] w-[480px] translate-x-1/3 rounded-full bg-secondary/8 blur-[140px]"
       />
 
       <div className="relative mx-auto max-w-content px-4 sm:px-6 pt-28 pb-16 md:pt-32 md:pb-24 lg:pt-32 lg:pb-32">
@@ -80,7 +93,7 @@ export function Gallery() {
           </p>
           <h2 className="gallery-header-el mt-4 font-display text-[32px] sm:text-[36px] md:text-[44px] font-semibold leading-[1.1] tracking-tight text-text-primary">
             Moments from the{" "}
-            <span className="text-gradient">community.</span>
+            <PixelHeading mode="uniform" className="text-gradient">community.</PixelHeading>
           </h2>
           <p className="gallery-header-el mt-4 sm:mt-5 max-w-lg text-[15px] sm:text-[16px] leading-relaxed text-text-secondary">
             Workshops, hackathons, study jams, and celebrations — a look at
@@ -88,15 +101,15 @@ export function Gallery() {
           </p>
         </div>
 
-        <div className="gallery-grid-container mt-14 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="gallery-grid-container mt-14 grid grid-cols-1 gap-3 sm:grid-cols-3 relative z-10">
           {PLACEHOLDERS.map((item, i) => (
             <div
               key={i}
-              className={`gallery-item group relative overflow-hidden rounded-xl border border-border bg-white/[0.02] ${item.span}`}
+              className={`gallery-item group relative overflow-hidden rounded-xl border border-border bg-bg/80 backdrop-blur-sm transition-colors hover:border-border/80 ${item.span}`}
             >
               <div className="flex aspect-[4/3] w-full items-center justify-center">
                 <p className="text-[15px] font-medium tracking-wide text-muted">
-                  Coming Soon
+                  Coming Soon...
                 </p>
               </div>
             </div>

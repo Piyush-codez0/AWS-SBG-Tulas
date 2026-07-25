@@ -14,11 +14,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { MagicCard } from "@/components/ui/magic-card"
+import { Spotlight } from "@/components/ui/spotlight"
 
 export default function LoginPage() {
   const { theme } = useTheme()
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-bg relative overflow-hidden">
+      <Spotlight className="-top-24 right-0 left-auto md:-top-20 md:left-60 md:right-auto" fill="#A78BFA" />
       {/* Decorative glows */}
       <div
         aria-hidden

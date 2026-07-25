@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { IconMenu2, IconX } from "@tabler/icons-react";
+import { Menu } from "@/components/animate-ui/icons/menu";
+import { X } from "@/components/animate-ui/icons/x";
 import { usePathname } from "next/navigation";
 import {
   motion,
@@ -293,22 +294,22 @@ export const MobileNavToggle = ({
         {isOpen ? (
           <motion.div
             key="close"
-            initial={{ opacity: 0, rotate: -90 }}
-            animate={{ opacity: 1, rotate: 0 }}
-            exit={{ opacity: 0, rotate: 90 }}
+            initial={{ opacity: 0, rotate: -90, scale: 0.8 }}
+            animate={{ opacity: 1, rotate: 0, scale: 1 }}
+            exit={{ opacity: 0, rotate: 90, scale: 0.8 }}
             transition={{ duration: 0.15 }}
           >
-            <IconX size={20} className="text-text-primary" />
+            <X size={20} className="text-text-primary" />
           </motion.div>
         ) : (
           <motion.div
             key="menu"
-            initial={{ opacity: 0, rotate: 90 }}
-            animate={{ opacity: 1, rotate: 0 }}
-            exit={{ opacity: 0, rotate: -90 }}
+            initial={{ opacity: 0, rotate: 90, scale: 0.8 }}
+            animate={{ opacity: 1, rotate: 0, scale: 1 }}
+            exit={{ opacity: 0, rotate: -90, scale: 0.8 }}
             transition={{ duration: 0.15 }}
           >
-            <IconMenu2 size={20} className="text-text-primary" />
+            <Menu size={20} className="text-text-primary" />
           </motion.div>
         )}
       </AnimatePresence>

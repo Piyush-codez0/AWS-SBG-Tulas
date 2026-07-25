@@ -1,12 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Linkedin, Instagram, Mail, ArrowRight, Sparkles } from "lucide-react";
+import { Linkedin, Instagram } from "lucide-react";
+import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
+import { Sparkles } from "@/components/animate-ui/icons/sparkles";
+import { Send } from "@/components/animate-ui/icons/send";
+import { Check } from "@/components/animate-ui/icons/check";
 import { Button } from "@/components/ui/Button";
 import { subscribeToNewsletter } from "@/app/actions/newsletter";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const FOOTER_LINKS = [
   {
@@ -29,9 +39,10 @@ const FOOTER_LINKS = [
   {
     heading: "Connect",
     links: [
-      { label: "Discord", href: "#" },
+      { label: "Meetup", href: "https://www.meetup.com/aws-sbg-at-tulas-institute/" },
+      { label: "WhatsApp Channel", href: "https://whatsapp.com/channel/0029VbDJ4jD6WaKnCQZRWF2Z" },
       { label: "LinkedIn", href: "#" },
-      { label: "Instagram", href: "#" },
+      { label: "Instagram", href: "https://www.instagram.com/aws_sbg_tulas" },
       { label: "Email Us", href: "mailto:awssbg@tulas.edu.in" },
     ],
   },
@@ -51,17 +62,59 @@ const MeetupIcon = ({ size = 24, className = "", ...props }: any) => (
   </svg>
 );
 
+const WhatsAppIcon = ({ size = 24, className = "", ...props }: any) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    {...props}
+  >
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.99c-.002 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c-.001 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662a11.87 11.87 0 005.705 1.458h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+  </svg>
+);
+
 const SOCIALS = [
   { icon: MeetupIcon, href: "https://www.meetup.com/aws-sbg-at-tulas-institute/", label: "Meetup" },
+  { icon: WhatsAppIcon, href: "https://whatsapp.com/channel/0029VbDJ4jD6WaKnCQZRWF2Z", label: "WhatsApp" },
   { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Mail, href: "mailto:awssbg@tulas.edu.in", label: "Email" },
+  { icon: Instagram, href: "https://www.instagram.com/aws_sbg_tulas", label: "Instagram" },
+  { icon: Send, href: "mailto:awssbg@tulas.edu.in", label: "Email" },
 ];
 
 export function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const footerRef = useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    if (!footerRef.current) return;
+
+    // Smooth parallax effect applied to the ENTIRE footer container element
+    gsap.fromTo(
+      footerRef.current,
+      { y: -100 },
+      {
+        y: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: "top bottom",
+          end: "bottom bottom",
+          scrub: 0.5,
+        },
+      }
+    );
+
+    const refreshTimer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 200);
+    return () => clearTimeout(refreshTimer);
+  }, { scope: footerRef });
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,25 +128,64 @@ export function Footer() {
     if (result.success) {
       setStatus("success");
       setEmail("");
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 5000);
+      try {
+        toast.success("Subscribed to AWS SBG Newsletter! 🎉", {
+          description: "You'll receive updates on upcoming workshops, hackathons, and cloud events.",
+        });
+      } catch (_) {}
     } else {
       setStatus("error");
-      setErrorMessage(result.error || "Something went wrong.");
+      const err = result.error || "Something went wrong.";
+      setErrorMessage(err);
+      try {
+        toast.error("Subscription failed", {
+          description: err,
+        });
+      } catch (_) {}
     }
   };
 
   return (
-    <footer className="relative border-t border-white/[0.05] bg-bg overflow-hidden">
+    <footer ref={footerRef} className="relative border-t border-white/[0.05] bg-bg overflow-hidden">
+      {/* Floating Toast Notification Banner */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed top-6 right-6 z-[999999] flex items-center gap-3.5 rounded-2xl border border-emerald-500/40 bg-[#0c0618]/95 p-4 pr-6 text-sm text-white shadow-[0_0_35px_rgba(16,185,129,0.35)] backdrop-blur-2xl"
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
+              ✓
+            </div>
+            <div>
+              <div className="font-semibold text-white tracking-wide">Subscribed to AWS SBG Newsletter! 🎉</div>
+              <div className="text-xs text-white/70 mt-0.5">You will receive updates on upcoming workshops & hackathons.</div>
+            </div>
+            <button
+              onClick={() => setShowToast(false)}
+              className="ml-2 text-white/50 hover:text-white transition-colors text-lg font-mono"
+            >
+              ×
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Decorative gradient blur */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 h-[300px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]"
+        className="footer-glow pointer-events-none absolute left-1/2 top-0 h-[300px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]"
       />
       <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay pointer-events-none" />
 
       <div className="relative mx-auto max-w-content px-4 sm:px-6 pb-12 pt-16 md:pt-20">
         <div className="grid gap-12 lg:gap-16 lg:grid-cols-12">
           {/* Brand & Newsletter */}
-          <div className="flex flex-col gap-8 lg:col-span-5">
+          <div className="footer-brand-col flex flex-col gap-8 lg:col-span-5">
             <div className="flex flex-col gap-4">
               <Link
                 href="/"
@@ -121,7 +213,7 @@ export function Footer() {
               <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
               
               <h4 className="text-sm font-medium text-text-primary flex items-center gap-2">
-                <Sparkles size={14} className="text-accent animate-pulse" />
+                <Sparkles size={14} className="text-accent" animate loop />
                 Join our newsletter
               </h4>
               <p className="text-[13px] text-text-secondary leading-relaxed max-w-[320px]">
@@ -137,7 +229,7 @@ export function Footer() {
                     className="mt-2 flex items-center gap-2 rounded-xl bg-green-500/10 px-4 py-3 text-sm text-green-400 border border-green-500/20"
                   >
                     <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-500/20">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      <Check size={12} className="text-green-400" animate />
                     </div>
                     Thanks for subscribing!
                   </motion.div>
@@ -153,7 +245,7 @@ export function Footer() {
                   >
                   <div className="relative flex flex-col sm:flex-row sm:items-center">
                     <div className="relative w-full">
-                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
+                      <Send size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                       <input
                         type="email"
                         value={email}
@@ -174,7 +266,7 @@ export function Footer() {
                       ) : (
                         <>
                           Subscribe
-                          <ArrowRight className="ml-1.5 h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+                          <ArrowRight size={14} className="ml-1.5" animateOnHover />
                         </>
                       )}
                     </Button>
@@ -191,7 +283,7 @@ export function Footer() {
           {/* Link columns */}
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-7 lg:pl-10">
             {FOOTER_LINKS.map((col) => (
-              <div key={col.heading}>
+              <div key={col.heading} className="footer-link-col">
                 <h4 className="font-display text-[15px] font-semibold text-text-primary">
                   {col.heading}
                 </h4>
@@ -208,7 +300,7 @@ export function Footer() {
                             className="group flex w-fit items-center gap-1.5 text-[14px] text-text-secondary transition-colors hover:text-primary-light"
                           >
                             {link.label}
-                            <ArrowRight className="h-3.5 w-3.5 -translate-x-1 opacity-0 transition-opacity transition-transform duration-200 group-hover:translate-x-0 group-hover:opacity-100" />
+                            <ArrowRight size={14} className="-translate-x-1 opacity-0 transition-opacity transition-transform duration-200 group-hover:translate-x-0 group-hover:opacity-100" animateOnHover />
                           </a>
                         ) : (
                           <Link
@@ -216,7 +308,7 @@ export function Footer() {
                             className="group flex w-fit items-center gap-1.5 text-[14px] text-text-secondary transition-colors hover:text-primary-light"
                           >
                             {link.label}
-                            <ArrowRight className="h-3.5 w-3.5 -translate-x-1 opacity-0 transition-opacity transition-transform duration-200 group-hover:translate-x-0 group-hover:opacity-100" />
+                            <ArrowRight size={14} className="-translate-x-1 opacity-0 transition-opacity transition-transform duration-200 group-hover:translate-x-0 group-hover:opacity-100" animateOnHover />
                           </Link>
                         )}
                       </li>
@@ -229,7 +321,7 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-20 flex flex-col items-center justify-between gap-6 border-t border-white/[0.05] pt-8 sm:flex-row">
+        <div className="footer-bottom-bar mt-20 flex flex-col items-center justify-between gap-6 border-t border-white/[0.05] pt-8 sm:flex-row">
           <div className="flex items-center gap-4">
             {SOCIALS.map((social) => {
               const Icon = social.icon;

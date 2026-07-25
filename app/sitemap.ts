@@ -1,45 +1,56 @@
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://aws-sbg-tulas.vercel.app";
-  const lastModified = new Date();
+  const baseUrl = "https://aws-sbg-tulas.vercel.app/";
 
   return [
     {
-      url: `${baseUrl}/`,
-      lastModified,
-      changeFrequency: "weekly",
+      url: `${baseUrl}`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
       priority: 1,
     },
+
     {
       url: `${baseUrl}/about`,
-      lastModified,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+
+    {
+      url: `${baseUrl}/events`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+
+    {
+      url: `${baseUrl}/team`,
+      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
-    {
-      url: `${baseUrl}/events`,
-      lastModified,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/team`,
-      lastModified,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/gallery`,
-      lastModified,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
+
     {
       url: `${baseUrl}/learning-hub`,
-      lastModified,
+      lastModified: new Date(),
       changeFrequency: "weekly",
-      priority: 0.9,
+      priority: 0.95,
+    },
+
+    {
+      url: `${baseUrl}/gallery`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+
+    {
+      url: `${baseUrl}/register`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
   ];
 }

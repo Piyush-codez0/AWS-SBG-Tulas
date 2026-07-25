@@ -1,7 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { CalendarDays, MapPin, ArrowUpRight } from "lucide-react";
+import { MapPin } from "@/components/animate-ui/icons/map-pin";
+import { SquareArrowOutUpRight } from "@/components/animate-ui/icons/square-arrow-out-up-right";
+import { PixelHeading } from "@/components/ui/pixel-heading-character";
+import { Spotlight } from "@/components/ui/spotlight";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -70,20 +73,34 @@ export function Events() {
       scrollTrigger: {
         trigger: ".events-header-container",
         start: "top 85%",
+        toggleActions: "play none none reverse",
       },
     });
 
-    // Event cards reveal
-    gsap.from(".event-card", {
-      opacity: 0,
-      y: 30,
-      stagger: 0.1,
-      duration: 0.7,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: ".events-list-container",
-        start: "top 85%",
+    // Set initial hidden state so cards stay hidden until reaching viewport
+    gsap.set(".event-card", { opacity: 0, y: 30 });
+
+    // Batched Event cards reveal when user reaches viewport of each
+    ScrollTrigger.batch(".event-card", {
+      onEnter: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.15,
+          ease: "power3.out",
+          overwrite: true,
+        });
       },
+      onLeaveBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 0,
+          y: 30,
+          duration: 0.4,
+          overwrite: true,
+        });
+      },
+      start: "top 85%",
     });
 
     // Refresh ScrollTrigger to calculate offsets correctly after DOM is fully laid out
@@ -96,6 +113,7 @@ export function Events() {
 
   return (
     <section ref={containerRef} id="events" className="bg-grid bg-noise relative overflow-hidden bg-bg min-h-screen">
+      <Spotlight className="-top-24 left-32 md:-top-20 md:left-60" fill="#A78BFA" />
       {/* Headline ambient glow */}
       <div
         aria-hidden
@@ -114,7 +132,7 @@ export function Events() {
           </p>
           <h2 className="events-header-el mt-4 font-display text-[32px] sm:text-[36px] md:text-[44px] font-semibold leading-[1.1] tracking-tight text-text-primary">
             What&apos;s on the{" "}
-            <span className="text-gradient">schedule.</span>
+            <PixelHeading mode="uniform" className="text-gradient">schedule.</PixelHeading>
           </h2>
           <p className="events-header-el mt-4 sm:mt-5 max-w-lg text-[15px] sm:text-[16px] leading-relaxed text-text-secondary">
             Workshops, hackathons, study jams, and build days — there&apos;s
@@ -138,7 +156,7 @@ export function Events() {
                     </span>
                   </div>
                   <div className="mt-6 sm:mt-0 flex items-start gap-2 text-[13px] text-muted">
-                    <MapPin size={16} className="shrink-0 text-text-secondary" />
+                    <MapPin size={16} className="shrink-0 text-text-secondary" animateOnHover />
                     <span>{event.location}</span>
                   </div>
                 </div>
@@ -163,7 +181,7 @@ export function Events() {
                 {/* Arrow Icon */}
                 <div className="absolute right-6 top-6 sm:relative sm:right-auto sm:top-auto flex items-start">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white/[0.02] text-text-secondary transition-colors transition-transform duration-300 group-hover:bg-primary group-hover:border-primary group-hover:text-white group-hover:rotate-45">
-                    <ArrowUpRight size={18} />
+                    <SquareArrowOutUpRight size={18} animateOnHover />
                   </div>
                 </div>
               </div>

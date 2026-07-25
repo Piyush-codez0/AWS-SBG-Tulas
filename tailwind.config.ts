@@ -55,6 +55,13 @@ const config: Config = {
         sans: ["var(--font-poppins)", "sans-serif"],
         display: ["var(--font-poppins)", "sans-serif"],
         body: ["var(--font-poppins)", "sans-serif"],
+        podium: ['"FSP DEMO - PODIUM Sharp 4.11"', "sans-serif"],
+        inter: ["Inter", "sans-serif"],
+        "pixel-square": ["var(--font-geist-pixel-square)", "sans-serif"],
+        "pixel-grid": ["var(--font-geist-pixel-grid)", "sans-serif"],
+        "pixel-circle": ["var(--font-geist-pixel-circle)", "sans-serif"],
+        "pixel-triangle": ["var(--font-geist-pixel-triangle)", "sans-serif"],
+        "pixel-line": ["var(--font-geist-pixel-line)", "sans-serif"],
       },
       maxWidth: {
         content: "1280px",
@@ -65,6 +72,7 @@ const config: Config = {
         "spin-slow": "spin 40s linear infinite",
         "pulse-dot": "pulse-dot 2s ease-in-out infinite",
         "shimmer": "shimmer 2.5s infinite linear",
+        spotlight: "spotlight 2s ease .75s 1 normal forwards",
       },
       keyframes: {
         float: {
@@ -79,11 +87,20 @@ const config: Config = {
           "0%": { backgroundPosition: "200% 0" },
           "100%": { backgroundPosition: "-200% 0" },
         },
+        spotlight: {
+          "0%": {
+            opacity: "0",
+            transform: "translate(-72%, -62%) scale(0.5)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translate(-70%,-40%) scale(1)",
+          },
+        },
       },
     },
   },
-  plugins: [
-    require('lightswind/plugin'),],
+  plugins: [],
 };
 
 export default config;

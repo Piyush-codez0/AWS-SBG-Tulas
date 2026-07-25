@@ -92,6 +92,8 @@ logs/
 # Misc / Project Specific
 # ===========================
 .agents/
+.agent/
+.cursor/
 .claude/
 skills-lock.json
 find-animation-opportunities-report.md

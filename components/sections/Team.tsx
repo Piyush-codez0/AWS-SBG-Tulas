@@ -3,6 +3,8 @@
 import * as React from "react";
 import ProfileCard from "@/components/ui/ProfileCard";
 import LightRays from "@/components/ui/LightRays";
+import { PixelHeading } from "@/components/ui/pixel-heading-character";
+import { Spotlight } from "@/components/ui/spotlight";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -97,6 +99,7 @@ export function Team() {
 
   return (
     <section ref={containerRef} id="team" className="bg-grid bg-noise relative overflow-hidden bg-bg min-h-screen">
+      <Spotlight className="-top-24 left-32 md:-top-20 md:left-60" fill="#A78BFA" />
       {/* Dynamic WebGL Light Rays */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: "hidden", opacity: 0.25 }}>
         <LightRays
@@ -131,7 +134,7 @@ export function Team() {
           </p>
           <h2 className="team-header-el mt-4 font-display text-[32px] sm:text-[36px] md:text-[44px] font-semibold leading-[1.1] tracking-tight text-text-primary">
             Builders behind the{" "}
-            <span className="text-gradient">builders.</span>
+            <PixelHeading mode="uniform" className="text-gradient">builders.</PixelHeading>
           </h2>
           <p className="team-header-el mt-4 sm:mt-5 max-w-lg text-[15px] sm:text-[16px] leading-relaxed text-text-secondary">
             Students who organise, teach, mentor, and keep the community

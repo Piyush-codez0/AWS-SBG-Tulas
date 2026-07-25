@@ -2,7 +2,13 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Award, BookOpen, Play, FileCode2 } from "lucide-react";
+import { ExternalLink } from "@/components/animate-ui/icons/external-link";
+import { BadgeCheck } from "@/components/animate-ui/icons/badge-check";
+import { Layers } from "@/components/animate-ui/icons/layers";
+import { Play } from "@/components/animate-ui/icons/play";
+import { Terminal } from "@/components/animate-ui/icons/terminal";
+import { PixelHeading } from "@/components/ui/pixel-heading-character";
+import { Spotlight } from "@/components/ui/spotlight";
 
 type Resource = {
   icon: React.ElementType;
@@ -15,7 +21,7 @@ type Resource = {
 
 const RESOURCES: Resource[] = [
   {
-    icon: Award,
+    icon: BadgeCheck,
     title: "AWS Certifications Path",
     description:
       "Curated study paths for Cloud Practitioner, Solutions Architect, and Developer Associate — with free practice exams and study groups.",
@@ -24,7 +30,7 @@ const RESOURCES: Resource[] = [
     accent: "bg-primary/10 text-primary-light",
   },
   {
-    icon: BookOpen,
+    icon: Layers,
     title: "Workshop Archives",
     description:
       "Slides, code repos, and recordings from every workshop we've hosted — from intro-level to advanced serverless patterns.",
@@ -42,7 +48,7 @@ const RESOURCES: Resource[] = [
     accent: "bg-success/10 text-success",
   },
   {
-    icon: FileCode2,
+    icon: Terminal,
     title: "Project Starter Kits",
     description:
       "Boilerplates for common AWS patterns — REST APIs with Lambda, static sites on S3 + CloudFront, CI/CD with CodePipeline, and more.",
@@ -51,7 +57,7 @@ const RESOURCES: Resource[] = [
     accent: "bg-info/10 text-info",
   },
   {
-    icon: Award,
+    icon: BadgeCheck,
     title: "AWS Educate Credits",
     description:
       "Members get access to AWS Educate credits for hands-on practice. Build real projects without worrying about costs.",
@@ -60,7 +66,7 @@ const RESOURCES: Resource[] = [
     accent: "bg-warning/10 text-warning",
   },
   {
-    icon: BookOpen,
+    icon: Layers,
     title: "Community Blog",
     description:
       "Technical write-ups, project deep-dives, and certification journeys written by our members. Learn from real builder experiences.",
@@ -87,6 +93,7 @@ const itemVariants = {
 export function LearningHub() {
   return (
     <section id="learning-hub" className="bg-grid bg-noise relative overflow-hidden bg-bg min-h-screen">
+      <Spotlight className="-top-24 left-32 md:-top-20 md:left-60" fill="#A78BFA" />
       {/* Headline ambient glow */}
       <div
         aria-hidden
@@ -113,10 +120,10 @@ export function LearningHub() {
           </motion.p>
           <motion.h2
             variants={itemVariants}
-            className="mt-4 font-display text-[32px] sm:text-[36px] md:text-[44px] font-semibold leading-[1.1] tracking-tight text-text-primary"
+            className="mt-4 font-display text-[32px] sm:text-[36px] md:text-[44px] font-semibold leading-[1.1] tracking-tight text-text-primary flex items-center justify-start flex-wrap gap-2"
           >
-            Resources to{" "}
-            <span className="text-gradient">level up.</span>
+            <span>Resources to</span>{" "}
+            <PixelHeading mode="uniform" className="text-gradient">level up.</PixelHeading>
           </motion.h2>
           <motion.p
             variants={itemVariants}
@@ -147,10 +154,11 @@ export function LearningHub() {
                   <span
                     className={`flex h-10 w-10 items-center justify-center rounded-lg ${resource.accent} transition-colors duration-200`}
                   >
-                    <Icon size={20} strokeWidth={1.75} />
+                    <Icon size={20} strokeWidth={1.75} animateOnHover />
                   </span>
                   <ExternalLink
                     size={14}
+                    animateOnHover
                     className="text-muted opacity-0 transition-opacity transition-colors duration-200 group-hover:opacity-100 group-hover:text-primary-light"
                   />
                 </div>

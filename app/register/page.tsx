@@ -3,6 +3,14 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import LightRays from "@/components/ui/LightRays";
+import CursorGrid from "@/components/ui/CursorGrid";
+import { MultiStepLoader as Loader } from "@/components/ui/multi-step-loader";
+
+const REGISTRATION_LOADING_STATES = [
+  { text: "Validating applicant details & resume PDF..." },
+  { text: "Uploading PDF resume to AWS S3 storage..." },
+  { text: "Deployment complete. Generating receipt..." },
+];
 
 /* ============================================================
    AWS BUILDERS CLUB — Membership Application
@@ -168,8 +176,26 @@ export default function RegisterPage() {
   const [submitError, setSubmitError] = useState("");
   const [result, setResult] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const stepperRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
   const [awsSearch, setAwsSearch] = useState("");
   const [showAwsDropdown, setShowAwsDropdown] = useState(false);
+
+  const scrollToStepper = () => {
+    if (stepperRef.current) {
+      const yOffset = -110; // Clearance for navbar header
+      const y = stepperRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    scrollToStepper();
+  }, [stage]);
 
   const update = (key: string, value: any) => {
     setForm((f) => ({ ...f, [key]: value }));
@@ -319,7 +345,10 @@ export default function RegisterPage() {
         fd.append("resume", resume);
       }
 
-      const res = await fetch(`/api/register`, { method: "POST", body: fd });
+      const [res] = await Promise.all([
+        fetch(`/api/register`, { method: "POST", body: fd }),
+        new Promise((r) => setTimeout(r, 4800)),
+      ]);
       const data = await res.json();
 
       if (!res.ok) {
@@ -337,12 +366,32 @@ export default function RegisterPage() {
 
   return (
     <div className="relative min-h-screen bg-grid bg-noise bg-bg w-full overflow-x-hidden text-[#efecf5] font-sans">
+      {/* Multi-Step Loader for Resume & Application Submission */}
+      <Loader loadingStates={REGISTRATION_LOADING_STATES} loading={submitting} duration={1500} />
       {/* Ambient Purple Glows */}
       <div className="pointer-events-none absolute left-1/2 top-0 h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px] opacity-60" />
       <div className="pointer-events-none absolute -left-[20%] top-[30%] h-[500px] w-[500px] rounded-full bg-primary/15 blur-[120px] opacity-50" />
       <div className="pointer-events-none absolute -right-[20%] bottom-[10%] h-[600px] w-[600px] rounded-full bg-primary/10 blur-[120px] opacity-50" />
  
-      <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: "hidden", opacity: 0.35 }}>
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
+        <CursorGrid
+          cellSize={64}
+          color="#A855F7"
+          radius={130}
+          falloff="smooth"
+          holdTime={350}
+          fadeDuration={700}
+          lineWidth={0.9}
+          maxOpacity={0.35}
+          fillOpacity={0.02}
+          gridOpacity={0.02}
+          cellRadius={4}
+          clickPulse={true}
+          pulseSpeed={500}
+        />
+      </div>
+
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: "hidden", opacity: 0.35, pointerEvents: "none" }}>
         <LightRays
           raysOrigin="top-center"
           raysColor="#A855F7"
@@ -365,7 +414,9 @@ export default function RegisterPage() {
           <p className="sub">Five stages, about 6 minutes. We'll reach out to shortlisted applicants for an interview.</p>
         </div>
 
-        <Stepper stage={stage} />
+        <div ref={stepperRef} className="scroll-mt-28">
+          <Stepper stage={stage} />
+        </div>
 
         <div className="form-card">
           <AnimatePresence mode="wait">
@@ -543,7 +594,11 @@ export default function RegisterPage() {
                       placeholder="Search AWS services..." 
                     />
                     {showAwsDropdown && awsSearch && (
-                      <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "var(--surface)", border: "1px solid var(--line)", zIndex: 10, maxHeight: "150px", overflowY: "auto" }}>
+                      <div
+                        data-lenis-prevent
+                        onWheel={(e) => e.stopPropagation()}
+                        style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "var(--surface)", border: "1px solid var(--line)", zIndex: 10, maxHeight: "150px", overflowY: "auto", overscrollBehavior: "contain" }}
+                      >
                         {AWS_SERVICES.filter(s => s.toLowerCase().includes(awsSearch.toLowerCase()) && !form.awsServices.includes(s)).map(svc => (
                           <div 
                             key={svc} 
@@ -708,7 +763,7 @@ function CustomSelect({
         <span className={`arrow ${isOpen ? "arrow-up" : ""}`}></span>
       </button>
       {isOpen && (
-        <div className="custom-select-options">
+        <div className="custom-select-options" data-lenis-prevent onWheel={(e) => e.stopPropagation()}>
           {options.map((opt) => (
             <div
               key={opt}
@@ -728,6 +783,10 @@ function CustomSelect({
 }
 
 function SuccessScreen({ result }: { result: any }) {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, []);
+
   const shortId = result.id ? result.id.slice(0, 8) : "unknown";
   return (
     <div className="relative min-h-screen bg-grid bg-noise bg-bg w-full overflow-x-hidden text-[#efecf5] font-sans flex items-center">
@@ -736,7 +795,25 @@ function SuccessScreen({ result }: { result: any }) {
       <div className="pointer-events-none absolute -left-[20%] top-[30%] h-[500px] w-[500px] rounded-full bg-primary/15 blur-[120px] opacity-50" />
       <div className="pointer-events-none absolute -right-[20%] bottom-[10%] h-[600px] w-[600px] rounded-full bg-primary/10 blur-[120px] opacity-50" />
 
-      <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: "hidden", opacity: 0.35 }}>
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
+        <CursorGrid
+          cellSize={64}
+          color="#A855F7"
+          radius={130}
+          falloff="smooth"
+          holdTime={350}
+          fadeDuration={700}
+          lineWidth={0.9}
+          maxOpacity={0.35}
+          fillOpacity={0.02}
+          gridOpacity={0.02}
+          cellRadius={4}
+          clickPulse={true}
+          pulseSpeed={500}
+        />
+      </div>
+
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: "hidden", opacity: 0.35, pointerEvents: "none" }}>
         <LightRays
           raysOrigin="top-center"
           raysColor="#A855F7"
@@ -915,6 +992,7 @@ function ThemeStyles() {
         z-index: 50;
         max-height: 220px;
         overflow-y: auto;
+        overscroll-behavior: contain;
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(8px);
       }

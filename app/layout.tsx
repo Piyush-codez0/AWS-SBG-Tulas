@@ -1,5 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
+import {
+  GeistPixelSquare,
+  GeistPixelGrid,
+  GeistPixelCircle,
+  GeistPixelTriangle,
+  GeistPixelLine,
+} from "geist/font/pixel";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo/JsonLd";
@@ -132,6 +139,7 @@ export const metadata: Metadata = {
 
 import SmoothScroll from "@/components/layout/SmoothScroll";
 import { MotionConfigWrapper } from "@/components/layout/MotionConfigWrapper";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -142,7 +150,10 @@ export default function RootLayout({
         <OrganizationJsonLd />
         <WebSiteJsonLd />
       </head>
-      <body>
+      <body
+        className={`${GeistPixelSquare.variable} ${GeistPixelGrid.variable} ${GeistPixelCircle.variable} ${GeistPixelTriangle.variable} ${GeistPixelLine.variable}`}
+      >
+        <Toaster richColors theme="dark" position="top-right" />
         <MotionConfigWrapper>
           <SmoothScroll>
             <Navbar />

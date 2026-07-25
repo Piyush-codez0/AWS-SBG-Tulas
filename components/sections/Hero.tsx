@@ -1,276 +1,88 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 import Link from "next/link";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, CalendarDays } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/Button";
+import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
+import { Users } from "@/components/animate-ui/icons/users";
+import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import LightRays from "@/components/ui/LightRays";
-import { FlipText } from "@/components/ui/flip-text";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(useGSAP, ScrollTrigger);
-
-
-
-const NODES = [
-  { id: "n1", x: 420, y: 90, r: 5, delay: 0 },
-  { id: "n2", x: 520, y: 170, r: 4, delay: 0.6 },
-  { id: "n3", x: 470, y: 270, r: 7, delay: 0.2, pulse: true },
-  { id: "n4", x: 360, y: 220, r: 4, delay: 0.9 },
-  { id: "n5", x: 560, y: 340, r: 5, delay: 0.4 },
-  { id: "n6", x: 400, y: 380, r: 4, delay: 1.1 },
-  { id: "n7", x: 320, y: 320, r: 5, delay: 0.7 },
-];
-
-const EDGES: [string, string][] = [
-  ["n1", "n2"],
-  ["n2", "n3"],
-  ["n1", "n4"],
-  ["n3", "n4"],
-  ["n3", "n5"],
-  ["n3", "n7"],
-  ["n4", "n7"],
-  ["n5", "n6"],
-  ["n6", "n7"],
-];
-
-function nodeById(id: string) {
-  return NODES.find((n) => n.id === id)!;
-}
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import { FlipWords } from "@/components/ui/flip-words";
 
 export function Hero() {
-  const sectionRef = React.useRef<HTMLElement>(null);
-  const mvX = useMotionValue(0);
-  const mvY = useMotionValue(0);
-  const springX = useSpring(mvX, { stiffness: 60, damping: 22, mass: 0.4 });
-  const springY = useSpring(mvY, { stiffness: 60, damping: 22, mass: 0.4 });
-  const networkX = useTransform(springX, [-1, 1], [-14, 14]);
-  const networkY = useTransform(springY, [-1, 1], [-10, 10]);
-  const glowX = useTransform(springX, [-1, 1], [8, -8]);
-  const glowY = useTransform(springY, [-1, 1], [8, -8]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const rect = sectionRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const relX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const relY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-    mvX.set(relX);
-    mvY.set(relY);
-  };
-
-  useGSAP(() => {
-    // Stagger reveal hero contents on load
-    gsap.from(".hero-content-el", {
-      opacity: 0,
-      y: 20,
-      stagger: 0.15,
-      duration: 0.8,
-      ease: "power3.out",
-      delay: 0.2,
-    });
-
-    // Parallax scroll effect for background elements
-    gsap.to(".hero-parallax-bg", {
-      y: 150,
-      ease: "none",
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top top",
-        end: "bottom top",
-        scrub: true,
-      },
-    });
-
-    gsap.to(".hero-parallax-svg", {
-      y: 100,
-      opacity: 0,
-      ease: "none",
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top top",
-        end: "bottom top",
-        scrub: true,
-      },
-    });
-
-    // Refresh ScrollTrigger to calculate offsets correctly after DOM is fully laid out
-    const refreshTimer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 200);
-
-    return () => clearTimeout(refreshTimer);
-  }, { scope: sectionRef });
-
   return (
-    <section
-      id="top"
-      ref={sectionRef}
-      onMouseMove={handleMouseMove}
-      className="bg-grid bg-noise relative flex min-h-screen items-center overflow-hidden bg-bg pt-16"
-    >
-      <div className="hero-parallax-bg" style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-        <LightRays
-          raysOrigin="top-center"
-          raysColor="#A855F7"
-          raysSpeed={0.8}
-          lightSpread={0.8}
-          rayLength={1.2}
-          followMouse={false}
-          mouseInfluence={0}
-          noiseAmount={0.1}
-          distortion={0.05}
-          saturation={1.4}
-        />
-      </div>
-      {/* Ambient glow */}
-      <motion.div
-        aria-hidden
-        style={{ x: glowX, y: glowY }}
-        className="pointer-events-none absolute left-1/2 top-1/3 h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 blur-[140px]"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-0 right-0 h-[420px] w-[420px] translate-x-1/4 translate-y-1/4 rounded-full bg-secondary/10 blur-[120px]"
+    <section id="top" className="relative min-h-[100dvh] w-full overflow-hidden bg-black text-white flex flex-col justify-center select-none pt-16 pb-8 md:py-16">
+      {/* Background Video */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 h-full w-full object-cover z-0 opacity-75"
+        src="/assets/ninja-turtle-bg.mp4"
       />
 
-      {/* Signature: floating cloud-node network, right side, asymmetric */}
-      <motion.svg
-        aria-hidden
-        style={{ x: networkX, y: networkY }}
-        viewBox="0 0 620 460"
-        className="hero-parallax-svg animate-float-slower pointer-events-none absolute -right-16 top-1/2 hidden h-[560px] w-[560px] -translate-y-1/2 opacity-[0.55] md:block lg:-right-6 xl:right-8"
-      >
-        <defs>
-          <filter id="node-glow" x="-200%" y="-200%" width="500%" height="500%">
-            <feGaussianBlur stdDeviation="6" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
+      {/* Dark Overlay Gradient */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-t from-black via-black/40 to-black/60 pointer-events-none" />
 
-        {EDGES.map(([a, b], i) => {
-          const na = nodeById(a);
-          const nb = nodeById(b);
-          return (
-            <motion.line
-              key={`${a}-${b}`}
-              x1={na.x}
-              y1={na.y}
-              x2={nb.x}
-              y2={nb.y}
-              stroke="#A78BFA"
-              strokeWidth="1"
-              strokeOpacity="0.35"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 1.4, delay: 0.5 + i * 0.08, ease: "easeOut" }}
-            />
-          );
-        })}
-
-        {NODES.map((n) => (
-          <g key={n.id} filter="url(#node-glow)">
-            <motion.circle
-              cx={n.x}
-              cy={n.y}
-              r={n.r}
-              fill={n.pulse ? "#C084FC" : "#A78BFA"}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: n.delay }}
-            />
-            {n.pulse && (
-              <motion.circle
-                cx={n.x}
-                cy={n.y}
-                r={n.r}
-                fill="none"
-                stroke="#C084FC"
-                strokeWidth="1.5"
-                initial={{ opacity: 0.6, scale: 1 }}
-                animate={{ opacity: 0, scale: 2.6 }}
-                transition={{ duration: 2.2, repeat: Infinity, ease: "easeOut" }}
-              />
-            )}
-          </g>
-        ))}
-      </motion.svg>
-
-      <div
-        className="relative mx-auto max-w-content px-4 sm:px-6 py-16 md:py-24"
-      >
-        <div className="max-w-2xl">
-          <div
-            className="hero-content-el group relative z-0 mb-7 inline-flex items-center gap-2 overflow-hidden rounded-full border border-border px-3.5 py-1.5 text-[13px] text-text-secondary"
-          >
-            <div className="absolute inset-0 -z-10 bg-white/[0.03]" />
-            <div className="absolute inset-0 -z-10 animate-shimmer [animation-duration:3.5s] bg-[linear-gradient(110deg,transparent,35%,rgba(255,255,255,0.35),50%,transparent,65%)] bg-[length:300%_100%]" />
-            
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-pulse-dot absolute inline-flex h-full w-full rounded-full bg-primary-light" />
+      {/* Hero Main Content */}
+      <div className="relative z-10 max-w-content w-full mx-auto px-4 sm:px-8 lg:px-16 my-auto flex flex-col justify-center">
+        <div className="max-w-3xl">
+          {/* 1. Tagline Pill Badge */}
+          <div className="relative mb-5 sm:mb-6 lg:mb-8 inline-flex items-center gap-2 rounded-full border border-primary/40 bg-black/60 backdrop-blur-xl px-3.5 py-1.5 text-[11px] sm:text-xs font-inter tracking-wider text-white shadow-[0_0_20px_-3px_rgba(124,58,237,0.4)]">
+            <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5 items-center justify-center">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
             </span>
-            <span>Applications open for 2026</span>
+            <span className="uppercase tracking-[0.15em] sm:tracking-[0.2em] font-medium text-white/90">
+              Applications open for 2026
+            </span>
+            <span className="ml-0.5 text-primary-light">
+              ✦
+            </span>
           </div>
 
-          <h1
-            className="hero-content-el font-display text-[36px] sm:text-[44px] md:text-[56px] lg:text-[68px] font-semibold leading-[1.08] tracking-tight text-text-primary"
-          >
-            <FlipText duration={2.2}>Student builders,</FlipText>
-            <br />
-            <span className="text-gradient">
-              Learn. Build. Deploy. Together.
-            </span>
+          {/* 2. Main Heading */}
+          <h1 className="-mt-2 animate-fade-up-delay-1 font-podium text-white uppercase leading-[1.08] sm:leading-[1.02] tracking-tight text-[clamp(1.85rem,7vw,4.2rem)]">
+            <div>Student builders,</div>
+            <div className="text-gradient min-h-[1.1em] flex items-center">
+              <FlipWords
+                words={["Learn. Build. Deploy.", "Ideate. Code. Ship.", "Design. Launch. Grow."]}
+                duration={4000}
+                className="text-gradient p-0 text-[0.85em]"
+              />
+            </div>
+            <div>Together.</div>
           </h1>
 
-          <p
-            className="hero-content-el mt-4 sm:mt-5 max-w-lg text-[15px] sm:text-[17px] leading-relaxed text-muted"
-          >
-            A community for students who&apos;d rather build than just read about it —
-            workshops, hackathons, AWS credits, and a peer group that ships real
-            projects together.
+          {/* 3. Subtext */}
+          <p className="animate-fade-up-delay-2 mt-4 sm:mt-5 lg:mt-6 text-white/80 text-xs sm:text-base font-inter leading-relaxed max-w-xl w-[60%] sm:w-full text-left">
+            A community for students who&apos;d rather build than just read about it —{" "}
+            <span className="text-white font-semibold">workshops, hackathons, AWS credits,</span> and a peer group that ships real projects together.
           </p>
 
-          <div className="hero-content-el mt-8 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
-            <Link
-              href="/register"
-              className={cn(buttonVariants({ size: "lg" }), "glow-primary w-full sm:w-auto justify-center group")}
-            >
-              Register Now
-              <ArrowRight
-                size={16}
-                className="ml-2 transition-transform duration-200 group-hover:translate-x-0.5"
-              />
+          {/* 4. CTA Buttons */}
+          <div className="animate-fade-up-delay-3 mt-6 sm:mt-8 lg:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-6">
+            <Link href="/register" className="w-full sm:w-auto">
+              <HoverBorderGradient
+                containerClassName="rounded-full w-full sm:w-auto"
+                className="font-inter uppercase tracking-wider font-semibold text-white px-6 sm:px-7 py-3.5 flex items-center justify-center gap-2 text-xs sm:text-sm w-full"
+              >
+                <span>Register Now</span>
+                <ArrowRight size={16} animateOnHover />
+              </HoverBorderGradient>
             </Link>
-            <Link href="/events" className={cn(buttonVariants({ size: "lg", variant: "secondary" }), "group w-full sm:w-auto justify-center transition-colors hover:bg-white/[0.08]")}>
-              <CalendarDays size={16} className="mr-2 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:text-primary-light" />
-              Explore Events
+
+            <Link
+              href="/about"
+              className={cn(buttonVariants({ size: "lg", variant: "secondary" }), "group font-inter uppercase tracking-wider backdrop-blur-md bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 sm:px-7 py-3.5 text-xs sm:text-sm flex items-center justify-center w-full sm:w-auto")}
+            >
+              <Users size={16} className="mr-2 group-hover:text-primary-light" animateOnHover />
+              <span>About Us</span>
             </Link>
           </div>
         </div>
       </div>
-
-      {/* Scroll cue */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.4, duration: 0.6 }}
-        className="pointer-events-none absolute bottom-9 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 sm:flex"
-      >
-        <span className="text-[11px] uppercase tracking-[0.16em] text-muted">
-          Scroll to explore
-        </span>
-        <motion.span
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-          className="h-8 w-px bg-gradient-to-b from-muted to-transparent"
-        />
-      </motion.div>
     </section>
   );
 }
