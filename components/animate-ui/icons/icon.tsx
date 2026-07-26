@@ -427,12 +427,12 @@ function AnimateIcon({
       resolveAnimateEndRef.current = null;
       animateEndPromiseRef.current = null;
 
-      if (initialOnAnimateEnd) {
+      if (initialOnAnimateEnd || (!loop && !persistOnAnimateEnd)) {
         if (cancelledRef.current || gen !== runGenRef.current) {
           await startAnim('initial');
           return;
         }
-        await startAnim('initial', 'set');
+        await startAnim('initial');
       }
 
       if (loop) {
