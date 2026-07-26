@@ -94,24 +94,6 @@ export function Footer() {
 
   useGSAP(() => {
     if (!footerRef.current) return;
-    if (typeof window !== "undefined" && window.innerWidth < 768) return;
-
-    // Smooth parallax effect applied to the ENTIRE footer container element on desktop
-    gsap.fromTo(
-      footerRef.current,
-      { y: -60 },
-      {
-        y: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: "top bottom",
-          end: "bottom bottom",
-          scrub: 0.5,
-        },
-      }
-    );
-
     const refreshTimer = setTimeout(() => {
       ScrollTrigger.refresh();
     }, 200);

@@ -29,7 +29,7 @@ export function JoinCTA() {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} id="join-cta" className="relative overflow-hidden bg-[#0a0712] border border-white/10 my-8 sm:my-12 py-10 sm:py-14 px-6 rounded-2xl max-w-4xl mx-4 sm:mx-6 lg:mx-auto shadow-[0_0_30px_rgba(124,58,237,0.12)]">
+    <section ref={containerRef} id="join-cta" className="relative overflow-hidden bg-[#0a0712] border border-white/10 mt-16 mb-16 sm:mt-24 sm:mb-24 py-10 sm:py-14 px-6 rounded-2xl max-w-4xl mx-4 sm:mx-6 lg:mx-auto shadow-[0_0_30px_rgba(124,58,237,0.12)]">
       {/* Subtle background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#120d20] to-[#090610]" />
       {/* Subtle purple heading glow */}
