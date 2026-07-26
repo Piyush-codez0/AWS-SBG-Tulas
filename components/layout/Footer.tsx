@@ -32,6 +32,7 @@ const FOOTER_LINKS = [
     heading: "Resources",
     links: [
       { label: "Learning Hub", href: "/learning-hub" },
+      { label: "AWS Console", href: "https://console.aws.amazon.com/" },
       { label: "AWS Skill Builder", href: "https://skillbuilder.aws" },
       { label: "AWS Educate", href: "https://aws.amazon.com/education/awseducate/" },
     ],
