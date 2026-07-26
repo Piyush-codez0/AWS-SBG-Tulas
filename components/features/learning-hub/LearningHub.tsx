@@ -22,12 +22,21 @@ type Resource = {
 const RESOURCES: Resource[] = [
   {
     icon: BadgeCheck,
-    title: "AWS Certifications Path",
+    title: "AWS Certification & Exam Prep",
     description:
-      "Curated study paths for Cloud Practitioner, Solutions Architect, and Developer Associate — with free practice exams and study groups.",
-    link: "#",
-    linkLabel: "View paths",
+      "Explore official AWS Certification paths, exam guides, and preparation resources for Practitioner, Associate, and Specialty credentials.",
+    link: "https://aws.amazon.com/certification/",
+    linkLabel: "Explore certifications",
     accent: "bg-primary/10 text-primary-light",
+  },
+  {
+    icon: Play,
+    title: "AWS Training & Skill Building",
+    description:
+      "Access hundreds of free digital training courses, hands-on labs, and official learning plans designed by AWS experts.",
+    link: "https://aws.amazon.com/training/",
+    linkLabel: "Start AWS training",
+    accent: "bg-success/10 text-success",
   },
   {
     icon: Layers,
@@ -37,15 +46,6 @@ const RESOURCES: Resource[] = [
     link: "#",
     linkLabel: "Browse workshops",
     accent: "bg-accent/10 text-accent",
-  },
-  {
-    icon: Play,
-    title: "AWS Skill Builder",
-    description:
-      "Access 600+ free digital courses, labs, and learning plans on AWS Skill Builder. Build hands-on skills at your own pace.",
-    link: "https://skillbuilder.aws",
-    linkLabel: "Start learning",
-    accent: "bg-success/10 text-success",
   },
   {
     icon: Terminal,
@@ -58,11 +58,11 @@ const RESOURCES: Resource[] = [
   },
   {
     icon: BadgeCheck,
-    title: "AWS Educate Credits",
+    title: "AWS Educate & Student Credits",
     description:
-      "Members get access to AWS Educate credits for hands-on practice. Build real projects without worrying about costs.",
-    link: "#",
-    linkLabel: "Apply for credits",
+      "Members get access to free AWS Educate courses and promotional credits for hands-on practice building real cloud applications.",
+    link: "https://aws.amazon.com/education/aws-educate/",
+    linkLabel: "Explore AWS Educate",
     accent: "bg-warning/10 text-warning",
   },
   {
@@ -143,10 +143,13 @@ export function LearningHub() {
         >
           {RESOURCES.map((resource) => {
             const Icon = resource.icon;
+            const isExternal = resource.link.startsWith("http");
             return (
               <motion.a
                 key={resource.title}
                 href={resource.link}
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noopener noreferrer" : undefined}
                 variants={itemVariants}
                 className="group flex flex-col gap-4 rounded-xl border border-border bg-bg p-6 transition-colors transition-shadow duration-300 hover:border-primary-light/30 hover:bg-white/[0.02]"
               >
