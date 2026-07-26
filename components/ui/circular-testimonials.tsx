@@ -206,22 +206,6 @@ export const CircularTestimonials = ({
             </div>
           ))}
         </div>
-        <div className="flex gap-4 mt-6">
-          <button
-            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 border border-primary/30 bg-primary/10 hover:bg-primary hover:border-primary text-text-primary shadow-lg"
-            onClick={handlePrev}
-            aria-label="Previous image"
-          >
-            <FaArrowLeft size={16} />
-          </button>
-          <button
-            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 border border-primary/30 bg-primary/10 hover:bg-primary hover:border-primary text-text-primary shadow-lg"
-            onClick={handleNext}
-            aria-label="Next image"
-          >
-            <FaArrowRight size={16} />
-          </button>
-        </div>
       </div>
     );
   }
