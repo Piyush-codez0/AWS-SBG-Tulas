@@ -41,10 +41,12 @@ export interface CircularTestimonialsProps {
 }
 
 function calculateGap(width: number) {
+  if (width <= 480) return 32;
+  if (width <= 768) return 45;
   const minWidth = 1024;
   const maxWidth = 1456;
-  const minGap = 60;
-  const maxGap = 86;
+  const minGap = 55;
+  const maxGap = 80;
   if (width <= minWidth) return minGap;
   if (width >= maxWidth)
     return Math.max(minGap, maxGap + 0.06018 * (width - maxWidth));
@@ -183,42 +185,41 @@ export const CircularTestimonials = ({
 
   if (hideText) {
     return (
-      <div className="relative w-full max-w-xl mx-auto flex flex-col items-center">
-        <div className="image-container relative w-full h-[280px] sm:h-[340px] perspective-[1000px]" ref={imageContainerRef}>
+      <div className="relative w-full max-w-sm mx-auto flex flex-col items-center">
+        <div
+          className="image-container relative w-full h-[320px] sm:h-[380px] perspective-[1000px] flex justify-center items-center"
+          ref={imageContainerRef}
+        >
           {testimonials.map((testimonial, index) => (
-            <img
+            <div
               key={testimonial.src + index}
-              src={testimonial.src}
-              alt={testimonial.name}
-              className="testimonial-image absolute w-full h-full object-cover rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.4)] border border-white/10"
+              className="testimonial-image-card absolute w-[220px] sm:w-[260px] h-[290px] sm:h-[340px] rounded-2xl border border-primary/40 bg-surface/95 shadow-[0_14px_40px_rgba(124,58,237,0.35)] backdrop-blur-xl p-2.5 flex flex-col overflow-hidden transition-all duration-500"
               style={getImageStyle(index)}
-            />
+            >
+              <div className="relative w-full h-full rounded-xl overflow-hidden bg-bg-elevated/80 border border-white/10 flex items-center justify-center">
+                <img
+                  src={testimonial.src}
+                  alt={testimonial.name}
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+            </div>
           ))}
         </div>
         <div className="flex gap-4 mt-6">
           <button
-            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-300 border border-white/10"
+            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 border border-primary/30 bg-primary/10 hover:bg-primary hover:border-primary text-text-primary shadow-lg"
             onClick={handlePrev}
-            style={{
-              backgroundColor: hoverPrev ? colorArrowHoverBg : colorArrowBg,
-            }}
-            onMouseEnter={() => setHoverPrev(true)}
-            onMouseLeave={() => setHoverPrev(false)}
             aria-label="Previous image"
           >
-            <FaArrowLeft size={18} color={colorArrowFg} />
+            <FaArrowLeft size={16} />
           </button>
           <button
-            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-300 border border-white/10"
+            className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 border border-primary/30 bg-primary/10 hover:bg-primary hover:border-primary text-text-primary shadow-lg"
             onClick={handleNext}
-            style={{
-              backgroundColor: hoverNext ? colorArrowHoverBg : colorArrowBg,
-            }}
-            onMouseEnter={() => setHoverNext(true)}
-            onMouseLeave={() => setHoverNext(false)}
             aria-label="Next image"
           >
-            <FaArrowRight size={18} color={colorArrowFg} />
+            <FaArrowRight size={16} />
           </button>
         </div>
       </div>
