@@ -191,18 +191,29 @@ export function Footer() {
                 href="/"
                 className="flex items-center gap-3 font-display text-lg font-semibold tracking-tight text-text-primary transition-opacity hover:opacity-80"
               >
-                <div className="relative h-10 w-10 overflow-hidden rounded-xl bg-white/[0.05] p-1.5 ring-1 ring-white/10">
-                  <Image 
-                    src="/logos/SBG_logo.png" 
-                    alt="AWS SBG Logo" 
-                    fill 
-                    className="object-contain p-1"
-                  />
+                <div className="flex items-center gap-2">
+                  <div className="relative h-10 w-10 overflow-hidden rounded-xl bg-white/[0.05] p-1.5 ring-1 ring-white/10">
+                    <Image 
+                      src="/logos/SBG_logo.png" 
+                      alt="AWS SBG Logo" 
+                      fill 
+                      className="object-contain p-1"
+                    />
+                  </div>
+                  <div className="h-5 w-[1px] bg-white/15" />
+                  <div className="relative h-10 w-14 overflow-hidden rounded-xl bg-white/[0.05] p-1.5 ring-1 ring-white/10 flex items-center justify-center">
+                    <Image 
+                      src="/logos/AWS_logo.png" 
+                      alt="AWS Logo" 
+                      fill 
+                      className="object-contain p-1"
+                    />
+                  </div>
                 </div>
                 AWS Student Builder Group
               </Link>
               <p className="max-w-[320px] text-[15px] leading-relaxed text-text-secondary">
-                A student-led community at Tula&apos;s Institute dedicated to building, 
+                A student-led community at Tula&apos;s University, Dehradun dedicated to building, 
                 learning, and deploying real-world applications on AWS.
               </p>
             </div>

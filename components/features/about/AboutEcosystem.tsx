@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -157,11 +158,15 @@ export function AboutEcosystem() {
 
           {/* Center node */}
           <div
-            className="ecosystem-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex h-16 w-16 sm:h-24 sm:w-24 items-center justify-center rounded-full border-2 border-primary/50 bg-bg shadow-[0_0_40px_-8px_rgba(124,58,237,0.4)]"
+            className="ecosystem-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex h-16 w-16 sm:h-24 sm:w-24 items-center justify-center rounded-full border-2 border-primary/50 bg-bg shadow-[0_0_40px_-8px_rgba(124,58,237,0.4)] p-3 overflow-hidden"
           >
-            <span className="font-display text-[14px] sm:text-[18px] font-bold text-gradient">
-              AWS
-            </span>
+            <Image
+              src="/logos/AWS_logo.png"
+              alt="AWS Logo"
+              width={70}
+              height={45}
+              className="h-7 sm:h-11 w-auto object-contain"
+            />
           </div>
 
           {/* Outer nodes */}
