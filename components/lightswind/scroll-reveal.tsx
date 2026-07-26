@@ -160,15 +160,15 @@ export function ScrollReveal({
             // Render words as motion.span for animation
             <motion.span
               key={`word-${item.originalIndex}`} // Use originalIndex for stable keys
-              className="inline-block"
+              className="inline-block align-middle"
               variants={wordVariants}
             >
               {item.value.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "") === "AWS" ? (
-                <span className="inline-flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 align-middle">
                   <img
                     src="/logos/AWS_logo.svg"
                     alt="AWS"
-                    className="h-[1.45em] w-auto inline-block align-baseline translate-y-[0.22em]"
+                    className="h-[1.35em] w-auto inline-block align-middle translate-y-[0.18em]"
                   />
                   {item.value.endsWith(".") && "."}
                 </span>

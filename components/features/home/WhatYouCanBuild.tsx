@@ -1,7 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { motion, useInView } from "framer-motion";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { PixelHeading } from "@/components/ui/pixel-heading-character";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const BUILD_CARDS = [
   {
@@ -72,68 +77,110 @@ const BUILD_CARDS = [
   },
 ];
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
-};
-const item = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
-};
-
 export function WhatYouCanBuild() {
-  const ref = React.useRef<HTMLElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-8%" });
+  const containerRef = React.useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    gsap.from(".build-header-el", {
+      opacity: 0,
+      y: 20,
+      stagger: 0.1,
+      duration: 0.6,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".build-header",
+        start: "top 85%",
+        toggleActions: "play reverse play reverse",
+      },
+    });
+
+    gsap.set(".build-card", { opacity: 0, y: 30, scale: 0.97 });
+    ScrollTrigger.batch(".build-card", {
+      onEnter: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: "power3.out",
+          overwrite: true,
+        });
+      },
+      onLeave: (elements) => {
+        gsap.to(elements, {
+          opacity: 0,
+          y: -20,
+          scale: 0.97,
+          duration: 0.3,
+          overwrite: true,
+        });
+      },
+      onEnterBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: "power3.out",
+          overwrite: true,
+        });
+      },
+      onLeaveBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 0,
+          y: 30,
+          scale: 0.97,
+          duration: 0.3,
+          overwrite: true,
+        });
+      },
+      start: "top 85%",
+      end: "bottom 15%",
+    });
+  }, { scope: containerRef });
 
   return (
-    <section ref={ref} id="what-you-build" className="bg-grid bg-noise relative overflow-hidden bg-bg border-t border-border">
+    <section ref={containerRef} id="what-you-build" className="bg-grid bg-noise relative overflow-hidden bg-bg border-t border-border">
+      {/* Subtle purple heading glow */}
+      <div aria-hidden className="pointer-events-none absolute left-1/2 top-8 h-[200px] w-[360px] -translate-x-1/2 rounded-full bg-gradient-to-r from-primary/10 via-purple-600/8 to-primary/10 blur-[90px]" />
       <div aria-hidden className="pointer-events-none absolute right-0 top-0 h-[450px] w-[450px] translate-x-1/3 -translate-y-1/4 rounded-full bg-accent/8 blur-[130px]" />
 
       <div className="relative mx-auto max-w-content px-4 sm:px-6 py-20 md:py-28">
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate={isInView ? "show" : "hidden"}
-          className="text-center max-w-2xl mx-auto"
-        >
-          <motion.p variants={item} className="text-[11px] uppercase tracking-[0.16em] text-muted">
+        <div className="build-header text-center max-w-2xl mx-auto">
+          <p className="build-header-el text-[11px] uppercase tracking-[0.16em] text-muted">
             Possibilities
-          </motion.p>
-          <motion.h2 variants={item} className="mt-4 font-display text-[28px] sm:text-[34px] md:text-[42px] font-semibold leading-[1.1] tracking-tight text-text-primary">
+          </p>
+          <h2 className="build-header-el mt-4 font-display text-[28px] sm:text-[34px] md:text-[42px] font-semibold leading-[1.1] tracking-tight text-text-primary">
             Build Projects That{" "}
-            <span className="text-gradient">Make an Impact</span>
-          </motion.h2>
-          <motion.p variants={item} className="mt-4 text-[15px] sm:text-[16px] leading-relaxed text-text-secondary">
+            <PixelHeading mode="uniform" className="text-gradient">Make an Impact</PixelHeading>
+          </h2>
+          <p className="build-header-el mt-4 text-[15px] sm:text-[16px] leading-relaxed text-text-secondary">
             Cloud isn&apos;t just about servers. It&apos;s about turning ideas into products that people can actually use.
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
 
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate={isInView ? "show" : "hidden"}
-          className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-        >
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {BUILD_CARDS.map((card) => (
-            <motion.div
+            <div
               key={card.title}
-              variants={item}
-              className={`group relative flex flex-col gap-4 rounded-2xl border bg-bg-card/60 p-6 cursor-default backdrop-blur-sm transition-all duration-300 hover:bg-bg-card hover:shadow-[0_0_30px_rgba(124,58,237,0.12)] ${card.border}`}
+              className={`build-card group relative flex flex-col gap-4 rounded-2xl border bg-bg-card/60 p-6 cursor-default backdrop-blur-sm transition-all duration-300 hover:bg-bg-card hover:-translate-y-1.5 hover:shadow-[0_12px_32px_-8px_rgba(124,58,237,0.25)] ${card.border}`}
             >
-              <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${card.accent} transition-transform duration-300 group-hover:scale-110`}>
+              <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${card.accent} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                 {card.icon}
               </div>
               <div>
-                <h3 className="font-display text-[16px] font-semibold tracking-tight text-text-primary">
+                <h3 className="font-display text-[16px] font-semibold tracking-tight text-text-primary group-hover:text-primary-light transition-colors duration-200">
                   {card.title}
                 </h3>
                 <p className="mt-1.5 text-[14px] leading-relaxed text-text-secondary">
                   {card.desc}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

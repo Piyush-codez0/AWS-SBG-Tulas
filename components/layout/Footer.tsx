@@ -94,11 +94,12 @@ export function Footer() {
 
   useGSAP(() => {
     if (!footerRef.current) return;
+    if (typeof window !== "undefined" && window.innerWidth < 768) return;
 
-    // Smooth parallax effect applied to the ENTIRE footer container element
+    // Smooth parallax effect applied to the ENTIRE footer container element on desktop
     gsap.fromTo(
       footerRef.current,
-      { y: -100 },
+      { y: -60 },
       {
         y: 0,
         ease: "none",

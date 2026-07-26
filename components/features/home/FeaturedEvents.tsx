@@ -2,8 +2,13 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { motion, useInView } from "framer-motion";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
+import { PixelHeading } from "@/components/ui/pixel-heading-character";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const PREVIEW_EVENTS = [
   { tag: "Workshop", title: "Cloud Bootcamp", desc: "Get hands-on with AWS core services in an intensive two-day bootcamp.", tagColor: "text-primary-light bg-primary/10 border-primary/30" },
@@ -12,41 +17,89 @@ const PREVIEW_EVENTS = [
   { tag: "Industry Insights", title: "Expert Talk", desc: "Hear from cloud practitioners and AWS experts on what it takes to build at scale.", tagColor: "text-info bg-info/10 border-info/30" },
 ];
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
-};
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
-};
-
 export function FeaturedEvents() {
-  const ref = React.useRef<HTMLElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-8%" });
+  const containerRef = React.useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    gsap.from(".events-header-el", {
+      opacity: 0,
+      y: 20,
+      stagger: 0.1,
+      duration: 0.6,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".events-header",
+        start: "top 85%",
+        toggleActions: "play reverse play reverse",
+      },
+    });
+
+    gsap.set(".event-card", { opacity: 0, y: 30, scale: 0.97 });
+    ScrollTrigger.batch(".event-card", {
+      onEnter: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: "power3.out",
+          overwrite: true,
+        });
+      },
+      onLeave: (elements) => {
+        gsap.to(elements, {
+          opacity: 0,
+          y: -20,
+          scale: 0.97,
+          duration: 0.3,
+          overwrite: true,
+        });
+      },
+      onEnterBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: "power3.out",
+          overwrite: true,
+        });
+      },
+      onLeaveBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 0,
+          y: 30,
+          scale: 0.97,
+          duration: 0.3,
+          overwrite: true,
+        });
+      },
+      start: "top 85%",
+      end: "bottom 15%",
+    });
+  }, { scope: containerRef });
 
   return (
-    <section ref={ref} id="featured-events" className="bg-grid bg-noise relative overflow-hidden bg-bg border-t border-border">
+    <section ref={containerRef} id="featured-events" className="bg-grid bg-noise relative overflow-hidden bg-bg border-t border-border">
+      {/* Subtle purple heading glow */}
+      <div aria-hidden className="pointer-events-none absolute left-1/4 top-8 h-[200px] w-[340px] -translate-x-1/2 rounded-full bg-gradient-to-r from-primary/10 via-purple-600/8 to-primary/10 blur-[90px]" />
       <div aria-hidden className="pointer-events-none absolute left-0 bottom-0 h-[350px] w-[400px] -translate-x-1/4 translate-y-1/4 rounded-full bg-accent/8 blur-[120px]" />
 
       <div className="relative mx-auto max-w-content px-4 sm:px-6 py-20 md:py-28">
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate={isInView ? "show" : "hidden"}
-          className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6"
-        >
+        <div className="events-header flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
           <div>
-            <motion.p variants={item} className="text-[11px] uppercase tracking-[0.16em] text-muted">Events</motion.p>
-            <motion.h2 variants={item} className="mt-3 font-display text-[28px] sm:text-[34px] md:text-[42px] font-semibold leading-[1.1] tracking-tight text-text-primary">
+            <p className="events-header-el text-[11px] uppercase tracking-[0.16em] text-muted">Events</p>
+            <h2 className="events-header-el mt-3 font-display text-[28px] sm:text-[34px] md:text-[42px] font-semibold leading-[1.1] tracking-tight text-text-primary">
               Learn Through{" "}
-              <span className="text-gradient">Experiences</span>
-            </motion.h2>
-            <motion.p variants={item} className="mt-4 text-[15px] leading-relaxed text-text-secondary max-w-lg">
+              <PixelHeading mode="uniform" className="text-gradient">Experiences</PixelHeading>
+            </h2>
+            <p className="events-header-el mt-4 text-[15px] leading-relaxed text-text-secondary max-w-lg">
               Every event is designed to help students explore cloud technologies through practical learning, collaboration, and innovation.
-            </motion.p>
+            </p>
           </div>
-          <motion.div variants={item} className="flex-shrink-0">
+          <div className="events-header-el flex-shrink-0">
             <Link
               href="/events"
               className="group inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-5 py-2.5 text-[13px] font-semibold text-primary-light transition-all duration-200 hover:bg-primary/20 hover:border-primary/60 cursor-pointer"
@@ -54,29 +107,23 @@ export function FeaturedEvents() {
               Explore All Events
               <ArrowRight size={14} animateOnHover />
             </Link>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate={isInView ? "show" : "hidden"}
-          className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
-        >
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {PREVIEW_EVENTS.map((ev) => (
-            <motion.div
+            <div
               key={ev.title}
-              variants={item}
-              className="group flex flex-col gap-3 rounded-2xl border border-border bg-bg-card/60 p-5 cursor-default transition-all duration-300 hover:border-primary/30 hover:bg-bg-card hover:shadow-[0_0_24px_rgba(124,58,237,0.12)]"
+              className="event-card group flex flex-col gap-3 rounded-2xl border border-border bg-bg-card/60 p-5 cursor-default transition-all duration-300 hover:border-primary/40 hover:bg-bg-card hover:-translate-y-1.5 hover:shadow-[0_12px_32px_-8px_rgba(124,58,237,0.2)]"
             >
-              <span className={`inline-flex w-fit rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${ev.tagColor}`}>
+              <span className={`inline-flex w-fit rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide transition-transform duration-300 group-hover:scale-105 ${ev.tagColor}`}>
                 {ev.tag}
               </span>
-              <h3 className="font-display text-[15px] font-semibold text-text-primary">{ev.title}</h3>
+              <h3 className="font-display text-[15px] font-semibold text-text-primary group-hover:text-primary-light transition-colors duration-200">{ev.title}</h3>
               <p className="text-[13px] leading-relaxed text-text-secondary">{ev.desc}</p>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

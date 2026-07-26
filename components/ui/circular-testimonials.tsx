@@ -134,8 +134,7 @@ export const CircularTestimonials = ({
   // Compute transforms for each image (always show 3: left, center, right)
   function getImageStyle(index: number): React.CSSProperties {
     const gap = calculateGap(containerWidth);
-    const maxStickUp = gap * 0.8;
-    const offset = (index - activeIndex + testimonialsLength) % testimonialsLength;
+    const maxStickUp = gap * 0.65;
     const isActive = index === activeIndex;
     const isLeft = (activeIndex - 1 + testimonialsLength) % testimonialsLength === index;
     const isRight = (activeIndex + 1) % testimonialsLength === index;
@@ -145,25 +144,25 @@ export const CircularTestimonials = ({
         zIndex: 3,
         opacity: 1,
         pointerEvents: "auto",
-        transform: `translateX(0px) translateY(0px) scale(1) rotateY(0deg)`,
+        transform: `translateX(0px) translateY(20px) scale(1) rotate(0deg) rotateY(0deg)`,
         transition: "all 0.8s cubic-bezier(.4,2,.3,1)",
       };
     }
     if (isLeft) {
       return {
         zIndex: 2,
-        opacity: 1,
+        opacity: 0.95,
         pointerEvents: "auto",
-        transform: `translateX(-${gap}px) translateY(-${maxStickUp}px) scale(0.85) rotateY(15deg)`,
+        transform: `translateX(-${gap}px) translateY(-${maxStickUp}px) scale(0.9) rotate(-6deg) rotateY(12deg)`,
         transition: "all 0.8s cubic-bezier(.4,2,.3,1)",
       };
     }
     if (isRight) {
       return {
         zIndex: 2,
-        opacity: 1,
+        opacity: 0.95,
         pointerEvents: "auto",
-        transform: `translateX(${gap}px) translateY(-${maxStickUp}px) scale(0.85) rotateY(-15deg)`,
+        transform: `translateX(${gap}px) translateY(-${maxStickUp}px) scale(0.9) rotate(6deg) rotateY(-12deg)`,
         transition: "all 0.8s cubic-bezier(.4,2,.3,1)",
       };
     }
@@ -172,6 +171,7 @@ export const CircularTestimonials = ({
       zIndex: 1,
       opacity: 0,
       pointerEvents: "none",
+      transform: `translateX(0px) translateY(0px) scale(0.75)`,
       transition: "all 0.8s cubic-bezier(.4,2,.3,1)",
     };
   }
@@ -185,7 +185,10 @@ export const CircularTestimonials = ({
 
   if (hideText) {
     return (
-      <div className="relative w-full max-w-sm mx-auto flex flex-col items-center">
+      <div className="relative w-full max-w-md mx-auto flex flex-col items-center">
+        {/* Glow directly behind the images */}
+        <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[300px] rounded-full bg-primary/30 blur-[90px]" />
+        
         <div
           className="image-container relative w-full h-[320px] sm:h-[380px] perspective-[1000px] flex justify-center items-center"
           ref={imageContainerRef}
@@ -193,16 +196,14 @@ export const CircularTestimonials = ({
           {testimonials.map((testimonial, index) => (
             <div
               key={testimonial.src + index}
-              className="testimonial-image-card absolute w-[220px] sm:w-[260px] h-[290px] sm:h-[340px] rounded-2xl border border-primary/40 bg-surface/95 shadow-[0_14px_40px_rgba(124,58,237,0.35)] backdrop-blur-xl p-2.5 flex flex-col overflow-hidden transition-all duration-500"
+              className="testimonial-image-card absolute w-[240px] sm:w-[300px] h-[280px] sm:h-[350px] rounded-[2rem] border border-primary/40 bg-gradient-to-b from-[#1c182b] via-[#12101c] to-[#0a0912] shadow-[0_20px_50px_rgba(0,0,0,0.85)] overflow-hidden flex items-center justify-center"
               style={getImageStyle(index)}
             >
-              <div className="relative w-full h-full rounded-xl overflow-hidden bg-bg-elevated/80 border border-white/10 flex items-center justify-center">
-                <img
-                  src={testimonial.src}
-                  alt={testimonial.name}
-                  className="w-full h-full object-cover object-top"
-                />
-              </div>
+              <img
+                src={testimonial.src}
+                alt={testimonial.name}
+                className="w-full h-full object-cover object-top"
+              />
             </div>
           ))}
         </div>
@@ -333,7 +334,8 @@ export const CircularTestimonials = ({
           height: 100%;
           object-fit: cover;
           border-radius: 1.5rem;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+          background-color: #12101c;
         }
         .testimonial-content {
           display: flex;

@@ -23,7 +23,7 @@ export function ScrollRevealSection() {
           Learn cloud, build projects, and grow together
         </ScrollReveal>
         <ScrollReveal
-          size="lg"
+          size="sm"
           align="center"
           variant="muted"
           enableBlur

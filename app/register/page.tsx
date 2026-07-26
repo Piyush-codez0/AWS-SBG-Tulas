@@ -313,7 +313,7 @@ export default function RegisterPage() {
       </div>
       <ThemeStyles />
 
-      <main className="w-full max-w-[820px] mx-auto px-6 sm:px-8 md:px-12 pt-[100px] md:pt-[140px] pb-[60px] md:pb-[100px] relative z-10 box-border">
+      <main className="w-full max-w-[820px] mx-auto px-6 sm:px-8 md:px-12 pt-[100px] md:pt-[140px] pb-[100px] md:pb-[140px] mb-12 md:mb-16 relative z-10 box-border">
         <div className="intro mb-8 md:mb-12">
           <div className="eyebrow">Application · 2026 Cohort</div>
           <h1>

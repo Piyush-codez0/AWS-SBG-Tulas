@@ -1,7 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { motion, useInView } from "framer-motion";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { PixelHeading } from "@/components/ui/pixel-heading-character";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const WHY_JOIN_CARDS = [
   {
@@ -69,63 +74,105 @@ const WHY_JOIN_CARDS = [
   },
 ];
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } },
-};
-const cardItem = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
-};
-
 export function WhyJoin() {
-  const ref = React.useRef<HTMLElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-8%" });
+  const containerRef = React.useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    gsap.from(".whyjoin-header-el", {
+      opacity: 0,
+      y: 20,
+      stagger: 0.1,
+      duration: 0.6,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".whyjoin-header",
+        start: "top 85%",
+        toggleActions: "play reverse play reverse",
+      },
+    });
+
+    gsap.set(".whyjoin-card", { opacity: 0, y: 30, scale: 0.97 });
+    ScrollTrigger.batch(".whyjoin-card", {
+      onEnter: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: "power3.out",
+          overwrite: true,
+        });
+      },
+      onLeave: (elements) => {
+        gsap.to(elements, {
+          opacity: 0,
+          y: -20,
+          scale: 0.97,
+          duration: 0.3,
+          overwrite: true,
+        });
+      },
+      onEnterBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: "power3.out",
+          overwrite: true,
+        });
+      },
+      onLeaveBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 0,
+          y: 30,
+          scale: 0.97,
+          duration: 0.3,
+          overwrite: true,
+        });
+      },
+      start: "top 85%",
+      end: "bottom 15%",
+    });
+  }, { scope: containerRef });
 
   return (
-    <section ref={ref} id="why-join" className="bg-grid bg-noise relative overflow-hidden bg-bg border-t border-border">
+    <section ref={containerRef} id="why-join" className="bg-grid bg-noise relative overflow-hidden bg-bg border-t border-border">
+      {/* Subtle purple heading glow */}
+      <div aria-hidden className="pointer-events-none absolute left-1/2 top-8 h-[200px] w-[360px] -translate-x-1/2 rounded-full bg-gradient-to-r from-primary/10 via-purple-600/8 to-primary/10 blur-[90px]" />
       <div aria-hidden className="pointer-events-none absolute right-1/4 top-0 h-[400px] w-[400px] translate-x-1/2 rounded-full bg-primary/8 blur-[130px]" />
 
       <div className="relative mx-auto max-w-content px-4 sm:px-6 py-20 md:py-28">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center max-w-2xl mx-auto"
-        >
-          <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Why Join Us</p>
-          <h2 className="mt-4 font-display text-[28px] sm:text-[34px] md:text-[42px] font-semibold leading-[1.1] tracking-tight text-text-primary">
+        <div className="whyjoin-header text-center max-w-2xl mx-auto">
+          <p className="whyjoin-header-el text-[11px] uppercase tracking-[0.16em] text-muted">Why Join Us</p>
+          <h2 className="whyjoin-header-el mt-4 font-display text-[28px] sm:text-[34px] md:text-[42px] font-semibold leading-[1.1] tracking-tight text-text-primary">
             More Than{" "}
-            <span className="text-gradient">Just Workshops</span>
+            <PixelHeading mode="uniform" className="text-gradient">Just Workshops</PixelHeading>
           </h2>
-        </motion.div>
+        </div>
 
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate={isInView ? "show" : "hidden"}
-          className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-        >
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {WHY_JOIN_CARDS.map((card) => (
-            <motion.div
+            <div
               key={card.title}
-              variants={cardItem}
-              className="group flex flex-col gap-4 rounded-2xl border border-border bg-bg-card/60 p-6 cursor-default transition-all duration-300 hover:border-primary/30 hover:bg-bg-card hover:shadow-[0_0_28px_rgba(124,58,237,0.12)]"
+              className="whyjoin-card group flex flex-col gap-4 rounded-2xl border border-border bg-bg-card/60 p-6 cursor-default transition-all duration-300 hover:border-primary/40 hover:bg-bg-card hover:-translate-y-1.5 hover:shadow-[0_12px_32px_-8px_rgba(124,58,237,0.2)]"
             >
-              <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${card.accent} transition-transform duration-300 group-hover:scale-110`}>
+              <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${card.accent} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                 {card.icon}
               </div>
               <div>
-                <h3 className="font-display text-[15px] font-semibold tracking-tight text-text-primary">
+                <h3 className="font-display text-[15px] font-semibold tracking-tight text-text-primary group-hover:text-primary-light transition-colors duration-200">
                   {card.title}
                 </h3>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-text-secondary">
                   {card.desc}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -2,8 +2,13 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { motion, useInView } from "framer-motion";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
+import { PixelHeading } from "@/components/ui/pixel-heading-character";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const HUB_TOPICS = [
   { label: "AWS Fundamentals", icon: (
@@ -38,42 +43,91 @@ const HUB_TOPICS = [
   ), accent: "text-error bg-error/10" },
 ];
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.07, delayChildren: 0.1 } },
-};
-const item = {
-  hidden: { opacity: 0, y: 18 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
-};
-
 export function LearningHubPreview() {
-  const ref = React.useRef<HTMLElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-8%" });
+  const containerRef = React.useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    gsap.from(".hub-header-el", {
+      opacity: 0,
+      y: 20,
+      stagger: 0.1,
+      duration: 0.6,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".hub-header",
+        start: "top 85%",
+        toggleActions: "play reverse play reverse",
+      },
+    });
+
+    gsap.set(".hub-topic-card", { opacity: 0, y: 25, scale: 0.96 });
+    ScrollTrigger.batch(".hub-topic-card", {
+      onEnter: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.55,
+          stagger: 0.08,
+          ease: "power3.out",
+          overwrite: true,
+        });
+      },
+      onLeave: (elements) => {
+        gsap.to(elements, {
+          opacity: 0,
+          y: -20,
+          scale: 0.96,
+          duration: 0.3,
+          overwrite: true,
+        });
+      },
+      onEnterBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.55,
+          stagger: 0.08,
+          ease: "power3.out",
+          overwrite: true,
+        });
+      },
+      onLeaveBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 0,
+          y: 25,
+          scale: 0.96,
+          duration: 0.3,
+          overwrite: true,
+        });
+      },
+      start: "top 85%",
+      end: "bottom 15%",
+    });
+  }, { scope: containerRef });
 
   return (
-    <section ref={ref} id="learning-hub-preview" className="bg-grid bg-noise relative overflow-hidden bg-bg border-t border-border">
+    <section ref={containerRef} id="learning-hub-preview" className="bg-grid bg-noise relative overflow-hidden bg-bg border-t border-border">
+      {/* Subtle purple heading glow */}
+      <div aria-hidden className="pointer-events-none absolute left-1/4 top-8 h-[200px] w-[340px] -translate-x-1/2 rounded-full bg-gradient-to-r from-primary/10 via-purple-600/8 to-primary/10 blur-[90px]" />
       <div aria-hidden className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 h-[400px] w-[400px] translate-x-1/3 rounded-full bg-primary/8 blur-[130px]" />
 
       <div className="relative mx-auto max-w-content px-4 sm:px-6 py-20 md:py-28">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left Text */}
-          <motion.div
-            variants={container}
-            initial="hidden"
-            animate={isInView ? "show" : "hidden"}
-          >
-            <motion.p variants={item} className="text-[11px] uppercase tracking-[0.16em] text-muted">
+          <div className="hub-header">
+            <p className="hub-header-el text-[11px] uppercase tracking-[0.16em] text-muted">
               Learning Hub
-            </motion.p>
-            <motion.h2 variants={item} className="mt-4 font-display text-[28px] sm:text-[34px] md:text-[42px] font-semibold leading-[1.1] tracking-tight text-text-primary">
+            </p>
+            <h2 className="hub-header-el mt-4 font-display text-[28px] sm:text-[34px] md:text-[42px] font-semibold leading-[1.1] tracking-tight text-text-primary">
               Learn at{" "}
-              <span className="text-gradient">Your Own Pace</span>
-            </motion.h2>
-            <motion.p variants={item} className="mt-5 text-[15px] sm:text-[16px] leading-relaxed text-text-secondary max-w-md">
+              <PixelHeading mode="uniform" className="text-gradient">Your Own Pace</PixelHeading>
+            </h2>
+            <p className="hub-header-el mt-5 text-[15px] sm:text-[16px] leading-relaxed text-text-secondary max-w-md">
               Whether you&apos;re taking your first step into cloud computing or preparing for AWS certifications, our Learning Hub brings together carefully curated resources to help you learn with confidence.
-            </motion.p>
-            <motion.div variants={item} className="mt-8">
+            </p>
+            <div className="hub-header-el mt-8">
               <Link
                 href="/learning-hub"
                 className="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-[13px] font-semibold text-white transition-all duration-200 hover:bg-primary-hover shadow-[0_0_24px_rgba(124,58,237,0.4)] hover:shadow-[0_0_32px_rgba(124,58,237,0.6)] cursor-pointer"
@@ -81,31 +135,25 @@ export function LearningHubPreview() {
                 Open Learning Hub
                 <ArrowRight size={14} animateOnHover />
               </Link>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Right topics grid */}
-          <motion.div
-            variants={container}
-            initial="hidden"
-            animate={isInView ? "show" : "hidden"}
-            className="grid grid-cols-2 gap-3"
-          >
+          <div className="grid grid-cols-2 gap-3">
             {HUB_TOPICS.map((t) => (
-              <motion.div
+              <div
                 key={t.label}
-                variants={item}
-                className="group flex items-center gap-3 rounded-xl border border-border bg-bg-card/60 p-4 cursor-default transition-all duration-300 hover:border-primary/30 hover:bg-bg-card hover:shadow-[0_0_20px_rgba(124,58,237,0.1)]"
+                className="hub-topic-card group flex items-center gap-3 rounded-xl border border-border bg-bg-card/60 p-4 cursor-default transition-all duration-300 hover:border-primary/40 hover:bg-bg-card hover:-translate-y-1 hover:shadow-[0_8px_24px_-6px_rgba(124,58,237,0.18)]"
               >
-                <div className={`flex-shrink-0 flex h-9 w-9 items-center justify-center rounded-lg ${t.accent} transition-transform duration-300 group-hover:scale-110`}>
+                <div className={`flex-shrink-0 flex h-9 w-9 items-center justify-center rounded-lg ${t.accent} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                   {t.icon}
                 </div>
                 <span className="text-[13px] font-medium text-text-secondary group-hover:text-text-primary transition-colors">
                   {t.label}
                 </span>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

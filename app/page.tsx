@@ -26,14 +26,14 @@ export default function Home() {
     <>
       <Hero />
       <ScrollRevealSection />
-      <WhyCloudMatters />
+      {/* <WhyCloudMatters /> */}
       <WhatYouCanBuild />
       <OurMission />
       <WhyJoin />
       <FeaturedEvents />
       <LearningHubPreview />
       <MeetTheBuilders />
-      <CommunityHighlights />
+      {/* <CommunityHighlights /> */}
       <JoinCTA />
     </>
   );
