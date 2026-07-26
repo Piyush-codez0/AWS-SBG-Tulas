@@ -5,7 +5,6 @@ import { WhyCloudMatters } from "@/components/features/home/WhyCloudMatters";
 import { WhatYouCanBuild } from "@/components/features/home/WhatYouCanBuild";
 import { OurMission } from "@/components/features/home/OurMission";
 import { WhyJoin } from "@/components/features/home/WhyJoin";
-import { LearningJourney } from "@/components/features/home/LearningJourney";
 import { FeaturedEvents } from "@/components/features/home/FeaturedEvents";
 import { LearningHubPreview } from "@/components/features/home/LearningHubPreview";
 import { MeetTheBuilders } from "@/components/features/home/MeetTheBuilders";
@@ -31,7 +30,6 @@ export default function Home() {
       <WhatYouCanBuild />
       <OurMission />
       <WhyJoin />
-      <LearningJourney />
       <FeaturedEvents />
       <LearningHubPreview />
       <MeetTheBuilders />
