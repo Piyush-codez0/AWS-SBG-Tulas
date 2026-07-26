@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 const PARTNERS = [
-  { name: "AWS", logo: "/logos/AWS_logo.png", width: 80, height: 48 },
+  { name: "AWS", logo: "/logos/AWS_logo.svg", width: 80, height: 48 },
   { name: "Tulas Institute", logo: "/logos/tulaslogo.png", width: 140, height: 48 },
   { name: "SBG", logo: "/logos/SBG_logo.png", width: 100, height: 48 },
 ];

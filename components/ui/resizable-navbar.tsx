@@ -323,23 +323,13 @@ export const NavbarLogo = ({ visible }: { visible?: boolean }) => {
       href="/"
       className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal"
     >
-      <div className="flex items-center gap-1.5">
-        <img
-          src="/logos/SBG_logo.png"
-          alt="AWS SBG Logo"
-          width={30}
-          height={30}
-          className="rounded-md object-contain"
-        />
-        <div className="h-4 w-[1px] bg-white/20" />
-        <img
-          src="/logos/AWS_logo.png"
-          alt="AWS Logo"
-          width={34}
-          height={20}
-          className="object-contain"
-        />
-      </div>
+      <img
+        src="/logos/SBG_logo.png"
+        alt="AWS SBG Logo"
+        width={32}
+        height={32}
+        className="rounded-md object-contain"
+      />
       {!visible && (
         <motion.div
           initial={{ opacity: 0, x: -10 }}

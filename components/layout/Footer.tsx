@@ -191,24 +191,13 @@ export function Footer() {
                 href="/"
                 className="flex items-center gap-3 font-display text-lg font-semibold tracking-tight text-text-primary transition-opacity hover:opacity-80"
               >
-                <div className="flex items-center gap-2">
-                  <div className="relative h-10 w-10 overflow-hidden rounded-xl bg-white/[0.05] p-1.5 ring-1 ring-white/10">
-                    <Image 
-                      src="/logos/SBG_logo.png" 
-                      alt="AWS SBG Logo" 
-                      fill 
-                      className="object-contain p-1"
-                    />
-                  </div>
-                  <div className="h-5 w-[1px] bg-white/15" />
-                  <div className="relative h-10 w-14 overflow-hidden rounded-xl bg-white/[0.05] p-1.5 ring-1 ring-white/10 flex items-center justify-center">
-                    <Image 
-                      src="/logos/AWS_logo.png" 
-                      alt="AWS Logo" 
-                      fill 
-                      className="object-contain p-1"
-                    />
-                  </div>
+                <div className="relative h-10 w-10 overflow-hidden rounded-xl bg-white/[0.05] p-1.5 ring-1 ring-white/10">
+                  <Image 
+                    src="/logos/SBG_logo.png" 
+                    alt="AWS SBG Logo" 
+                    fill 
+                    className="object-contain p-1"
+                  />
                 </div>
                 AWS Student Builder Group
               </Link>

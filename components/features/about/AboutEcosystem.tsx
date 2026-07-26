@@ -161,11 +161,11 @@ export function AboutEcosystem() {
             className="ecosystem-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex h-16 w-16 sm:h-24 sm:w-24 items-center justify-center rounded-full border-2 border-primary/50 bg-bg shadow-[0_0_40px_-8px_rgba(124,58,237,0.4)] p-3 overflow-hidden"
           >
             <Image
-              src="/logos/AWS_logo.png"
+              src="/logos/AWS_logo.svg"
               alt="AWS Logo"
               width={70}
               height={45}
-              className="h-7 sm:h-11 w-auto object-contain"
+              className="h-7 sm:h-11 w-auto object-contain text-white"
             />
           </div>
 
