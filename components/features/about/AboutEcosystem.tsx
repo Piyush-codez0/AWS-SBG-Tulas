@@ -53,12 +53,11 @@ export function AboutEcosystem() {
       }
     );
 
-    // SVG lines draw animation
+    // SVG lines fade & draw animation
     gsap.fromTo(".ecosystem-line",
-      { opacity: 0, scale: 0.2 },
+      { opacity: 0 },
       {
         opacity: 1,
-        scale: 1,
         duration: 0.8,
         stagger: 0.05,
         ease: "power2.out",
@@ -132,7 +131,7 @@ export function AboutEcosystem() {
         {/* Graph visualization container */}
         <div className="ecosystem-graph relative mt-14 mx-auto w-full max-w-[340px] sm:max-w-[520px] lg:max-w-[640px] aspect-square">
           {/* SVG lines connecting center to nodes */}
-          <svg className="absolute inset-0 w-full h-full overflow-visible" viewBox="0 0 100 100">
+          <svg className="absolute inset-0 w-full h-full overflow-visible pointer-events-none" viewBox="0 0 100 100">
             {ECOSYSTEM_NODES.map((_, i) => {
               const pos = getNodePosition(i, ECOSYSTEM_NODES.length);
               return (
@@ -144,7 +143,7 @@ export function AboutEcosystem() {
                   x2={pos.x}
                   y2={pos.y}
                   stroke="url(#lineGrad)"
-                  strokeWidth="1.2"
+                  strokeWidth="1.5"
                   strokeLinecap="round"
                   vectorEffect="non-scaling-stroke"
                 />
@@ -152,9 +151,9 @@ export function AboutEcosystem() {
             })}
             <defs>
               <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#7C3AED" stopOpacity="0.8" />
-                <stop offset="50%" stopColor="#C084FC" stopOpacity="0.5" />
-                <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.8" />
+                <stop offset="0%" stopColor="#7C3AED" stopOpacity="0.85" />
+                <stop offset="50%" stopColor="#C084FC" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.85" />
               </linearGradient>
             </defs>
           </svg>
