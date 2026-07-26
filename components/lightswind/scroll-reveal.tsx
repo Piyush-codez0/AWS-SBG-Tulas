@@ -164,11 +164,11 @@ export function ScrollReveal({
               variants={wordVariants}
             >
               {item.value.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "") === "AWS" ? (
-                <span className="inline-flex items-center gap-1">
+                <span className="inline-flex items-center gap-1.5">
                   <img
                     src="/logos/AWS_logo.svg"
                     alt="AWS"
-                    className="h-[0.75em] sm:h-[0.8em] w-auto inline-block align-middle"
+                    className="h-[1.15em] w-auto inline-block align-baseline translate-y-[0.1em]"
                   />
                   {item.value.endsWith(".") && "."}
                 </span>
