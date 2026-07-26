@@ -10,14 +10,14 @@ import { PixelHeading } from "@/components/ui/pixel-heading-character";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const ECOSYSTEM_NODES = [
-  "AI",
-  "Skill Builder",
-  "AWS Educate",
-  "Community Builders",
-  "Student Builder Groups",
-  "AWS Events",
-  "Certification",
-  "Cloud",
+  { name: "AI", link: "https://aws.amazon.com/ai/" },
+  { name: "Skill Builder", link: "https://explore.skillbuilder.aws/" },
+  { name: "AWS Educate", link: "https://aws.amazon.com/education/awseducate/" },
+  { name: "Community Builders", link: "https://aws.amazon.com/developer/community/community-builders/" },
+  { name: "Student Builder Groups", link: "https://builder.aws.com/content/3C075iQJeEx03mnzHwmXO9zdgEG/aws-student-builder-groups" },
+  { name: "AWS Events", link: "https://aws.amazon.com/events/" },
+  { name: "Certification", link: "https://aws.amazon.com/certification/" },
+  { name: "Cloud", link: "https://aws.amazon.com/what-is-aws/" },
 ];
 
 export function AboutEcosystem() {
@@ -176,18 +176,23 @@ export function AboutEcosystem() {
             const pos = getNodePosition(i, ECOSYSTEM_NODES.length);
             return (
               <div
-                key={node}
+                key={node.name}
                 className="ecosystem-node absolute z-20 -translate-x-1/2 -translate-y-1/2 group"
                 style={{
                   left: `${pos.x}%`,
                   top: `${pos.y}%`,
                 }}
               >
-                <div className="flex items-center justify-center rounded-full border border-white/10 bg-surface/90 px-3 py-1.5 sm:px-4.5 sm:py-2.5 shadow-lg backdrop-blur-md transition-all duration-300 group-hover:border-primary/60 group-hover:bg-primary/10 group-hover:shadow-[0_0_25px_rgba(124,58,237,0.4)] group-hover:scale-105 cursor-default">
+                <a
+                  href={node.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center rounded-full border border-white/10 bg-surface/90 px-3 py-1.5 sm:px-4.5 sm:py-2.5 shadow-lg backdrop-blur-md transition-all duration-300 group-hover:border-primary/60 group-hover:bg-primary/10 group-hover:shadow-[0_0_25px_rgba(124,58,237,0.4)] group-hover:scale-105 cursor-pointer"
+                >
                   <span className="text-[10px] sm:text-[13px] font-semibold text-text-secondary group-hover:text-text-primary whitespace-nowrap transition-colors">
-                    {node}
+                    {node.name}
                   </span>
-                </div>
+                </a>
               </div>
             );
           })}

@@ -61,7 +61,7 @@ const RESOURCES: Resource[] = [
     title: "AWS Educate & Student Credits",
     description:
       "Members get access to free AWS Educate courses and promotional credits for hands-on practice building real cloud applications.",
-    link: "https://aws.amazon.com/education/aws-educate/",
+    link: "https://aws.amazon.com/education/awseducate/",
     linkLabel: "Explore AWS Educate",
     accent: "bg-warning/10 text-warning",
   },
