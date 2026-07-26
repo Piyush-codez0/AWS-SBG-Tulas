@@ -340,7 +340,7 @@ export function Footer() {
           
           <div className="flex flex-col items-center gap-1.5 sm:items-end">
             <p className="text-[13px] text-muted">
-              © {new Date().getFullYear()} AWS SBG, Tula&apos;s University. All rights reserved.
+              © {new Date().getFullYear()}&nbsp;&nbsp;AWS SBG, Tula&apos;s University. All rights reserved.
             </p>
             
           </div>
