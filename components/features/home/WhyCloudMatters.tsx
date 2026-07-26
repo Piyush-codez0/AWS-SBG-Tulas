@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 
 const CLOUD_SERVICES = [
@@ -74,10 +75,14 @@ export function WhyCloudMatters() {
               <div className="absolute inset-8 rounded-full border border-white/5" />
 
               {/* Centre cloud node */}
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-primary/20 border border-primary/40 shadow-[0_0_40px_rgba(124,58,237,0.5)] backdrop-blur-sm">
-                <svg className="h-7 w-7 sm:h-9 sm:w-9 text-primary-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
-                </svg>
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-surface/90 border border-primary/40 shadow-[0_0_35px_rgba(124,58,237,0.4)] backdrop-blur-xl p-2.5">
+                <Image
+                  src="/logos/AWS_logo.svg"
+                  alt="AWS Logo"
+                  width={50}
+                  height={32}
+                  className="h-6 sm:h-8 w-auto object-contain text-white"
+                />
               </div>
 
               {/* Service pills orbiting */}
