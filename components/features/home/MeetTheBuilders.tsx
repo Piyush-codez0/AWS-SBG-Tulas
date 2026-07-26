@@ -1,15 +1,15 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
+import { CircularTestimonials } from "@/components/ui/circular-testimonials";
 
 const PREVIEW_MEMBERS = [
-  { name: "Piyush Lingwal", role: "Builder Group Leader", avatar: "/members/piyushlingwal.png" },
-  { name: "Piyush Rawat", role: "Co-Lead", avatar: "/members/piyushrawat.png" },
-  { name: "Gaurav Shukla", role: "Tech Lead", avatar: "/members/gauravshukla.png" },
+  { name: "Piyush Lingwal", designation: "Builder Group Leader", quote: "", src: "/members/piyushlingwal.png" },
+  { name: "Piyush Rawat", designation: "Co-Lead", quote: "", src: "/members/piyushrawat.png" },
+  { name: "Gaurav Shukla", designation: "Tech Lead", quote: "", src: "/members/gauravshukla.png" },
 ];
 
 const container = {
@@ -31,49 +31,23 @@ export function MeetTheBuilders() {
 
       <div className="relative mx-auto max-w-content px-4 sm:px-6 py-20 md:py-28">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Member cards */}
+          {/* Member images 3D circular slider */}
           <motion.div
-            variants={container}
-            initial="hidden"
-            animate={isInView ? "show" : "hidden"}
-            className="flex flex-col sm:flex-row gap-4"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full flex justify-center"
           >
-            {PREVIEW_MEMBERS.map((m, i) => (
-              <motion.div
-                key={m.name}
-                variants={item}
-                className="relative flex-1 flex flex-col items-center gap-3 rounded-2xl border border-border bg-bg-card/80 p-5 text-center backdrop-blur-sm"
-                style={{ marginTop: i === 1 ? "1.5rem" : 0 }}
-              >
-                {/* Glow ring for first card */}
-                {i === 0 && (
-                  <div className="absolute inset-0 rounded-2xl border border-primary/30 shadow-[0_0_30px_rgba(124,58,237,0.15)]" />
-                )}
-                <div className="relative h-16 w-16 rounded-full overflow-hidden border-2 border-primary/30 bg-bg-elevated">
-                  <Image
-                    src={m.avatar}
-                    alt={m.name}
-                    fill
-                    className="object-cover"
-                    onError={() => {}} // graceful fallback
-                  />
-                  {/* Fallback initial if image missing */}
-                  <div className="absolute inset-0 flex items-center justify-center text-primary-light font-bold text-xl opacity-0">
-                    {m.name[0]}
-                  </div>
-                </div>
-                <div>
-                  <p className="font-display text-[14px] font-semibold text-text-primary">{m.name}</p>
-                  <p className="mt-0.5 text-[12px] text-muted">{m.role}</p>
-                </div>
-                {i === 0 && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-0.5 text-[10px] font-semibold text-success">
-                    <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
-                    Building
-                  </span>
-                )}
-              </motion.div>
-            ))}
+            <CircularTestimonials
+              testimonials={PREVIEW_MEMBERS}
+              autoplay={true}
+              hideText={true}
+              colors={{
+                arrowBackground: "rgba(124, 58, 237, 0.2)",
+                arrowForeground: "#FAFAFA",
+                arrowHoverBackground: "#7C3AED",
+              }}
+            />
           </motion.div>
 
           {/* Right text */}
