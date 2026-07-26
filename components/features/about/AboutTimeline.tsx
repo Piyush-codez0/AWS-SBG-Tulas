@@ -253,11 +253,12 @@ export function AboutTimeline() {
                     {step.description}
                   </p>
 
-                  {/* Mobile indicator */}
-                  <div className="relative z-10 lg:hidden mt-3 pt-2 border-t border-border/50 flex items-center justify-between text-[10.5px] text-muted font-mono">
-                    <span>STEP {step.phase} OF 08</span>
-                    {i < STEPS.length - 1 && <ArrowDown size={13} className="text-primary/60" animateOnView />}
-                  </div>
+                  {/* Mobile direction arrow */}
+                  {i < STEPS.length - 1 && (
+                    <div className="relative z-10 lg:hidden mt-3 pt-2 border-t border-border/50 flex items-center justify-end text-[10.5px] text-muted font-mono">
+                      <ArrowDown size={13} className="text-primary/60" animateOnView />
+                    </div>
+                  )}
                 </div>
               );
             })}
