@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Hero } from "@/components/sections/Hero";
-import { ScrollRevealSection } from "@/components/sections/ScrollRevealSection";
+import { Hero } from "@/components/features/home/Hero";
+import { ScrollRevealSection } from "@/components/features/home/ScrollRevealSection";
 
 export const metadata: Metadata = {
   title:

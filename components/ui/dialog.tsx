@@ -4,7 +4,7 @@ import * as React from "react"
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/Button"
+import { Button } from "@/components/ui/button"
 import { X } from "@/components/animate-ui/icons/x"
 
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {

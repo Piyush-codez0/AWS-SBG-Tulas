@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LearningHub } from "@/components/sections/LearningHub";
+import { LearningHub } from "@/components/features/learning-hub/LearningHub";
 
 export const metadata: Metadata = {
   title: "Learning Hub",

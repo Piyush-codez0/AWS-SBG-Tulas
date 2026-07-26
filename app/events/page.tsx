@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Events } from "@/components/sections/Events";
+import { Events } from "@/components/features/events/Events";
 
 export const metadata: Metadata = {
   title: "Events",

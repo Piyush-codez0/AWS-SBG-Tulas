@@ -8,8 +8,8 @@ import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
 import { Sparkles } from "@/components/animate-ui/icons/sparkles";
 import { Send } from "@/components/animate-ui/icons/send";
 import { Check } from "@/components/animate-ui/icons/check";
-import { Button } from "@/components/ui/Button";
-import { subscribeToNewsletter } from "@/app/actions/newsletter";
+import { Button } from "@/components/ui/button";
+import { subscribeToNewsletter } from "@/actions/newsletter";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import gsap from "gsap";
@@ -148,7 +148,7 @@ export function Footer() {
   };
 
   return (
-    <footer ref={footerRef} className="relative border-t border-white/[0.05] bg-bg overflow-hidden">
+    <footer ref={footerRef} className="relative z-10 border-t border-white/[0.05] bg-bg overflow-hidden">
       {/* Floating Toast Notification Banner */}
       <AnimatePresence>
         {showToast && (
@@ -208,7 +208,7 @@ export function Footer() {
             </div>
 
             {/* Newsletter Subscription */}
-            <div className="relative overflow-hidden flex flex-col gap-3 rounded-2xl border border-white/[0.05] bg-white/[0.02] p-5 backdrop-blur-sm mt-2 hover:border-primary/20 hover:bg-white/[0.04] transition-colors transition-shadow duration-300 group/card">
+            <div className="relative overflow-hidden flex flex-col gap-3 rounded-2xl border border-white/[0.05] bg-white/[0.02] p-5 backdrop-blur-sm mt-2 hover:border-primary/20 hover:bg-white/[0.04] transition-all duration-300 group/card">
               {/* Top accent glow line */}
               <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
               
@@ -252,14 +252,14 @@ export function Footer() {
                         onChange={(e) => setEmail(e.target.value)}
                         disabled={status === "loading"}
                         placeholder="Enter your email address"
-                        className="w-full rounded-2xl sm:rounded-full border border-white/10 bg-white/[0.02] py-3 pl-10 pr-4 sm:pr-[115px] text-sm text-text-primary outline-none transition-colors transition-shadow placeholder:text-muted focus:border-primary/50 focus:bg-white/[0.05] focus:ring-1 focus:ring-primary/50 disabled:opacity-50"
+                        className="w-full rounded-2xl sm:rounded-full border border-white/10 bg-white/[0.02] py-3 pl-10 pr-4 sm:pr-[115px] text-sm text-text-primary outline-none transition-all placeholder:text-muted focus:border-primary/50 focus:bg-white/[0.05] focus:ring-1 focus:ring-primary/50 disabled:opacity-50"
                         required
                       />
                     </div>
                     <Button
                       size="sm"
                       disabled={status === "loading"}
-                      className="mt-3 sm:mt-0 sm:absolute sm:right-1 sm:top-1 sm:bottom-1 sm:h-auto rounded-2xl sm:rounded-full bg-gradient-to-r from-primary to-accent text-white hover:brightness-110 shadow-[0_0_15px_rgba(124,58,237,0.2)] hover:shadow-[0_0_20px_rgba(124,58,237,0.35)] transition-shadow transition-[filter] duration-200 shrink-0 group px-5 py-3 sm:py-1.5 font-medium disabled:opacity-70 w-full sm:w-auto justify-center border-none"
+                      className="mt-3 sm:mt-0 sm:absolute sm:right-1 sm:top-1 sm:bottom-1 sm:h-auto rounded-2xl sm:rounded-full bg-gradient-to-r from-primary to-accent text-white hover:brightness-110 shadow-[0_0_15px_rgba(124,58,237,0.2)] hover:shadow-[0_0_20px_rgba(124,58,237,0.35)] transition-all duration-200 shrink-0 group px-5 py-3 sm:py-1.5 font-medium disabled:opacity-70 w-full sm:w-auto justify-center border-none"
                     >
                       {status === "loading" ? (
                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white" />
@@ -300,7 +300,7 @@ export function Footer() {
                             className="group flex w-fit items-center gap-1.5 text-[14px] text-text-secondary transition-colors hover:text-primary-light"
                           >
                             {link.label}
-                            <ArrowRight size={14} className="-translate-x-1 opacity-0 transition-opacity transition-transform duration-200 group-hover:translate-x-0 group-hover:opacity-100" animateOnHover />
+                            <ArrowRight size={14} className="-translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100" animateOnHover />
                           </a>
                         ) : (
                           <Link
@@ -308,7 +308,7 @@ export function Footer() {
                             className="group flex w-fit items-center gap-1.5 text-[14px] text-text-secondary transition-colors hover:text-primary-light"
                           >
                             {link.label}
-                            <ArrowRight size={14} className="-translate-x-1 opacity-0 transition-opacity transition-transform duration-200 group-hover:translate-x-0 group-hover:opacity-100" animateOnHover />
+                            <ArrowRight size={14} className="-translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100" animateOnHover />
                           </Link>
                         )}
                       </li>

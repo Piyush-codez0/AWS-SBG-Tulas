@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { About } from "@/components/sections/About";
-import { AboutComparison } from "@/components/sections/AboutComparison";
-import { AboutTimeline } from "@/components/sections/AboutTimeline";
-import { AboutPillars } from "@/components/sections/AboutPillars";
-import { AboutEcosystem } from "@/components/sections/AboutEcosystem";
-import { AboutTechnologies } from "@/components/sections/AboutTechnologies";
-import { AboutStats } from "@/components/sections/AboutStats";
-import { AboutCTA } from "@/components/sections/AboutCTA";
+import { About } from "@/components/features/about/About";
+import { AboutComparison } from "@/components/features/about/AboutComparison";
+import { AboutTimeline } from "@/components/features/about/AboutTimeline";
+import { AboutPillars } from "@/components/features/about/AboutPillars";
+import { AboutEcosystem } from "@/components/features/about/AboutEcosystem";
+import { AboutTechnologies } from "@/components/features/about/AboutTechnologies";
+import { AboutStats } from "@/components/features/about/AboutStats";
+import { AboutCTA } from "@/components/features/about/AboutCTA";
 
 export const metadata: Metadata = {
   title: "About",
