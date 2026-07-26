@@ -325,10 +325,10 @@ function AnimateIcon({
     let handleParentEnter: (() => void) | null = null;
     let handleParentLeave: (() => void) | null = null;
 
-    const el = viewOuterRef.current;
+    const el = inViewRef.current || viewOuterRef.current;
     if (el) {
       parentElement =
-        (el.closest('.group, button, a, [role="button"]') as HTMLElement) ||
+        (el.closest('.group, button, a, [role="button"], [class*="group"], [class*="card"]') as HTMLElement) ||
         el.parentElement;
       if (parentElement) {
         handleParentEnter = () => {
