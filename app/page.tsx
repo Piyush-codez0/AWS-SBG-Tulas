@@ -1,6 +1,16 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/features/home/Hero";
 import { ScrollRevealSection } from "@/components/features/home/ScrollRevealSection";
+import { WhyCloudMatters } from "@/components/features/home/WhyCloudMatters";
+import { WhatYouCanBuild } from "@/components/features/home/WhatYouCanBuild";
+import { OurMission } from "@/components/features/home/OurMission";
+import { WhyJoin } from "@/components/features/home/WhyJoin";
+import { LearningJourney } from "@/components/features/home/LearningJourney";
+import { FeaturedEvents } from "@/components/features/home/FeaturedEvents";
+import { LearningHubPreview } from "@/components/features/home/LearningHubPreview";
+import { MeetTheBuilders } from "@/components/features/home/MeetTheBuilders";
+import { CommunityHighlights } from "@/components/features/home/CommunityHighlights";
+import { JoinCTA } from "@/components/features/home/JoinCTA";
 
 export const metadata: Metadata = {
   title:
@@ -17,6 +27,16 @@ export default function Home() {
     <>
       <Hero />
       <ScrollRevealSection />
+      <WhyCloudMatters />
+      <WhatYouCanBuild />
+      <OurMission />
+      <WhyJoin />
+      <LearningJourney />
+      <FeaturedEvents />
+      <LearningHubPreview />
+      <MeetTheBuilders />
+      <CommunityHighlights />
+      <JoinCTA />
     </>
   );
 }
