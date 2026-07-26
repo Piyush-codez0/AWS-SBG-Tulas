@@ -97,3 +97,4 @@ logs/
 .claude/
 skills-lock.json
 find-animation-opportunities-report.md
+.vercel
