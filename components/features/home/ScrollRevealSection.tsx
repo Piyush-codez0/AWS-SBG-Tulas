@@ -23,7 +23,7 @@ export function ScrollRevealSection() {
           Learn cloud, build projects, and grow together
         </ScrollReveal>
         <ScrollReveal
-          size="md"
+          size="lg"
           align="center"
           variant="muted"
           enableBlur
@@ -31,9 +31,9 @@ export function ScrollRevealSection() {
           baseRotation={1}
           staggerDelay={0.05}
           duration={0.6}
-          containerClassName="my-0 transform-gpu opacity-80"
+          containerClassName="my-0 transform-gpu opacity-90"
         >
-          — powered by AWS.
+          — powered by AWS
         </ScrollReveal>
       </div>
     </section>
