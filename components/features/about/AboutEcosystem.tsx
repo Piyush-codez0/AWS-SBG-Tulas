@@ -37,13 +37,13 @@ export function AboutEcosystem() {
       },
     });
 
-    // Center node
+    // Center node animation
     gsap.fromTo(".ecosystem-center",
-      { opacity: 0, scale: 0.5 },
+      { opacity: 0, scale: 0.6 },
       {
         opacity: 1,
         scale: 1,
-        duration: 0.7,
+        duration: 0.8,
         ease: "back.out(1.7)",
         scrollTrigger: {
           trigger: ".ecosystem-graph",
@@ -53,8 +53,25 @@ export function AboutEcosystem() {
       }
     );
 
-    // Outer nodes
-    gsap.set(".ecosystem-node", { opacity: 0, scale: 0.5 });
+    // SVG lines draw animation
+    gsap.fromTo(".ecosystem-line",
+      { opacity: 0, scale: 0.2 },
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.8,
+        stagger: 0.05,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".ecosystem-graph",
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
+
+    // Outer nodes animation
+    gsap.set(".ecosystem-node", { opacity: 0, scale: 0.6 });
     ScrollTrigger.batch(".ecosystem-node", {
       onEnter: (elements) => {
         gsap.to(elements, {
@@ -69,29 +86,13 @@ export function AboutEcosystem() {
       onLeaveBack: (elements) => {
         gsap.to(elements, {
           opacity: 0,
-          scale: 0.5,
+          scale: 0.6,
           duration: 0.3,
           overwrite: true,
         });
       },
       start: "top 80%",
     });
-
-    // SVG connecting lines
-    gsap.fromTo(".ecosystem-line",
-      { strokeDashoffset: 200 },
-      {
-        strokeDashoffset: 0,
-        duration: 1.2,
-        stagger: 0.08,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".ecosystem-graph",
-          start: "top 75%",
-          toggleActions: "play none none reverse",
-        },
-      }
-    );
 
     const refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 200);
     return () => clearTimeout(refreshTimer);
@@ -100,7 +101,7 @@ export function AboutEcosystem() {
   // Calculate positions for 8 nodes in a circle
   const getNodePosition = (index: number, total: number) => {
     const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
-    const radius = 42; // % from center
+    const radius = 38; // % from center for perfect breathing room
     const x = 50 + radius * Math.cos(angle);
     const y = 50 + radius * Math.sin(angle);
     return { x, y };
@@ -108,9 +109,10 @@ export function AboutEcosystem() {
 
   return (
     <section ref={containerRef} className="bg-grid bg-noise relative overflow-hidden bg-bg">
+      {/* Background ambient glow */}
       <div
         aria-hidden
-        className="pointer-events-none absolute right-1/4 top-0 h-[400px] w-[400px] translate-x-1/2 rounded-full bg-primary/10 blur-[120px]"
+        className="pointer-events-none absolute right-1/4 top-0 h-[450px] w-[450px] translate-x-1/2 rounded-full bg-primary/10 blur-[130px]"
       />
 
       <div className="relative mx-auto max-w-content px-4 sm:px-6 py-20 md:py-28">
@@ -127,10 +129,10 @@ export function AboutEcosystem() {
           </p>
         </div>
 
-        {/* Graph visualization */}
-        <div className="ecosystem-graph relative mt-14 mx-auto w-full max-w-[320px] sm:max-w-[500px] lg:max-w-[600px] aspect-square">
+        {/* Graph visualization container */}
+        <div className="ecosystem-graph relative mt-14 mx-auto w-full max-w-[340px] sm:max-w-[520px] lg:max-w-[640px] aspect-square">
           {/* SVG lines connecting center to nodes */}
-          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+          <svg className="absolute inset-0 w-full h-full overflow-visible" viewBox="0 0 100 100">
             {ECOSYSTEM_NODES.map((_, i) => {
               const pos = getNodePosition(i, ECOSYSTEM_NODES.length);
               return (
@@ -142,30 +144,31 @@ export function AboutEcosystem() {
                   x2={pos.x}
                   y2={pos.y}
                   stroke="url(#lineGrad)"
-                  strokeWidth="0.3"
-                  strokeDasharray="200"
-                  strokeDashoffset="200"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
                 />
               );
             })}
             <defs>
               <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#7C3AED" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="#C084FC" stopOpacity="0.3" />
+                <stop offset="0%" stopColor="#7C3AED" stopOpacity="0.8" />
+                <stop offset="50%" stopColor="#C084FC" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#3B82F6" stopOpacity="0.8" />
               </linearGradient>
             </defs>
           </svg>
 
-          {/* Center node */}
-          <div
-            className="ecosystem-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex h-16 w-16 sm:h-24 sm:w-24 items-center justify-center rounded-full border-2 border-primary/50 bg-bg shadow-[0_0_40px_-8px_rgba(124,58,237,0.4)] p-3 overflow-hidden"
-          >
+          {/* Center node with multi-layered glow and AWS logo */}
+          <div className="ecosystem-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex h-20 w-20 sm:h-28 sm:w-28 items-center justify-center rounded-full border-2 border-primary/60 bg-surface/90 shadow-[0_0_50px_rgba(124,58,237,0.5)] p-3 backdrop-blur-xl">
+            {/* Ambient inner pulse ring */}
+            <div className="pointer-events-none absolute inset-0 rounded-full border border-primary/30 animate-ping opacity-25" />
             <Image
               src="/logos/AWS_logo.svg"
               alt="AWS Logo"
-              width={70}
-              height={45}
-              className="h-7 sm:h-11 w-auto object-contain text-white"
+              width={80}
+              height={50}
+              className="h-8 sm:h-12 w-auto object-contain text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
             />
           </div>
 
@@ -175,14 +178,14 @@ export function AboutEcosystem() {
             return (
               <div
                 key={node}
-                className="ecosystem-node absolute z-10 -translate-x-1/2 -translate-y-1/2 group"
+                className="ecosystem-node absolute z-20 -translate-x-1/2 -translate-y-1/2 group"
                 style={{
                   left: `${pos.x}%`,
                   top: `${pos.y}%`,
                 }}
               >
-                <div className="flex items-center justify-center rounded-full border border-border bg-bg px-2 py-1 sm:px-4 sm:py-2.5 transition-all duration-300 group-hover:border-primary/40 group-hover:bg-white/[0.04] group-hover:shadow-[0_0_20px_-4px_rgba(124,58,237,0.3)] cursor-default">
-                  <span className="text-[9.5px] sm:text-[12px] font-medium text-text-secondary group-hover:text-text-primary whitespace-nowrap transition-colors">
+                <div className="flex items-center justify-center rounded-full border border-white/10 bg-surface/90 px-3 py-1.5 sm:px-4.5 sm:py-2.5 shadow-lg backdrop-blur-md transition-all duration-300 group-hover:border-primary/60 group-hover:bg-primary/10 group-hover:shadow-[0_0_25px_rgba(124,58,237,0.4)] group-hover:scale-105 cursor-default">
+                  <span className="text-[10px] sm:text-[13px] font-semibold text-text-secondary group-hover:text-text-primary whitespace-nowrap transition-colors">
                     {node}
                   </span>
                 </div>
