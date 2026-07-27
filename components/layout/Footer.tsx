@@ -40,10 +40,10 @@ const FOOTER_LINKS = [
   {
     heading: "Connect",
     links: [
-      { label: "Meetup", href: "https://www.meetup.com/aws-sbg-at-tulas-institute/" },
+      { label: "Meetup", href: "https://www.meetup.com/aws-sbg-at-tulas-university/" },
       { label: "WhatsApp Channel", href: "https://whatsapp.com/channel/0029VbDJ4jD6WaKnCQZRWF2Z" },
       { label: "LinkedIn", href: "#" },
-      { label: "Instagram", href: "https://www.instagram.com/aws_sbg_tulas" },
+      { label: "Instagram", href: "https://www.instagram.com/aws.sbgtulas" },
       { label: "Email Us", href: "mailto:awssbg@tulas.edu.in" },
     ],
   },
@@ -78,10 +78,10 @@ const WhatsAppIcon = ({ size = 24, className = "", ...props }: any) => (
 );
 
 const SOCIALS = [
-  { icon: MeetupIcon, href: "https://www.meetup.com/aws-sbg-at-tulas-institute/", label: "Meetup" },
+  { icon: MeetupIcon, href: "https://www.meetup.com/aws-sbg-at-tulas-university/", label: "Meetup" },
   { icon: WhatsAppIcon, href: "https://whatsapp.com/channel/0029VbDJ4jD6WaKnCQZRWF2Z", label: "WhatsApp" },
   { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Instagram, href: "https://www.instagram.com/aws_sbg_tulas", label: "Instagram" },
+  { icon: Instagram, href: "https://www.instagram.com/aws.sbgtulas", label: "Instagram" },
   { icon: Send, href: "mailto:awssbg@tulas.edu.in", label: "Email" },
 ];
 
@@ -94,6 +94,60 @@ export function Footer() {
 
   useGSAP(() => {
     if (!footerRef.current) return;
+    if (typeof window !== "undefined" && window.innerWidth < 768) return;
+
+    // 1. Overall Footer translation scrub
+    gsap.fromTo(
+      footerRef.current,
+      { y: 40 },
+      {
+        y: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: "top bottom",
+          end: "bottom bottom",
+          scrub: 0.5,
+        },
+      }
+    );
+
+    // 2. Ambient Glow Parallax float
+    gsap.fromTo(
+      ".footer-glow",
+      { y: -30, scale: 0.9, opacity: 0.4 },
+      {
+        y: 10,
+        scale: 1.05,
+        opacity: 0.9,
+        ease: "none",
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: "top bottom",
+          end: "bottom bottom",
+          scrub: 0.8,
+        },
+      }
+    );
+
+    // 3. Brand & Link columns layered entrance (completes fully at bottom bottom)
+    gsap.fromTo(
+      [".footer-brand-col", ".footer-link-col"],
+      { y: 35, opacity: 0.7 },
+      {
+        y: 0,
+        opacity: 1,
+        stagger: 0.05,
+        ease: "power1.out",
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: "top 92%",
+          end: "bottom bottom",
+          scrub: 0.5,
+        },
+      }
+    );
+
     const refreshTimer = setTimeout(() => {
       ScrollTrigger.refresh();
     }, 200);

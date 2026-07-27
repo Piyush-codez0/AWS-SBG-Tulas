@@ -9,6 +9,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PixelHeading } from "@/components/ui/pixel-heading-character";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import { RecruitmentCTA } from "@/components/recruitment/RecruitmentCTA";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -62,18 +63,14 @@ export function AboutCTA() {
             and portfolios become careers.
           </p>
 
-          {/* Register Now Button */}
+          {/* Register / Join Community Button */}
           <div className="cta-el mt-10 relative z-10 flex justify-center">
-            <Link href="/register">
-              <HoverBorderGradient
-                containerClassName="rounded-full"
-                className="font-display text-[15px] font-bold text-white px-8 py-3.5 flex items-center gap-2.5"
-              >
-                <CirclePlus size={18} animateOnHover />
-                <span>Register Now</span>
-                <ArrowRight size={17} animateOnHover />
-              </HoverBorderGradient>
-            </Link>
+            <RecruitmentCTA
+              variant="border-gradient"
+              openText="Register Now"
+              closedText="Join Community"
+              className="font-display text-[15px] font-bold px-8 py-3.5"
+            />
           </div>
         </div>
       </div>

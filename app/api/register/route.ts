@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { isRecruitmentOpen } from "@/lib/recruitment";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -60,7 +61,7 @@ function validatePayload(body: Record<string, string>) {
       errors.awsServices = "Services were malformed.";
     }
     if (!Array.isArray(awsServices) || awsServices.length === 0) {
-      errors.awsServices = "Select at least one AWS service.";
+      errors.awsServices = "Please select at least one AWS service.";
     }
   }
 
@@ -69,6 +70,13 @@ function validatePayload(body: Record<string, string>) {
 
 export async function POST(request: Request) {
   try {
+    if (!isRecruitmentOpen()) {
+      return NextResponse.json(
+        { message: "Registrations are currently closed." },
+        { status: 403 }
+      );
+    }
+
     const formData = await request.formData();
     
     // Extract file

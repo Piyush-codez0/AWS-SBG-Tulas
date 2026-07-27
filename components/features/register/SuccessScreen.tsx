@@ -20,7 +20,7 @@ export function SuccessScreen({ result }: SuccessScreenProps) {
   const shortId = result.id ? result.id.slice(0, 8) : "unknown";
 
   return (
-    <div className="register-page-theme relative min-h-screen bg-grid bg-noise bg-bg w-full overflow-x-hidden text-[#efecf5] font-sans flex items-center">
+    <div className="register-page-theme relative min-h-screen bg-noise bg-bg w-full overflow-x-hidden text-[#efecf5] font-sans flex items-center">
       {/* Ambient Purple Glows */}
       <div className="pointer-events-none absolute left-1/2 top-0 h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px] opacity-60" />
       <div className="pointer-events-none absolute -left-[20%] top-[30%] h-[500px] w-[500px] rounded-full bg-primary/15 blur-[120px] opacity-50" />
@@ -30,11 +30,11 @@ export function SuccessScreen({ result }: SuccessScreenProps) {
         <CursorGrid
           cellSize={64}
           color="#A855F7"
-          radius={130}
+          radius={160}
           falloff="smooth"
           holdTime={350}
           fadeDuration={700}
-          lineWidth={0.9}
+          lineWidth={1}
           maxOpacity={0.35}
           fillOpacity={0.02}
           gridOpacity={0.02}

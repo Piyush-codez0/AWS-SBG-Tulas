@@ -5,6 +5,7 @@ import { MapPin } from "@/components/animate-ui/icons/map-pin";
 import { SquareArrowOutUpRight } from "@/components/animate-ui/icons/square-arrow-out-up-right";
 import { PixelHeading } from "@/components/ui/pixel-heading-character";
 import { Spotlight } from "@/components/ui/spotlight";
+import { RecruitmentCTA } from "@/components/recruitment/RecruitmentCTA";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -176,6 +177,14 @@ export function Events() {
                   <p className="mt-2 text-[15px] leading-relaxed text-text-secondary max-w-2xl">
                     {event.description}
                   </p>
+                  <div className="mt-4">
+                    <RecruitmentCTA
+                      variant="secondary"
+                      openText="Register for Event"
+                      closedText="Join Community"
+                      className="px-4 py-2 text-xs"
+                    />
+                  </div>
                 </div>
 
                 {/* Arrow Icon */}

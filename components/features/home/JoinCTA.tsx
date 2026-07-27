@@ -7,10 +7,14 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
 import { PixelHeading } from "@/components/ui/pixel-heading-character";
+import { RecruitmentCTA } from "@/components/recruitment/RecruitmentCTA";
+
+import { useRecruitment } from "@/hooks/useRecruitment";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export function JoinCTA() {
+  const { isOpen } = useRecruitment();
   const containerRef = React.useRef<HTMLElement>(null);
 
   useGSAP(() => {
@@ -54,20 +58,11 @@ export function JoinCTA() {
           </p>
 
           <div className="cta-header-el mt-7 flex flex-col sm:flex-row items-center justify-center gap-3.5">
-            <Link
-              href="/register"
-              className="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-[13px] font-semibold text-white shadow-[0_0_24px_rgba(124,58,237,0.4)] transition-all duration-300 hover:bg-primary-hover hover:scale-105 hover:shadow-[0_0_35px_rgba(124,58,237,0.65)] cursor-pointer"
-            >
-              Join Community
-              <ArrowRight size={15} animateOnHover />
-            </Link>
-            <Link
-              href="/register"
-              className="group inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3 text-[13px] font-semibold text-text-primary backdrop-blur-md transition-all duration-300 hover:bg-white/10 hover:border-white/35 hover:scale-105 cursor-pointer"
-            >
-              Become a Builder
-              <ArrowRight size={15} animateOnHover />
-            </Link>
+            <RecruitmentCTA
+              variant="primary"
+              openText="Become a Builder"
+              closedText="Join Community"
+            />
           </div>
 
           <p className="cta-header-el mt-6 text-[12px] text-muted">

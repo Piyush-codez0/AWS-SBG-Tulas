@@ -11,6 +11,8 @@ import { CustomSelect } from "@/components/features/register/CustomSelect";
 import { SuccessScreen } from "@/components/features/register/SuccessScreen";
 import { ThemeStyles } from "@/components/features/register/ThemeStyles";
 import type { ApplicationFormData, ApplicationStageInfo } from "@/types/application";
+import { useRecruitment } from "@/hooks/useRecruitment";
+import { ClosedRegistrations } from "@/components/recruitment/ClosedRegistrations";
 
 const REGISTRATION_LOADING_STATES = [
   { text: "Validating applicant details & resume PDF..." },
@@ -75,6 +77,7 @@ const initialForm: ApplicationFormData = {
 };
 
 export default function RegisterPage() {
+  const { mounted, isOpen } = useRecruitment();
   const [stage, setStage] = useState(1);
   const [form, setForm] = useState<ApplicationFormData>(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -98,12 +101,30 @@ export default function RegisterPage() {
   };
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
+    // Always scroll to top of page when mounting /register
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      const match = hash.match(/^#step-(\d)$/);
+      const targetStage = match ? parseInt(match[1], 10) : 1;
+
+      if (targetStage >= 1 && targetStage <= STAGES.length) {
+        setStage(targetStage);
+      } else {
+        setStage(1);
+      }
+    };
+
+    if (window.location.hash && window.location.hash !== "#step-1") {
+      handleHashChange();
     }
-    scrollToStepper();
-  }, [stage]);
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
 
   const update = (key: keyof ApplicationFormData, value: any) => {
     setForm((f) => ({ ...f, [key]: value }));
@@ -166,42 +187,26 @@ export default function RegisterPage() {
     return Object.keys(e).length === 0;
   }
 
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash;
-      const match = hash.match(/^#step-(\d)$/);
-      const targetStage = match ? parseInt(match[1], 10) : 1;
-
-      if (targetStage >= 1 && targetStage <= STAGES.length) {
-        setStage(targetStage);
-      } else {
-        setStage(1);
-      }
-    };
-
-    if (window.location.hash && window.location.hash !== "#step-1") {
-      window.location.hash = "";
-    }
-
-    handleHashChange();
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
-  }, []);
-
   const goNext = () => {
     if (validateStage(stage)) {
       const next = Math.min(stage + 1, STAGES.length);
+      setStage(next);
       window.location.hash = `step-${next}`;
+      setTimeout(scrollToStepper, 50);
     }
   };
 
   const goBack = () => {
     const prev = Math.max(stage - 1, 1);
+    setStage(prev);
     if (prev === 1) {
-      window.location.hash = "";
+      if (window.location.hash) {
+        window.history.back();
+      }
     } else {
       window.location.hash = `step-${prev}`;
     }
+    setTimeout(scrollToStepper, 50);
   };
 
   function handleFile(file: File | undefined | null) {
@@ -269,10 +274,11 @@ export default function RegisterPage() {
     }
   }
 
+  if (mounted && !isOpen) return <ClosedRegistrations />;
   if (result) return <SuccessScreen result={result} />;
 
   return (
-    <div className="register-page-theme relative min-h-screen bg-grid bg-noise bg-bg w-full overflow-x-hidden text-[#efecf5] font-sans">
+    <div className="register-page-theme relative min-h-screen bg-noise bg-bg w-full overflow-x-hidden text-[#efecf5] font-sans">
       <Loader loadingStates={REGISTRATION_LOADING_STATES} loading={submitting} duration={1500} />
       
       <div className="pointer-events-none absolute left-1/2 top-0 h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px] opacity-60" />
@@ -283,14 +289,14 @@ export default function RegisterPage() {
         <CursorGrid
           cellSize={64}
           color="#A855F7"
-          radius={130}
+          radius={160}
           falloff="smooth"
           holdTime={350}
           fadeDuration={700}
-          lineWidth={0.9}
-          maxOpacity={0.35}
-          fillOpacity={0.02}
-          gridOpacity={0.02}
+          lineWidth={1}
+          maxOpacity={0.4}
+          fillOpacity={0.08}
+          gridOpacity={0.07}
           cellRadius={4}
           clickPulse={true}
           pulseSpeed={500}

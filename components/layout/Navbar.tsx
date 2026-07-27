@@ -12,8 +12,13 @@ import {
 } from "@/components/ui/resizable-navbar";
 import Link from "next/link";
 import { useState } from "react";
+import { useRecruitment } from "@/hooks/useRecruitment";
 
 export function Navbar() {
+  const { isOpen } = useRecruitment();
+  const buttonText = isOpen ? "Register" : "Join Community";
+  const buttonHref = isOpen ? "/register" : "/community";
+
   const navItems = [
     {
       name: "Home",
@@ -51,7 +56,9 @@ export function Navbar() {
           <NavbarLogo />
           <NavItems items={navItems} />
           <div className="flex items-center gap-4">
-            <NavbarButton variant="primary" href="https://www.meetup.com/aws-sbg-at-tulas-institute/" target="_blank">Join Community</NavbarButton>
+            <NavbarButton as={Link} href={buttonHref} variant="primary">
+              {buttonText}
+            </NavbarButton>
           </div>
         </NavBody>
 
@@ -81,13 +88,13 @@ export function Navbar() {
             ))}
             <div className="mt-2 flex w-full flex-col gap-3 border-t border-white/5 pt-3">
               <NavbarButton
-                href="https://www.meetup.com/aws-sbg-at-tulas-institute/"
-                target="_blank"
+                as={Link}
+                href={buttonHref}
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
                 className="w-full"
               >
-                Join Community
+                {buttonText}
               </NavbarButton>
             </div>
           </MobileNavMenu>
