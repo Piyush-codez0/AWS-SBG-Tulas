@@ -223,10 +223,10 @@ export const FileUploadCard = React.forwardRef<HTMLDivElement, FileUploadCardPro
                               { "text-[#f87171] font-medium": file.status === "error" }
                             )}
                           >
-                            {file.status === "uploading" ? "Uploading..." : file.status === "completed" ? "Completed" : "Error"}
+                            {file.status === "uploading" ? `Uploading... ${Math.round(file.progress)}%` : file.status === "completed" ? "Completed" : "Error"}
                           </span>
                         </div>
-                        {file.status === "uploading" && <Progress value={file.progress} className="h-1.5 mt-1.5" />}
+                        <Progress value={file.progress} className="h-1.5 mt-1.5 bg-[#423a54]/50 [&>div]:bg-[#8b5cf6]" />
                       </div>
                     </div>
 

@@ -83,6 +83,8 @@ export default function RegisterPage() {
   const [form, setForm] = useState<ApplicationFormData>(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [resume, setResume] = useState<File | null>(null);
+  const [resumeProgress, setResumeProgress] = useState(0);
+  const [resumeStatus, setResumeStatus] = useState<"uploading" | "completed" | "error">("uploading");
   const [dragActive, setDragActive] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -227,6 +229,20 @@ export default function RegisterPage() {
       return newErrors;
     });
     setResume(file);
+    setResumeProgress(5);
+    setResumeStatus("uploading");
+
+    let p = 5;
+    const interval = setInterval(() => {
+      p += Math.floor(Math.random() * 20) + 15;
+      if (p >= 100) {
+        setResumeProgress(100);
+        setResumeStatus("completed");
+        clearInterval(interval);
+      } else {
+        setResumeProgress(p);
+      }
+    }, 120);
   }
 
   async function handleSubmit() {
@@ -561,8 +577,8 @@ export default function RegisterPage() {
                               {
                                 id: "resume-pdf",
                                 file: resume,
-                                progress: 100,
-                                status: "completed",
+                                progress: resumeProgress,
+                                status: resumeStatus,
                               },
                             ]
                           : []
