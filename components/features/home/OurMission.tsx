@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PixelHeading } from "@/components/ui/pixel-heading-character";
+import { SpotlightCard } from "@/components/ui/spotlight-card";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -19,6 +20,7 @@ const VALUES = [
     label: "Learn by Building",
     accent: "text-primary-light bg-primary/10",
     border: "border-primary/30 hover:border-primary/60 hover:shadow-[0_10px_22px_-6px_rgba(124,58,237,0.18)]",
+    spotlightColor: "rgba(124, 58, 237, 0.22)",
   },
   {
     icon: (
@@ -30,6 +32,7 @@ const VALUES = [
     label: "Grow Together",
     accent: "text-accent bg-accent/10",
     border: "border-accent/30 hover:border-accent/60 hover:shadow-[0_10px_22px_-6px_rgba(6,182,212,0.18)]",
+    spotlightColor: "rgba(6, 182, 212, 0.22)",
   },
   {
     icon: (
@@ -42,6 +45,7 @@ const VALUES = [
     label: "Create Real Projects",
     accent: "text-success bg-success/10",
     border: "border-success/30 hover:border-success/60 hover:shadow-[0_10px_22px_-6px_rgba(34,197,94,0.18)]",
+    spotlightColor: "rgba(34, 197, 94, 0.22)",
   },
   {
     icon: (
@@ -53,6 +57,7 @@ const VALUES = [
     label: "Share Knowledge",
     accent: "text-info bg-info/10",
     border: "border-info/30 hover:border-info/60 hover:shadow-[0_10px_22px_-6px_rgba(14,165,233,0.18)]",
+    spotlightColor: "rgba(14, 165, 233, 0.22)",
   },
 ];
 
@@ -148,9 +153,10 @@ export function OurMission() {
           {/* Right values */}
           <div className="grid grid-cols-2 gap-4">
             {VALUES.map((v) => (
-              <div
+              <SpotlightCard
                 key={v.label}
-                className={`mission-value-card group flex flex-col gap-3 rounded-2xl border bg-bg-card/60 p-5 transition-all duration-300 hover:bg-bg-card hover:-translate-y-1.5 cursor-pointer ${v.border}`}
+                spotlightColor={v.spotlightColor}
+                className={`mission-value-card group flex flex-col gap-3 p-5 ${v.border}`}
               >
                 <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${v.accent} transition-transform duration-300 group-hover:scale-110`}>
                   {v.icon}
@@ -158,7 +164,7 @@ export function OurMission() {
                 <span className="font-display text-[14px] sm:text-[15px] font-semibold text-text-primary">
                   {v.label}
                 </span>
-              </div>
+              </SpotlightCard>
             ))}
           </div>
         </div>

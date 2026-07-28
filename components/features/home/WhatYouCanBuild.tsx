@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PixelHeading } from "@/components/ui/pixel-heading-character";
+import { SpotlightCard } from "@/components/ui/spotlight-card";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -19,6 +20,7 @@ const BUILD_CARDS = [
     desc: "Create fast, reliable websites with global accessibility and infinite scale.",
     accent: "text-primary-light bg-primary/10",
     border: "border-primary/30 hover:border-primary/60 hover:shadow-[0_10px_25px_-8px_rgba(124,58,237,0.18)]",
+    spotlightColor: "rgba(124, 58, 237, 0.22)",
   },
   {
     icon: (
@@ -30,6 +32,7 @@ const BUILD_CARDS = [
     desc: "Build intelligent solutions using modern cloud-powered AI and ML services.",
     accent: "text-accent bg-accent/10",
     border: "border-accent/30 hover:border-accent/60 hover:shadow-[0_10px_25px_-8px_rgba(6,182,212,0.18)]",
+    spotlightColor: "rgba(6, 182, 212, 0.22)",
   },
   {
     icon: (
@@ -41,6 +44,7 @@ const BUILD_CARDS = [
     desc: "Power authentication, storage, push notifications, and real-time databases.",
     accent: "text-success bg-success/10",
     border: "border-success/30 hover:border-success/60 hover:shadow-[0_10px_25px_-8px_rgba(34,197,94,0.18)]",
+    spotlightColor: "rgba(34, 197, 94, 0.22)",
   },
   {
     icon: (
@@ -52,6 +56,7 @@ const BUILD_CARDS = [
     desc: "Transform raw data into meaningful insights that drive smarter decisions.",
     accent: "text-warning bg-warning/10",
     border: "border-warning/30 hover:border-warning/60 hover:shadow-[0_10px_25px_-8px_rgba(245,158,11,0.18)]",
+    spotlightColor: "rgba(245, 158, 11, 0.22)",
   },
   {
     icon: (
@@ -63,6 +68,7 @@ const BUILD_CARDS = [
     desc: "Learn secure cloud practices used by organizations around the world.",
     accent: "text-error bg-error/10",
     border: "border-error/30 hover:border-error/60 hover:shadow-[0_10px_25px_-8px_rgba(239,68,68,0.18)]",
+    spotlightColor: "rgba(239, 68, 68, 0.22)",
   },
   {
     icon: (
@@ -74,6 +80,7 @@ const BUILD_CARDS = [
     desc: "Launch scalable products without investing in expensive physical hardware.",
     accent: "text-info bg-info/10",
     border: "border-info/30 hover:border-info/60 hover:shadow-[0_10px_25px_-8px_rgba(14,165,233,0.18)]",
+    spotlightColor: "rgba(14, 165, 233, 0.22)",
   },
 ];
 
@@ -163,9 +170,10 @@ export function WhatYouCanBuild() {
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {BUILD_CARDS.map((card) => (
-            <div
+            <SpotlightCard
               key={card.title}
-              className={`build-card group relative flex flex-col gap-4 rounded-2xl border bg-bg-card/60 p-6 cursor-pointer backdrop-blur-sm transition-all duration-300 hover:bg-bg-card hover:-translate-y-1.5 ${card.border}`}
+              spotlightColor={card.spotlightColor}
+              className={`build-card group flex flex-col gap-4 p-6 ${card.border}`}
             >
               <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${card.accent} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                 {card.icon}
@@ -178,7 +186,7 @@ export function WhatYouCanBuild() {
                   {card.desc}
                 </p>
               </div>
-            </div>
+            </SpotlightCard>
           ))}
         </div>
       </div>
