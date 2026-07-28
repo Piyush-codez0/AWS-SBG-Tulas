@@ -13,6 +13,7 @@ import { ThemeStyles } from "@/components/features/register/ThemeStyles";
 import type { ApplicationFormData, ApplicationStageInfo } from "@/types/application";
 import { useRecruitment } from "@/hooks/useRecruitment";
 import { ClosedRegistrations } from "@/components/recruitment/ClosedRegistrations";
+import { FileUploadCard, UploadedFile } from "@/components/ui/file-upload-card";
 
 const REGISTRATION_LOADING_STATES = [
   { text: "Validating applicant details & resume PDF..." },
@@ -550,42 +551,32 @@ export default function RegisterPage() {
               {stage === 5 && (
                 <Stage title="Resume Upload" note="stage 05 / 05">
                   <Field label="Resume" error={errors.resume} hint="PDF only · Max 5MB" required>
-                    <div
-                      className={`dropzone ${dragActive ? "dropzone-active" : ""} ${resume ? "dropzone-filled" : ""}`}
-                      onDragOver={(e) => {
-                        e.preventDefault();
-                        setDragActive(true);
+                    <FileUploadCard
+                      accept="application/pdf"
+                      maxSizeMB={5}
+                      title="Upload Resume PDF"
+                      subtitle="PDF only · Maximum file size 5 MB"
+                      files={
+                        resume
+                          ? [
+                              {
+                                id: "resume-pdf",
+                                file: resume,
+                                progress: 100,
+                                status: "completed",
+                              },
+                            ]
+                          : []
+                      }
+                      onFilesChange={(files) => {
+                        if (files.length > 0) {
+                          handleFile(files[0]);
+                        }
                       }}
-                      onDragLeave={() => setDragActive(false)}
-                      onDrop={(e) => {
-                        e.preventDefault();
-                        setDragActive(false);
-                        handleFile(e.dataTransfer.files?.[0]);
+                      onFileRemove={() => {
+                        setResume(null);
                       }}
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="application/pdf"
-                        hidden
-                        onChange={(e) => handleFile(e.target.files?.[0])}
-                      />
-                      {resume ? (
-                        <>
-                          <span className="mono dz-file">{resume.name}</span>
-                          <span className="mono dz-size">{(resume.size / 1024 / 1024).toFixed(2)} MB</span>
-                          <button type="button" className="dz-remove" onClick={(e) => { e.stopPropagation(); setResume(null); }}>
-                            Remove
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <span className="dz-title">Drop your resume here, or click to browse</span>
-                          <span className="mono dz-hint">application/pdf · max 5MB</span>
-                        </>
-                      )}
-                    </div>
+                    />
                   </Field>
                 </Stage>
               )}
