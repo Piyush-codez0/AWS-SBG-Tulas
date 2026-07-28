@@ -11,7 +11,7 @@ interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
 export const SpotlightCard = ({
   children,
   className,
-  spotlightColor = "rgba(124, 58, 237, 0.2)",
+  spotlightColor = "rgba(124, 58, 237, 0.12)",
   ...props
 }: SpotlightCardProps) => {
   const divRef = useRef<HTMLDivElement>(null);
@@ -49,7 +49,7 @@ export const SpotlightCard = ({
         className="pointer-events-none absolute -inset-px transition-opacity duration-300 z-0"
         style={{
           opacity,
-          background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 70%)`,
+          background: `radial-gradient(350px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 65%)`,
         }}
       />
       <div className="relative z-10">{children}</div>

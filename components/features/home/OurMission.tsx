@@ -20,7 +20,7 @@ const VALUES = [
     label: "Learn by Building",
     accent: "text-primary-light bg-primary/10",
     border: "border-primary/30 hover:border-primary/60 hover:shadow-[0_10px_22px_-6px_rgba(124,58,237,0.18)]",
-    spotlightColor: "rgba(124, 58, 237, 0.22)",
+    spotlightColor: "rgba(124, 58, 237, 0.12)",
   },
   {
     icon: (
@@ -32,7 +32,7 @@ const VALUES = [
     label: "Grow Together",
     accent: "text-accent bg-accent/10",
     border: "border-accent/30 hover:border-accent/60 hover:shadow-[0_10px_22px_-6px_rgba(6,182,212,0.18)]",
-    spotlightColor: "rgba(6, 182, 212, 0.22)",
+    spotlightColor: "rgba(6, 182, 212, 0.12)",
   },
   {
     icon: (
@@ -45,7 +45,7 @@ const VALUES = [
     label: "Create Real Projects",
     accent: "text-success bg-success/10",
     border: "border-success/30 hover:border-success/60 hover:shadow-[0_10px_22px_-6px_rgba(34,197,94,0.18)]",
-    spotlightColor: "rgba(34, 197, 94, 0.22)",
+    spotlightColor: "rgba(34, 197, 94, 0.12)",
   },
   {
     icon: (
@@ -57,7 +57,7 @@ const VALUES = [
     label: "Share Knowledge",
     accent: "text-info bg-info/10",
     border: "border-info/30 hover:border-info/60 hover:shadow-[0_10px_22px_-6px_rgba(14,165,233,0.18)]",
-    spotlightColor: "rgba(14, 165, 233, 0.22)",
+    spotlightColor: "rgba(14, 165, 233, 0.12)",
   },
 ];
 
