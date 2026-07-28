@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Linkedin, Instagram } from "lucide-react";
+import { Linkedin, Instagram, Mail } from "lucide-react";
 import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
 import { Sparkles } from "@/components/animate-ui/icons/sparkles";
 import { Send } from "@/components/animate-ui/icons/send";
@@ -40,11 +40,11 @@ const FOOTER_LINKS = [
   {
     heading: "Connect",
     links: [
-      { label: "Meetup", href: "https://www.meetup.com/aws-sbg-at-tulas-university/" },
-      { label: "WhatsApp Channel", href: "https://whatsapp.com/channel/0029VbDJ4jD6WaKnCQZRWF2Z" },
-      { label: "LinkedIn", href: "#" },
-      { label: "Instagram", href: "https://www.instagram.com/aws.sbgtulas" },
-      { label: "Email Us", href: "mailto:awssbg@tulas.edu.in" },
+      { label: "Meetup", href: "https://www.meetup.com/aws-sbg-at-tulas-university/", hoverClass: "group-hover:text-[#F64060]", arrowColor: "group-hover:text-[#F64060]" },
+      { label: "WhatsApp Channel", href: "https://whatsapp.com/channel/0029VbDJ4jD6WaKnCQZRWF2Z", hoverClass: "group-hover:text-[#25D366]", arrowColor: "group-hover:text-[#25D366]" },
+      { label: "LinkedIn", href: "#", hoverClass: "group-hover:text-[#0A66C2]", arrowColor: "group-hover:text-[#0A66C2]" },
+      { label: "Instagram", href: "https://www.instagram.com/aws.sbgtulas", hoverClass: "group-hover:bg-gradient-to-r group-hover:from-[#f09433] group-hover:via-[#dc2743] group-hover:to-[#bc1888] group-hover:bg-clip-text group-hover:text-transparent", arrowColor: "group-hover:text-[#E4405F]" },
+      { label: "Email Us", href: "mailto:awssbg@tulas.edu.in", hoverClass: "group-hover:text-[#FF9900]", arrowColor: "group-hover:text-[#FF9900]" },
     ],
   },
 ];
@@ -78,11 +78,36 @@ const WhatsAppIcon = ({ size = 24, className = "", ...props }: any) => (
 );
 
 const SOCIALS = [
-  { icon: MeetupIcon, href: "https://www.meetup.com/aws-sbg-at-tulas-university/", label: "Meetup" },
-  { icon: WhatsAppIcon, href: "https://whatsapp.com/channel/0029VbDJ4jD6WaKnCQZRWF2Z", label: "WhatsApp" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Instagram, href: "https://www.instagram.com/aws.sbgtulas", label: "Instagram" },
-  { icon: Send, href: "mailto:awssbg@tulas.edu.in", label: "Email" },
+  {
+    icon: MeetupIcon,
+    href: "https://www.meetup.com/aws-sbg-at-tulas-university/",
+    label: "Meetup",
+    hoverClass: "hover:text-[#F64060] hover:bg-[#F64060]/15 hover:border-[#F64060]/40 hover:shadow-[0_0_15px_rgba(246,64,96,0.35)]",
+  },
+  {
+    icon: WhatsAppIcon,
+    href: "https://whatsapp.com/channel/0029VbDJ4jD6WaKnCQZRWF2Z",
+    label: "WhatsApp",
+    hoverClass: "hover:text-[#25D366] hover:bg-[#25D366]/15 hover:border-[#25D366]/40 hover:shadow-[0_0_15px_rgba(37,211,102,0.35)]",
+  },
+  {
+    icon: Linkedin,
+    href: "#",
+    label: "LinkedIn",
+    hoverClass: "hover:text-[#0A66C2] hover:bg-[#0A66C2]/15 hover:border-[#0A66C2]/40 hover:shadow-[0_0_15px_rgba(10,102,194,0.35)]",
+  },
+  {
+    icon: Instagram,
+    href: "https://www.instagram.com/aws.sbgtulas",
+    label: "Instagram",
+    hoverClass: "hover:bg-gradient-to-tr hover:from-[#f09433]/20 hover:via-[#dc2743]/20 hover:to-[#bc1888]/20 hover:border-[#E4405F]/50 hover:shadow-[0_0_18px_rgba(228,64,95,0.4)] [&:hover_svg_*]:stroke-[url(#insta-gradient)]",
+  },
+  {
+    icon: Mail,
+    href: "mailto:awssbg@tulas.edu.in",
+    label: "Email",
+    hoverClass: "hover:text-[#FF9900] hover:bg-[#FF9900]/15 hover:border-[#FF9900]/40 hover:shadow-[0_0_15px_rgba(255,153,0,0.35)]",
+  },
 ];
 
 export function Footer() {
@@ -96,26 +121,10 @@ export function Footer() {
     if (!footerRef.current) return;
     if (typeof window !== "undefined" && window.innerWidth < 768) return;
 
-    // 1. Overall Footer translation scrub
-    gsap.fromTo(
-      footerRef.current,
-      { y: 40 },
-      {
-        y: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: "top bottom",
-          end: "bottom bottom",
-          scrub: 0.5,
-        },
-      }
-    );
-
-    // 2. Ambient Glow Parallax float
+    // 1. Ambient Glow Parallax float (ends at top 50% so it doesn't trigger scroll loops at document bottom)
     gsap.fromTo(
       ".footer-glow",
-      { y: -30, scale: 0.9, opacity: 0.4 },
+      { y: -20, scale: 0.95, opacity: 0.5 },
       {
         y: 10,
         scale: 1.05,
@@ -124,26 +133,26 @@ export function Footer() {
         scrollTrigger: {
           trigger: footerRef.current,
           start: "top bottom",
-          end: "bottom bottom",
-          scrub: 0.8,
+          end: "top 50%",
+          scrub: 0.5,
         },
       }
     );
 
-    // 3. Brand & Link columns layered entrance (completes fully at bottom bottom)
+    // 2. Smooth layered entrance for footer content
     gsap.fromTo(
-      [".footer-brand-col", ".footer-link-col"],
-      { y: 35, opacity: 0.7 },
+      [".footer-brand-col", ".footer-link-col", ".footer-bottom-bar"],
+      { y: 30, opacity: 0 },
       {
         y: 0,
         opacity: 1,
-        stagger: 0.05,
-        ease: "power1.out",
+        stagger: 0.08,
+        duration: 0.7,
+        ease: "power2.out",
         scrollTrigger: {
           trigger: footerRef.current,
-          start: "top 92%",
-          end: "bottom bottom",
-          scrub: 0.5,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
         },
       }
     );
@@ -187,6 +196,18 @@ export function Footer() {
 
   return (
     <footer ref={footerRef} className="relative z-10 border-t border-white/[0.05] bg-bg overflow-hidden">
+      {/* Hidden SVG defs for Instagram gradient */}
+      <svg width="0" height="0" className="absolute pointer-events-none" aria-hidden="true">
+        <defs>
+          <linearGradient id="insta-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#f09433" />
+            <stop offset="25%" stopColor="#e6683c" />
+            <stop offset="50%" stopColor="#dc2743" />
+            <stop offset="75%" stopColor="#cc2366" />
+            <stop offset="100%" stopColor="#bc1888" />
+          </linearGradient>
+        </defs>
+      </svg>
       {/* Floating Toast Notification Banner */}
       <AnimatePresence>
         {showToast && (
@@ -328,6 +349,8 @@ export function Footer() {
                 <ul className="mt-5 flex flex-col gap-3.5">
                   {col.links.map((link) => {
                     const isExternal = link.href.startsWith("http") || link.href.startsWith("mailto");
+                    const hoverClass = (link as any).hoverClass || "group-hover:text-primary-light";
+                    const arrowColor = (link as any).arrowColor || "group-hover:text-primary-light";
                     return (
                       <li key={link.label}>
                         {isExternal ? (
@@ -335,18 +358,18 @@ export function Footer() {
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group flex w-fit items-center gap-1.5 text-[14px] text-text-secondary transition-colors hover:text-primary-light"
+                            className="group flex w-fit items-center gap-1.5 text-[14px] text-text-secondary transition-colors"
                           >
-                            {link.label}
-                            <ArrowRight size={14} className="-translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100" animateOnHover />
+                            <span className={`transition-all duration-200 ${hoverClass}`}>{link.label}</span>
+                            <ArrowRight size={14} className={`-translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 ${arrowColor}`} animateOnHover />
                           </a>
                         ) : (
                           <Link
                             href={link.href}
-                            className="group flex w-fit items-center gap-1.5 text-[14px] text-text-secondary transition-colors hover:text-primary-light"
+                            className="group flex w-fit items-center gap-1.5 text-[14px] text-text-secondary transition-colors"
                           >
-                            {link.label}
-                            <ArrowRight size={14} className="-translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100" animateOnHover />
+                            <span className={`transition-all duration-200 ${hoverClass}`}>{link.label}</span>
+                            <ArrowRight size={14} className={`-translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 ${arrowColor}`} animateOnHover />
                           </Link>
                         )}
                       </li>
@@ -368,7 +391,7 @@ export function Footer() {
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/[0.03] text-text-secondary transition-colors duration-200 hover:bg-primary/20 hover:text-primary-light"
+                  className={`flex h-9 w-9 items-center justify-center rounded-full border border-white/5 bg-white/[0.03] text-text-secondary transition-all duration-300 ${social.hoverClass}`}
                 >
                   <Icon size={16} />
                 </a>

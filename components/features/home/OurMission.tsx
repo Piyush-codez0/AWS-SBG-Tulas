@@ -17,7 +17,8 @@ const VALUES = [
       </svg>
     ),
     label: "Learn by Building",
-    accent: "text-primary-light bg-primary/10 border-primary/30",
+    accent: "text-primary-light bg-primary/10",
+    border: "border-primary/30 hover:border-primary/60 hover:shadow-[0_10px_22px_-6px_rgba(124,58,237,0.18)]",
   },
   {
     icon: (
@@ -27,7 +28,8 @@ const VALUES = [
       </svg>
     ),
     label: "Grow Together",
-    accent: "text-accent bg-accent/10 border-accent/30",
+    accent: "text-accent bg-accent/10",
+    border: "border-accent/30 hover:border-accent/60 hover:shadow-[0_10px_22px_-6px_rgba(6,182,212,0.18)]",
   },
   {
     icon: (
@@ -38,7 +40,8 @@ const VALUES = [
       </svg>
     ),
     label: "Create Real Projects",
-    accent: "text-success bg-success/10 border-success/30",
+    accent: "text-success bg-success/10",
+    border: "border-success/30 hover:border-success/60 hover:shadow-[0_10px_22px_-6px_rgba(34,197,94,0.18)]",
   },
   {
     icon: (
@@ -48,7 +51,8 @@ const VALUES = [
       </svg>
     ),
     label: "Share Knowledge",
-    accent: "text-info bg-info/10 border-info/30",
+    accent: "text-info bg-info/10",
+    border: "border-info/30 hover:border-info/60 hover:shadow-[0_10px_22px_-6px_rgba(14,165,233,0.18)]",
   },
 ];
 
@@ -146,9 +150,9 @@ export function OurMission() {
             {VALUES.map((v) => (
               <div
                 key={v.label}
-                className={`mission-value-card flex flex-col gap-3 rounded-2xl border p-5 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_12px_28px_-6px_rgba(124,58,237,0.2)] cursor-default ${v.accent.split(" ").slice(1).join(" ")}`}
+                className={`mission-value-card flex flex-col gap-3 rounded-2xl border bg-bg-card/60 p-5 transition-all duration-300 hover:bg-bg-card hover:-translate-y-1.5 cursor-default ${v.border}`}
               >
-                <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${v.accent.split(" ").slice(0, 2).join(" ")} transition-transform duration-300 group-hover:scale-110`}>
+                <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${v.accent} transition-transform duration-300 group-hover:scale-110`}>
                   {v.icon}
                 </div>
                 <span className="font-display text-[14px] sm:text-[15px] font-semibold text-text-primary">

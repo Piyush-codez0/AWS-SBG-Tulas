@@ -386,13 +386,47 @@
 
 .pc-socials a {
   color: rgba(255, 255, 255, 0.7);
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition: color 0.25s ease, transform 0.25s ease, filter 0.25s ease;
   pointer-events: auto;
 }
 
 .pc-socials a:hover {
-  color: rgba(255, 255, 255, 1);
   transform: translateY(-2px);
+}
+
+.pc-socials a.pc-github:hover,
+.pc-socials a[aria-label="GitHub"]:hover,
+.pc-socials a[aria-label="github"]:hover {
+  color: #ffffff;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+}
+
+.pc-socials a.pc-linkedin:hover,
+.pc-socials a[aria-label="LinkedIn"]:hover,
+.pc-socials a[aria-label="linkedin"]:hover {
+  color: #0A66C2;
+  filter: drop-shadow(0 0 6px rgba(10, 102, 194, 0.6));
+}
+
+.pc-socials a.pc-instagram:hover,
+.pc-socials a[aria-label="Instagram"]:hover,
+.pc-socials a[aria-label="instagram"]:hover {
+  filter: drop-shadow(0 0 8px rgba(228, 64, 95, 0.7));
+}
+
+.pc-socials a.pc-instagram:hover svg,
+.pc-socials a.pc-instagram:hover svg *,
+.pc-socials a[aria-label="Instagram"]:hover svg,
+.pc-socials a[aria-label="Instagram"]:hover svg * {
+  stroke: url(#insta-gradient) !important;
+}
+
+.pc-socials a.pc-twitter:hover,
+.pc-socials a[aria-label="Twitter"]:hover,
+.pc-socials a[aria-label="twitter"]:hover,
+.pc-socials a[aria-label="X"]:hover {
+  color: #1DA1F2;
+  filter: drop-shadow(0 0 6px rgba(29, 161, 242, 0.6));
 }
 
 .pc-socials * {

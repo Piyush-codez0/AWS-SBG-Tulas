@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useCallback, useMemo } from "react";
-import { Github, Linkedin } from "lucide-react";
+import { Github, Linkedin, Instagram, Twitter } from "lucide-react";
 import "./ProfileCard.css";
 
 const DEFAULT_INNER_GRADIENT = "linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)";
@@ -28,6 +28,7 @@ export interface ProfileCardProps {
     github?: string;
     linkedin?: string;
     twitter?: string;
+    instagram?: string;
   };
   behindGlowEnabled?: boolean;
   behindGlowColor?: string;
@@ -398,14 +399,35 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
                 <p>{title}</p>
                 {socials && (
                   <div className="pc-socials">
+                    <svg width="0" height="0" className="absolute pointer-events-none" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="insta-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#f09433" />
+                          <stop offset="25%" stopColor="#e6683c" />
+                          <stop offset="50%" stopColor="#dc2743" />
+                          <stop offset="75%" stopColor="#cc2366" />
+                          <stop offset="100%" stopColor="#bc1888" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
                     {socials.github && (
-                      <a href={socials.github} target="_blank" rel="noreferrer" aria-label="GitHub">
+                      <a href={socials.github} target="_blank" rel="noreferrer" aria-label="GitHub" className="pc-social-link pc-github">
                         <Github size={20} />
                       </a>
                     )}
                     {socials.linkedin && (
-                      <a href={socials.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn">
+                      <a href={socials.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="pc-social-link pc-linkedin">
                         <Linkedin size={20} />
+                      </a>
+                    )}
+                    {socials.instagram && (
+                      <a href={socials.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="pc-social-link pc-instagram">
+                        <Instagram size={20} />
+                      </a>
+                    )}
+                    {socials.twitter && (
+                      <a href={socials.twitter} target="_blank" rel="noreferrer" aria-label="Twitter" className="pc-social-link pc-twitter">
+                        <Twitter size={20} />
                       </a>
                     )}
                   </div>

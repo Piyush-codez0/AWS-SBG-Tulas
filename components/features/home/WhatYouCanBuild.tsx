@@ -18,7 +18,7 @@ const BUILD_CARDS = [
     title: "Web Applications",
     desc: "Create fast, reliable websites with global accessibility and infinite scale.",
     accent: "text-primary-light bg-primary/10",
-    border: "border-primary/20 hover:border-primary/50",
+    border: "border-primary/30 hover:border-primary/60 hover:shadow-[0_10px_25px_-8px_rgba(124,58,237,0.18)]",
   },
   {
     icon: (
@@ -29,7 +29,7 @@ const BUILD_CARDS = [
     title: "AI Applications",
     desc: "Build intelligent solutions using modern cloud-powered AI and ML services.",
     accent: "text-accent bg-accent/10",
-    border: "border-accent/20 hover:border-accent/50",
+    border: "border-accent/30 hover:border-accent/60 hover:shadow-[0_10px_25px_-8px_rgba(6,182,212,0.18)]",
   },
   {
     icon: (
@@ -40,7 +40,7 @@ const BUILD_CARDS = [
     title: "Mobile Backends",
     desc: "Power authentication, storage, push notifications, and real-time databases.",
     accent: "text-success bg-success/10",
-    border: "border-success/20 hover:border-success/50",
+    border: "border-success/30 hover:border-success/60 hover:shadow-[0_10px_25px_-8px_rgba(34,197,94,0.18)]",
   },
   {
     icon: (
@@ -51,7 +51,7 @@ const BUILD_CARDS = [
     title: "Data Analytics",
     desc: "Transform raw data into meaningful insights that drive smarter decisions.",
     accent: "text-warning bg-warning/10",
-    border: "border-warning/20 hover:border-warning/50",
+    border: "border-warning/30 hover:border-warning/60 hover:shadow-[0_10px_25px_-8px_rgba(245,158,11,0.18)]",
   },
   {
     icon: (
@@ -62,7 +62,7 @@ const BUILD_CARDS = [
     title: "Cybersecurity",
     desc: "Learn secure cloud practices used by organizations around the world.",
     accent: "text-error bg-error/10",
-    border: "border-error/20 hover:border-error/50",
+    border: "border-error/30 hover:border-error/60 hover:shadow-[0_10px_25px_-8px_rgba(239,68,68,0.18)]",
   },
   {
     icon: (
@@ -73,7 +73,7 @@ const BUILD_CARDS = [
     title: "Startup Products",
     desc: "Launch scalable products without investing in expensive physical hardware.",
     accent: "text-info bg-info/10",
-    border: "border-info/20 hover:border-info/50",
+    border: "border-info/30 hover:border-info/60 hover:shadow-[0_10px_25px_-8px_rgba(14,165,233,0.18)]",
   },
 ];
 
@@ -165,7 +165,7 @@ export function WhatYouCanBuild() {
           {BUILD_CARDS.map((card) => (
             <div
               key={card.title}
-              className={`build-card group relative flex flex-col gap-4 rounded-2xl border bg-bg-card/60 p-6 cursor-default backdrop-blur-sm transition-all duration-300 hover:bg-bg-card hover:-translate-y-1.5 hover:shadow-[0_12px_32px_-8px_rgba(124,58,237,0.25)] ${card.border}`}
+              className={`build-card group relative flex flex-col gap-4 rounded-2xl border bg-bg-card/60 p-6 cursor-default backdrop-blur-sm transition-all duration-300 hover:bg-bg-card hover:-translate-y-1.5 ${card.border}`}
             >
               <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${card.accent} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                 {card.icon}

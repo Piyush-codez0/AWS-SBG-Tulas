@@ -11,10 +11,10 @@ import { PixelHeading } from "@/components/ui/pixel-heading-character";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const PREVIEW_EVENTS = [
-  { tag: "Workshop", title: "Cloud Bootcamp", desc: "Get hands-on with AWS core services in an intensive two-day bootcamp.", tagColor: "text-primary-light bg-primary/10 border-primary/30" },
-  { tag: "Hands-on Session", title: "Build With AWS", desc: "Go from idea to deployed application in a single guided afternoon session.", tagColor: "text-success bg-success/10 border-success/30" },
-  { tag: "Innovation Challenge", title: "Hackathon", desc: "Compete in teams to solve real-world problems using cloud technologies.", tagColor: "text-warning bg-warning/10 border-warning/30" },
-  { tag: "Industry Insights", title: "Expert Talk", desc: "Hear from cloud practitioners and AWS experts on what it takes to build at scale.", tagColor: "text-info bg-info/10 border-info/30" },
+  { tag: "Workshop", title: "Cloud Bootcamp", desc: "Get hands-on with AWS core services in an intensive two-day bootcamp.", tagColor: "text-primary-light bg-primary/10 border-primary/30", border: "border-primary/30 hover:border-primary/60 hover:shadow-[0_10px_25px_-8px_rgba(124,58,237,0.18)]" },
+  { tag: "Hands-on Session", title: "Build With AWS", desc: "Go from idea to deployed application in a single guided afternoon session.", tagColor: "text-success bg-success/10 border-success/30", border: "border-success/30 hover:border-success/60 hover:shadow-[0_10px_25px_-8px_rgba(34,197,94,0.18)]" },
+  { tag: "Innovation Challenge", title: "Hackathon", desc: "Compete in teams to solve real-world problems using cloud technologies.", tagColor: "text-warning bg-warning/10 border-warning/30", border: "border-warning/30 hover:border-warning/60 hover:shadow-[0_10px_25px_-8px_rgba(245,158,11,0.18)]" },
+  { tag: "Industry Insights", title: "Expert Talk", desc: "Hear from cloud practitioners and AWS experts on what it takes to build at scale.", tagColor: "text-info bg-info/10 border-info/30", border: "border-info/30 hover:border-info/60 hover:shadow-[0_10px_25px_-8px_rgba(14,165,233,0.18)]" },
 ];
 
 export function FeaturedEvents() {
@@ -114,7 +114,7 @@ export function FeaturedEvents() {
           {PREVIEW_EVENTS.map((ev) => (
             <div
               key={ev.title}
-              className="event-card group flex flex-col gap-3 rounded-2xl border border-border bg-bg-card/60 p-5 cursor-default transition-all duration-300 hover:border-primary/40 hover:bg-bg-card hover:-translate-y-1.5 hover:shadow-[0_12px_32px_-8px_rgba(124,58,237,0.2)]"
+              className={`event-card group flex flex-col gap-3 rounded-2xl border bg-bg-card/60 p-5 cursor-default transition-all duration-300 hover:bg-bg-card hover:-translate-y-1.5 ${ev.border}`}
             >
               <span className={`inline-flex w-fit rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide transition-transform duration-300 group-hover:scale-105 ${ev.tagColor}`}>
                 {ev.tag}

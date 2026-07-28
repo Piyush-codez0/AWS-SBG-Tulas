@@ -39,7 +39,7 @@ export function AboutCTA() {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} className="bg-noise relative overflow-hidden bg-bg py-16 md:py-24">
+    <section ref={containerRef} className="bg-grid bg-noise relative overflow-hidden bg-bg py-16 md:py-24">
       <div className="relative mx-auto max-w-content px-4 sm:px-6">
         {/* Ambient glow behind the card */}
         <div
@@ -48,6 +48,8 @@ export function AboutCTA() {
         />
 
         <div className="cta-container relative overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.01] backdrop-blur-xl px-4 py-10 sm:px-12 sm:py-20 md:py-24 text-center max-w-4xl mx-auto shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-10">
+          {/* Subtle inside grid overlay */}
+          <div className="pointer-events-none absolute inset-0 bg-grid opacity-100" />
           {/* Subtle inside gradient highlight */}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent" />
           
