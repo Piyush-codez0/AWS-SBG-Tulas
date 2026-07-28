@@ -1,11 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { UploadCloud, X, File as FileIcon, CheckCircle2, Trash2 } from "lucide-react";
+import { UploadCloud, X, CheckCircle2, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
 // Define the structure for a file being uploaded
@@ -17,7 +16,11 @@ export interface UploadedFile {
 }
 
 // Define the props for the component
-interface FileUploadCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onAnimationStart" | "onDragStart" | "onDragEnd" | "onDrag"> {
+interface FileUploadCardProps
+  extends Omit<
+    React.HTMLAttributes<HTMLDivElement>,
+    "onAnimationStart" | "onDragStart" | "onDragEnd" | "onDrag"
+  > {
   files: UploadedFile[];
   onFilesChange: (files: File[]) => void;
   onFileRemove: (id: string) => void;
@@ -26,6 +29,7 @@ interface FileUploadCardProps extends Omit<React.HTMLAttributes<HTMLDivElement>,
   maxSizeMB?: number;
   title?: string;
   subtitle?: string;
+  showHeader?: boolean;
 }
 
 export const FileUploadCard = React.forwardRef<HTMLDivElement, FileUploadCardProps>(
@@ -36,10 +40,11 @@ export const FileUploadCard = React.forwardRef<HTMLDivElement, FileUploadCardPro
       onFilesChange,
       onFileRemove,
       onClose,
-      accept,
-      maxSizeMB = 50,
+      accept = "application/pdf",
+      maxSizeMB = 5,
       title = "Upload files",
       subtitle = "Select and upload the files of your choice",
+      showHeader = true,
       ...props
     },
     ref
@@ -100,12 +105,12 @@ export const FileUploadCard = React.forwardRef<HTMLDivElement, FileUploadCardPro
 
     // Animation variants for Framer Motion
     const cardVariants = {
-      hidden: { opacity: 0, y: 20 },
+      hidden: { opacity: 0, y: 15 },
       visible: { opacity: 1, y: 0 },
     };
 
     const fileItemVariants = {
-      hidden: { opacity: 0, x: -20 },
+      hidden: { opacity: 0, x: -15 },
       visible: { opacity: 1, x: 0 },
     };
 
@@ -115,30 +120,36 @@ export const FileUploadCard = React.forwardRef<HTMLDivElement, FileUploadCardPro
         variants={cardVariants}
         initial="hidden"
         animate="visible"
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.25 }}
         className={cn(
-          "w-full max-w-lg bg-bg-card/95 backdrop-blur-xl rounded-xl border border-white/10 shadow-2xl overflow-hidden",
+          "w-full rounded-xl bg-[#15111c]/90 backdrop-blur-xl border border-[#423a54]/60 shadow-xl overflow-hidden text-[#efecf5]",
           className
         )}
         {...props}
       >
-        <div className="p-6">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 border border-primary/20 text-primary-light">
-                <UploadCloud className="w-6 h-6" />
+        <div className="p-5 sm:p-6">
+          {showHeader && (
+            <div className="flex items-start justify-between pb-5 border-b border-[#423a54]/50 mb-5">
+              <div className="flex items-center gap-3.5">
+                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-[#8b5cf6]/10 border border-[#8b5cf6]/25 text-[#c084fc]">
+                  <UploadCloud className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-[#efecf5] tracking-tight">{title}</h3>
+                  <p className="text-xs text-[#a79cbd] font-mono mt-0.5">{subtitle}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-text-primary">{title}</h3>
-                <p className="text-sm text-text-secondary mt-1">{subtitle}</p>
-              </div>
+              {onClose && (
+                <button
+                  type="button"
+                  className="rounded-full p-1.5 text-[#6b6280] hover:text-[#efecf5] hover:bg-white/5 transition-colors"
+                  onClick={onClose}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
-            {onClose && (
-              <Button variant="ghost" size="icon" className="rounded-full w-8 h-8 text-text-secondary hover:text-text-primary" onClick={onClose}>
-                <X className="w-4 h-4" />
-              </Button>
-            )}
-          </div>
+          )}
 
           <div
             onDragEnter={handleDragEnter}
@@ -147,10 +158,10 @@ export const FileUploadCard = React.forwardRef<HTMLDivElement, FileUploadCardPro
             onDrop={handleDrop}
             onClick={triggerFileSelect}
             className={cn(
-              "mt-6 border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer",
+              "border-[1.5px] border-dashed rounded-lg p-6 sm:p-8 flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer select-none",
               isDragging
-                ? "border-primary bg-primary/10 scale-[0.99]"
-                : "border-white/15 bg-white/[0.02] hover:border-primary/50 hover:bg-white/[0.04]"
+                ? "border-[#8b5cf6] bg-[#8b5cf6]/[0.08] shadow-[0_0_24px_rgba(139,92,246,0.15)] scale-[0.995]"
+                : "border-[#423a54] bg-[#0e0b13]/50 hover:border-[#8b5cf6]/60 hover:bg-[#8b5cf6]/[0.03]"
             )}
           >
             <input
@@ -161,20 +172,25 @@ export const FileUploadCard = React.forwardRef<HTMLDivElement, FileUploadCardPro
               className="hidden"
               onChange={handleFileSelect}
             />
-            <UploadCloud className="w-10 h-10 text-primary-light/70 mb-4" />
-            <p className="font-semibold text-text-primary">Choose a file or drag & drop it here.</p>
-            <p className="text-xs text-text-secondary mt-1">
+            <div className="w-12 h-12 rounded-full bg-[#8b5cf6]/10 border border-[#8b5cf6]/20 flex items-center justify-center mb-3.5 text-[#c084fc]">
+              <UploadCloud className="w-6 h-6" />
+            </div>
+            <p className="font-semibold text-sm text-[#efecf5]">Choose a file or drag & drop it here.</p>
+            <p className="text-xs text-[#a79cbd] font-mono mt-1">
               PDF, PNG, JPEG formats, up to {maxSizeMB} MB.
             </p>
-            <Button variant="outline" size="sm" className="mt-4 pointer-events-none border-white/20 bg-white/5 text-text-primary">
+            <button
+              type="button"
+              className="mt-4 px-4 py-1.5 rounded text-xs font-mono font-medium border border-[#423a54] bg-[#1a1524] text-[#efecf5] hover:border-[#8b5cf6] hover:text-[#c084fc] transition-all pointer-events-none"
+            >
               Browse File
-            </Button>
+            </button>
           </div>
         </div>
 
         {files.length > 0 && (
-          <div className="p-6 border-t border-white/10 bg-black/20">
-            <ul className="space-y-4">
+          <div className="p-5 sm:p-6 border-t border-[#423a54]/60 bg-[#0e0b13]/60">
+            <ul className="space-y-3">
               <AnimatePresence>
                 {files.map((file) => (
                   <motion.li
@@ -184,15 +200,15 @@ export const FileUploadCard = React.forwardRef<HTMLDivElement, FileUploadCardPro
                     animate="visible"
                     exit="hidden"
                     layout
-                    className="flex items-center justify-between gap-3 p-3 rounded-lg bg-white/[0.03] border border-white/5"
+                    className="flex items-center justify-between gap-3 p-3.5 rounded-lg bg-[#15111c] border border-[#423a54]"
                   >
                     <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-md bg-primary/10 border border-primary/20 text-xs font-bold text-primary-light uppercase">
+                      <div className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded bg-[#8b5cf6]/15 border border-[#8b5cf6]/30 text-[11px] font-mono font-bold text-[#c084fc] uppercase tracking-wider">
                         {file.file.type.split("/")[1]?.toUpperCase().substring(0, 3) || "PDF"}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-text-primary truncate">{file.file.name}</p>
-                        <div className="text-xs text-text-secondary flex items-center gap-1.5 mt-0.5">
+                        <p className="text-xs font-mono font-medium text-[#efecf5] truncate">{file.file.name}</p>
+                        <div className="text-[11px] font-mono text-[#a79cbd] flex items-center gap-1.5 mt-0.5">
                           {file.status === "uploading" && (
                             <span>{formatFileSize((file.file.size * file.progress) / 100)} of {formatFileSize(file.file.size)}</span>
                           )}
@@ -202,9 +218,9 @@ export const FileUploadCard = React.forwardRef<HTMLDivElement, FileUploadCardPro
                           <span>•</span>
                           <span
                             className={cn(
-                              { "text-primary-light font-medium": file.status === "uploading" },
-                              { "text-emerald-400 font-medium": file.status === "completed" },
-                              { "text-rose-400 font-medium": file.status === "error" }
+                              { "text-[#c084fc] font-medium": file.status === "uploading" },
+                              { "text-[#4ade80] font-medium": file.status === "completed" },
+                              { "text-[#f87171] font-medium": file.status === "error" }
                             )}
                           >
                             {file.status === "uploading" ? "Uploading..." : file.status === "completed" ? "Completed" : "Error"}
@@ -215,10 +231,14 @@ export const FileUploadCard = React.forwardRef<HTMLDivElement, FileUploadCardPro
                     </div>
 
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      {file.status === "completed" && <CheckCircle2 className="w-5 h-5 text-emerald-400" />}
-                      <Button variant="ghost" size="icon" className="rounded-full w-8 h-8 text-text-secondary hover:text-rose-400 hover:bg-rose-500/10" onClick={() => onFileRemove(file.id)}>
+                      {file.status === "completed" && <CheckCircle2 className="w-4 h-4 text-[#4ade80]" />}
+                      <button
+                        type="button"
+                        className="rounded p-1 text-[#6b6280] hover:text-[#f87171] hover:bg-[#f87171]/10 transition-colors"
+                        onClick={() => onFileRemove(file.id)}
+                      >
                         {file.status === "completed" ? <Trash2 className="w-4 h-4" /> : <X className="w-4 h-4" />}
-                      </Button>
+                      </button>
                     </div>
                   </motion.li>
                 ))}

@@ -554,8 +554,7 @@ export default function RegisterPage() {
                     <FileUploadCard
                       accept="application/pdf"
                       maxSizeMB={5}
-                      title="Upload Resume PDF"
-                      subtitle="PDF only · Maximum file size 5 MB"
+                      showHeader={false}
                       files={
                         resume
                           ? [
