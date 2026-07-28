@@ -165,7 +165,7 @@ export function WhatYouCanBuild() {
           {BUILD_CARDS.map((card) => (
             <div
               key={card.title}
-              className={`build-card group relative flex flex-col gap-4 rounded-2xl border bg-bg-card/60 p-6 cursor-default backdrop-blur-sm transition-all duration-300 hover:bg-bg-card hover:-translate-y-1.5 ${card.border}`}
+              className={`build-card group relative flex flex-col gap-4 rounded-2xl border bg-bg-card/60 p-6 cursor-pointer backdrop-blur-sm transition-all duration-300 hover:bg-bg-card hover:-translate-y-1.5 ${card.border}`}
             >
               <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${card.accent} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                 {card.icon}

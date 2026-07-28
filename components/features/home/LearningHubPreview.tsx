@@ -143,7 +143,7 @@ export function LearningHubPreview() {
             {HUB_TOPICS.map((t) => (
               <div
                 key={t.label}
-                className={`hub-topic-card group flex items-center gap-3 rounded-xl border bg-bg-card/60 p-4 cursor-default transition-all duration-300 hover:bg-bg-card hover:-translate-y-1 ${t.border}`}
+                className={`hub-topic-card group flex items-center gap-3 rounded-xl border bg-bg-card/60 p-4 cursor-pointer transition-all duration-300 hover:bg-bg-card hover:-translate-y-1 ${t.border}`}
               >
                 <div className={`flex-shrink-0 flex h-9 w-9 items-center justify-center rounded-lg ${t.accent} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                   {t.icon}

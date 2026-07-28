@@ -150,7 +150,7 @@ export function OurMission() {
             {VALUES.map((v) => (
               <div
                 key={v.label}
-                className={`mission-value-card flex flex-col gap-3 rounded-2xl border bg-bg-card/60 p-5 transition-all duration-300 hover:bg-bg-card hover:-translate-y-1.5 cursor-default ${v.border}`}
+                className={`mission-value-card group flex flex-col gap-3 rounded-2xl border bg-bg-card/60 p-5 transition-all duration-300 hover:bg-bg-card hover:-translate-y-1.5 cursor-pointer ${v.border}`}
               >
                 <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${v.accent} transition-transform duration-300 group-hover:scale-110`}>
                   {v.icon}
