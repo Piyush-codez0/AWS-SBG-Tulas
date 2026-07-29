@@ -60,8 +60,8 @@ export function ThemeStyles() {
       .register-page-theme .field-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
       @media(max-width:600px){ .register-page-theme .field-row{grid-template-columns:1fr; gap:16px;} }
       .register-page-theme .field{display:flex;flex-direction:column;gap:8px;}
-      .register-page-theme .field-label{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink);text-transform:uppercase;letter-spacing:0.04em;}
-      .register-page-theme .field-hint{color:var(--muted);text-transform:none;letter-spacing:0;}
+      .register-page-theme .field-label{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#c084fc;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;}
+      .register-page-theme .field-hint{color:var(--muted);text-transform:none;letter-spacing:0;font-weight:normal;}
       .register-page-theme .field-error{font-size:11.5px;color:var(--danger);}
 
       .register-page-theme .form-card input[type="text"],
@@ -70,8 +70,8 @@ export function ThemeStyles() {
       .register-page-theme .form-card input:not([type]),
       .register-page-theme .form-card select,
       .register-page-theme .form-card textarea{
-        background:rgba(14, 11, 19, 0.5);border:1px solid var(--line-bright);color:var(--paper);
-        padding:12px 14px;font-family:'Work Sans',sans-serif;font-size:16px;width:100%;
+        background:rgba(10, 8, 15, 0.75);border:1px solid var(--line-bright);color:#ffffff;
+        font-weight:500;padding:12px 14px;font-family:'Work Sans',sans-serif;font-size:16px;width:100%;
         border-radius:6px;transition:all 0.2s ease;
       }
       @media(min-width:768px){ 
@@ -86,15 +86,16 @@ export function ThemeStyles() {
       }
       .register-page-theme .form-card input:focus,
       .register-page-theme .form-card select:focus,
-      .register-page-theme .form-card textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(139, 92, 246, 0.15);background:rgba(14, 11, 19, 0.8);}
+      .register-page-theme .form-card textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(139, 92, 246, 0.15);background:rgba(10, 8, 15, 0.95);}
       .register-page-theme .form-card input::placeholder,
       .register-page-theme .form-card textarea::placeholder{
-        color:var(--muted);
+        color:#71717a;
+        font-weight:400;
         font-size:inherit;
         font-family:inherit;
       }
       .register-page-theme .text-muted {
-        color:var(--muted) !important;
+        color:#71717a !important;
       }
       .register-page-theme .form-card input:-webkit-autofill,
       .register-page-theme .form-card input:-webkit-autofill:hover, 

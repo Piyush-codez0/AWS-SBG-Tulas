@@ -39,12 +39,12 @@ const RESOURCES: Resource[] = [
     accent: "bg-success/10 text-success",
   },
   {
-    icon: Layers,
-    title: "Workshop Archives",
+    icon: BadgeCheck,
+    title: "AWS Cloud Practitioner Exam Guide",
     description:
-      "Slides, code repos, and recordings from every workshop we've hosted — from intro-level to advanced serverless patterns.",
-    link: "#",
-    linkLabel: "Browse workshops",
+      "Official AWS Certified Cloud Practitioner (CLF-C02) exam guide, domain breakdown, sample questions, and preparation resources.",
+    link: "https://aws.amazon.com/certification/certified-cloud-practitioner/",
+    linkLabel: "Cloud Practitioner guide",
     accent: "bg-accent/10 text-accent",
   },
   {

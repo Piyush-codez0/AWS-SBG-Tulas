@@ -6,12 +6,16 @@ import React, { useRef, useState, MouseEvent } from "react";
 interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   spotlightColor?: string;
+  borderColor?: string;
+  radius?: number;
 }
 
 export const SpotlightCard = ({
   children,
   className,
-  spotlightColor = "rgba(124, 58, 237, 0.12)",
+  spotlightColor = "rgba(167, 139, 250, 0.05)",
+  borderColor = "rgba(192, 132, 252, 0.15)",
+  radius = 200,
   ...props
 }: SpotlightCardProps) => {
   const divRef = useRef<HTMLDivElement>(null);
@@ -40,18 +44,29 @@ export const SpotlightCard = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={cn(
-        "relative overflow-hidden rounded-2xl border bg-bg-card/60 cursor-pointer backdrop-blur-sm transition-all duration-300 hover:bg-bg-card hover:-translate-y-1.5",
+        "relative overflow-hidden rounded-2xl border border-border/80 bg-bg-card/70 cursor-pointer backdrop-blur-md transition-all duration-500 hover:bg-bg-card hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(124,58,237,0.04)]",
         className
       )}
       {...props}
     >
+      {/* 1. Tight Border Spotlight */}
       <div
-        className="pointer-events-none absolute -inset-px transition-opacity duration-300 z-0"
+        className="pointer-events-none absolute -inset-px rounded-2xl transition-opacity duration-500 z-0"
         style={{
           opacity,
-          background: `radial-gradient(350px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 65%)`,
+          background: `radial-gradient(${Math.round(radius * 0.8)}px circle at ${position.x}px ${position.y}px, ${borderColor}, transparent 70%)`,
         }}
       />
+
+      {/* 2. Compact Inner Glow */}
+      <div
+        className="pointer-events-none absolute inset-px rounded-[15px] transition-opacity duration-500 z-0"
+        style={{
+          opacity,
+          background: `radial-gradient(${radius}px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 65%)`,
+        }}
+      />
+
       <div className="relative z-10">{children}</div>
     </div>
   );

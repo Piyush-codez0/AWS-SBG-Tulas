@@ -6,6 +6,8 @@ import { Users } from "@/components/animate-ui/icons/users";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { FlipWords } from "@/components/ui/flip-words";
+import { SparklesText } from "@/components/ui/sparkles-text";
+import { TextShimmer } from "@/components/ui/text-shimmer";
 import { RecruitmentCTA } from "@/components/recruitment/RecruitmentCTA";
 import { RecruitmentCountdown } from "@/components/recruitment/RecruitmentCountdown";
 import { useRecruitment } from "@/hooks/useRecruitment";
@@ -44,37 +46,48 @@ export function Hero() {
       {/* Hero Main Content */}
       <div className="relative z-10 max-w-content w-full mx-auto px-4 sm:px-8 lg:px-16 my-auto flex flex-col justify-center">
         <div className="max-w-3xl">
-          {/* 1. Tagline Pill Badge */}
+          {/* 1. Tagline Pill Badge with 21st dev TextShimmer */}
           <div className="relative mb-4 sm:mb-6 lg:mb-8 inline-flex max-w-full items-center gap-2 rounded-full border border-primary/40 bg-black/70 backdrop-blur-xl px-3.5 py-1.5 text-[10px] sm:text-xs font-inter tracking-wider text-white shadow-[0_0_20px_-3px_rgba(124,58,237,0.4)]">
             <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5 shrink-0 items-center justify-center">
               <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full opacity-75", isOpen ? "bg-emerald-400" : "bg-purple-400")} />
               <span className={cn("relative inline-flex h-2 w-2 rounded-full", isOpen ? "bg-emerald-400 shadow-[0_0_8px_#34d399]" : "bg-purple-400 shadow-[0_0_8px_#c084fc]")} />
             </span>
-            <span className="uppercase tracking-[0.14em] sm:tracking-[0.2em] font-medium text-white/90 truncate">
+            <TextShimmer duration={2.8} className="uppercase tracking-[0.14em] sm:tracking-[0.2em] font-semibold text-white/90 truncate">
               {statusBadgeText}
-            </span>
-            <span className="ml-0.5 text-primary-light shrink-0">
+            </TextShimmer>
+            <span className="ml-0.5 text-primary-light shrink-0 animate-pulse">
               ✦
             </span>
           </div>
 
-          {/* 2. Main Heading */}
-          <h1 className="-mt-1 sm:-mt-2 animate-fade-up-delay-1 font-podium text-white uppercase leading-[1.08] sm:leading-[1.02] tracking-tight text-[clamp(2.1rem,8vw,4.2rem)]">
-            <div>Student builders,</div>
+          {/* 2. Main Heading with SparklesText & 3D FlipWords */}
+          <h1 className="-mt-1 sm:-mt-2 animate-fade-up-delay-1 font-podium text-white uppercase leading-[1.08] sm:leading-[1.02] tracking-tight text-[clamp(2.1rem,8vw,4.2rem)] flex flex-col items-start gap-0.5">
+            <div className="flex items-center gap-3">
+              <SparklesText
+                text="Student builders,"
+                sparkleCount={8}
+                colors={{ first: "#C084FC", second: "#38BDF8" }}
+              />
+            </div>
             <div className="min-h-[1.1em] flex items-center">
               <FlipWords
                 words={["Learn. Build. Deploy.", "Ideate. Code. Ship.", "Design. Launch. Grow."]}
-                duration={3500}
+                duration={3200}
                 className="p-0 text-[0.85em]"
               />
             </div>
-            <div>Together.</div>
+            <div className="flex items-center gap-3">
+              <SparklesText
+                text="Together."
+                sparkleCount={6}
+                colors={{ first: "#C084FC", second: "#38BDF8" }}
+              />
+            </div>
           </h1>
 
           {/* 3. Subtext */}
           <p className="animate-fade-up-delay-2 mt-4 sm:mt-5 lg:mt-6 text-white/85 text-xs sm:text-base font-inter leading-relaxed max-w-xl w-[60%] sm:w-full text-left">
-            A community for students who&apos;d rather build than just read about it —{" "}
-            <span className="text-white font-semibold">workshops, hackathons, AWS credits,</span> and a peer group that ships real projects together.
+            Join a community where students learn by building—through <span className="text-white font-semibold">hands-on workshops, hackathons, mentorship, and real projects</span> that prepare you for the future.
           </p>
 
           {/* 4. CTA Buttons & Countdown */}
@@ -104,3 +117,4 @@ export function Hero() {
     </section>
   );
 }
+

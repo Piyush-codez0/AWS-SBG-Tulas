@@ -1,6 +1,57 @@
 import { RECRUITMENT_CONFIG, RecruitmentConfig, RecruitmentStatus } from "@/config/recruitment";
 
 /**
+ * Parse a date string supporting:
+ * - DD-MM-YYYY HH:mm:ss (e.g., "26-07-2026 00:00:00")
+ * - DD-MM-YYYY (e.g., "26-07-2026")
+ * - ISO string or standard JS Date strings
+ */
+export function parseDateString(dateStr: string): Date {
+  if (!dateStr) return new Date();
+
+  const trimmed = dateStr.trim();
+
+  // Match DD-MM-YYYY or DD-MM-YYYY HH:mm:ss
+  const ddmmyyyyMatch = trimmed.match(/^(\d{2})-(\d{2})-(\d{4})(?:\s+(\d{2}):(\d{2}):(\d{2}))?$/);
+  if (ddmmyyyyMatch) {
+    const day = parseInt(ddmmyyyyMatch[1], 10);
+    const month = parseInt(ddmmyyyyMatch[2], 10) - 1; // 0-indexed
+    const year = parseInt(ddmmyyyyMatch[3], 10);
+    const hour = ddmmyyyyMatch[4] ? parseInt(ddmmyyyyMatch[4], 10) : 0;
+    const minute = ddmmyyyyMatch[5] ? parseInt(ddmmyyyyMatch[5], 10) : 0;
+    const second = ddmmyyyyMatch[6] ? parseInt(ddmmyyyyMatch[6], 10) : 0;
+    return new Date(year, month, day, hour, minute, second);
+  }
+
+  // Fallback to standard JS Date parser (for ISO dates, etc.)
+  const parsed = new Date(trimmed);
+  return isNaN(parsed.getTime()) ? new Date() : parsed;
+}
+
+/**
+ * Format a Date or Date string to "DD-MM-YYYY HH:mm:ss" or "DD-MM-YYYY".
+ * Keeps time till seconds only (no milliseconds or timezone strings).
+ */
+export function formatDateToString(input: string | Date, includeTime = true): string {
+  const date = typeof input === "string" ? parseDateString(input) : input;
+  if (isNaN(date.getTime())) return "";
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+
+  if (!includeTime) {
+    return `${day}-${month}-${year}`;
+  }
+
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+
+  return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+}
+
+/**
  * Get current recruitment configuration.
  */
 export function getRecruitmentConfig(): RecruitmentConfig {
@@ -20,8 +71,8 @@ export function getRecruitmentStatus(nowDate: Date = new Date()): RecruitmentSta
   }
 
   const now = nowDate.getTime();
-  const start = new Date(config.registrationStartDate).getTime();
-  const end = new Date(config.registrationEndDate).getTime();
+  const start = parseDateString(config.registrationStartDate).getTime();
+  const end = parseDateString(config.registrationEndDate).getTime();
 
   if (now < start) {
     return "upcoming";
@@ -55,7 +106,7 @@ export interface TimeRemaining {
  */
 export function getRegistrationTimeRemaining(nowDate: Date = new Date()): TimeRemaining {
   const config = getRecruitmentConfig();
-  const end = new Date(config.registrationEndDate).getTime();
+  const end = parseDateString(config.registrationEndDate).getTime();
   const now = nowDate.getTime();
   const diff = end - now;
 
@@ -84,3 +135,4 @@ export function getRegistrationTimeRemaining(nowDate: Date = new Date()): TimeRe
     isExpired: false,
   };
 }
+

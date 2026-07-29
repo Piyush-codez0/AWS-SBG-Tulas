@@ -12,10 +12,10 @@ export interface RecruitmentConfig {
    */
   statusMode: RecruitmentStatusMode;
 
-  /** Date string for when registration opens (e.g. "YYYY-MM-DD" or "YYYY-MM-DDTHH:mm:ssZ") */
+  /** Date string for when registration opens (e.g. "DD-MM-YYYY HH:mm:ss" or "DD-MM-YYYY") */
   registrationStartDate: string;
 
-  /** Date string for when registration closes (e.g. "YYYY-MM-DD" or "YYYY-MM-DDTHH:mm:ssZ") */
+  /** Date string for when registration closes (e.g. "DD-MM-YYYY HH:mm:ss" or "DD-MM-YYYY") */
   registrationEndDate: string;
 
   /** Primary fallback redirect URL when recruitment is closed */
@@ -32,9 +32,10 @@ export const RECRUITMENT_CONFIG: RecruitmentConfig = {
   // Option 1: Force status manually ("open" | "closed" | "upcoming" | "auto")
   statusMode: (process.env.NEXT_PUBLIC_RECRUITMENT_STATUS as RecruitmentStatusMode) || "auto",
 
-  // Option 2: Edit start & end dates (in YYYY-MM-DD format or ISO format)
-  registrationStartDate: "2026-07-26T00:00:00.000Z",
-  registrationEndDate: "2026-08-21T23:59:59.000Z",
+  // Option 2: Edit start & end dates (in DD-MM-YYYY HH:mm:ss format)
+  registrationStartDate: "26-07-2026 00:00:00",
+  registrationEndDate: "21-08-2026 23:59:59",
 
   communityUrl: "/community",
 };
+
