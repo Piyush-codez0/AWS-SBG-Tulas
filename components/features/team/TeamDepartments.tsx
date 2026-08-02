@@ -173,9 +173,6 @@ export function TeamDepartments() {
 
   return (
     <section ref={sectionRef} className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-content mx-auto">
-      {/* Desktop Grid Background Overlay */}
-      <div className="hidden md:block absolute inset-0 bg-grid pointer-events-none z-0" />
-
       {/* Section Header matching site theme */}
       <div className="relative max-w-3xl mx-auto text-center mb-16">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 sm:w-96 h-20 bg-[#7C3AED]/25 blur-3xl rounded-full pointer-events-none z-0" />
