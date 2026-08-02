@@ -586,12 +586,14 @@ export function ScrollInception({
     <section
       ref={sectionRef}
       style={{ "--ek-bar": revealChrome ? 0 : 1 } as React.CSSProperties}
-      className={cn("hidden md:block relative w-full bg-grid", className)}
+      className={cn("hidden md:block relative w-full bg-bg z-10", className)}
     >
       <div
         ref={stickyRef}
-        className="w-full h-screen flex items-center justify-center overflow-hidden z-10"
+        className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-bg z-10"
       >
+        {/* Clean Single Grid Overlay */}
+        <div className="absolute inset-0 bg-grid opacity-50 pointer-events-none z-0" />
         <div
           ref={fitRef}
           className="shrink-0"
