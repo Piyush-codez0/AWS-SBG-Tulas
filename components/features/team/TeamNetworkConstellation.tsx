@@ -104,7 +104,7 @@ export function TeamNetworkConstellation() {
           <div className="hidden md:flex lg:col-span-7 justify-center items-center">
             <div className="relative aspect-square w-full max-w-[480px] sm:max-w-[520px] lg:max-w-[540px] rounded-2xl bg-bg-card border border-border backdrop-blur-2xl p-4 overflow-hidden flex items-center justify-center shadow-xl">
               {/* Grid Pattern Overlay */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(250,250,250,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(250,250,250,0.035)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+              <div className="absolute inset-0 bg-grid pointer-events-none" />
 
               {/* SVG Connection Lines */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">

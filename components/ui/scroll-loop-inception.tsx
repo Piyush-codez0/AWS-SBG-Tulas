@@ -590,8 +590,10 @@ export function ScrollInception({
     >
       <div
         ref={stickyRef}
-        className="w-full h-screen flex items-center justify-center overflow-hidden bg-[#121215] z-10"
+        className="w-full h-screen flex items-center justify-center overflow-hidden bg-[#121215] z-10 relative"
       >
+        {/* Desktop Grid Background Overlay */}
+        <div className="absolute inset-0 bg-grid pointer-events-none z-0" />
         <div
           ref={fitRef}
           className="shrink-0"
