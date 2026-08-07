@@ -21,6 +21,8 @@ export function MeetTheBuilders() {
   const containerRef = React.useRef<HTMLElement>(null);
 
   useGSAP(() => {
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
     gsap.from(".builders-header-el", {
       opacity: 0,
       y: 20,
@@ -29,7 +31,7 @@ export function MeetTheBuilders() {
       ease: "power2.out",
       scrollTrigger: {
         trigger: ".builders-header",
-        start: "top 85%",
+        start: isMobile ? "top 95%" : "top 85%",
         toggleActions: "play reverse play reverse",
       },
     });
@@ -43,7 +45,7 @@ export function MeetTheBuilders() {
         ease: "back.out(1.5)",
         scrollTrigger: {
           trigger: ".builders-slider",
-          start: "top 85%",
+          start: isMobile ? "top 95%" : "top 85%",
           toggleActions: "play reverse play reverse",
         },
       }

@@ -22,6 +22,10 @@ export function FeaturedEvents() {
   const containerRef = React.useRef<HTMLElement>(null);
 
   useGSAP(() => {
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    const batchStart = isMobile ? "top bottom" : "center bottom";
+    const initialY = isMobile ? 20 : 30;
+
     gsap.from(".events-header-el", {
       opacity: 0,
       y: 20,
@@ -30,12 +34,12 @@ export function FeaturedEvents() {
       ease: "power2.out",
       scrollTrigger: {
         trigger: ".events-header",
-        start: "top 85%",
+        start: isMobile ? "top 95%" : "top 85%",
         toggleActions: "play reverse play reverse",
       },
     });
 
-    gsap.set(".event-card", { opacity: 0, y: 30, scale: 0.97 });
+    gsap.set(".event-card", { opacity: 0, y: initialY, scale: 0.97 });
     ScrollTrigger.batch(".event-card", {
       onEnter: (elements) => {
         gsap.to(elements, {
@@ -45,15 +49,6 @@ export function FeaturedEvents() {
           duration: 0.6,
           stagger: 0.08,
           ease: "power3.out",
-          overwrite: true,
-        });
-      },
-      onLeave: (elements) => {
-        gsap.to(elements, {
-          opacity: 0,
-          y: -20,
-          scale: 0.97,
-          duration: 0.3,
           overwrite: true,
         });
       },
@@ -71,14 +66,13 @@ export function FeaturedEvents() {
       onLeaveBack: (elements) => {
         gsap.to(elements, {
           opacity: 0,
-          y: 30,
+          y: initialY,
           scale: 0.97,
           duration: 0.3,
           overwrite: true,
         });
       },
-      start: "top 85%",
-      end: "bottom 15%",
+      start: batchStart,
     });
   }, { scope: containerRef });
 

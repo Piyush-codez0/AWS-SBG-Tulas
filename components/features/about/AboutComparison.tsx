@@ -47,6 +47,16 @@ export function AboutComparison() {
           overwrite: true,
         });
       },
+      onEnterBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          x: 0,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: "power3.out",
+          overwrite: true,
+        });
+      },
       onLeaveBack: (elements) => {
         gsap.to(elements, {
           opacity: 0,
@@ -55,7 +65,7 @@ export function AboutComparison() {
           overwrite: true,
         });
       },
-      start: "top 90%",
+      start: "center bottom",
     });
 
     const refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 200);
@@ -80,7 +90,7 @@ export function AboutComparison() {
           </h2>
         </div>
 
-        <div className="mt-12 overflow-hidden rounded-xl border border-border">
+        <div className="mt-12 max-w-3xl mx-auto overflow-hidden rounded-xl border border-border">
           {/* Header row */}
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4 border-b border-border bg-white/[0.02] px-3.5 py-3.5 sm:px-8">
             <span className="text-[11px] sm:text-[13px] font-medium uppercase tracking-wider text-muted">

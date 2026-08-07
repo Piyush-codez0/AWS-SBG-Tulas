@@ -48,6 +48,10 @@ export function LearningHubPreview() {
   const containerRef = React.useRef<HTMLElement>(null);
 
   useGSAP(() => {
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    const batchStart = isMobile ? "top bottom" : "center bottom";
+    const initialY = isMobile ? 20 : 25;
+
     gsap.from(".hub-header-el", {
       opacity: 0,
       y: 20,
@@ -56,12 +60,12 @@ export function LearningHubPreview() {
       ease: "power2.out",
       scrollTrigger: {
         trigger: ".hub-header",
-        start: "top 85%",
+        start: isMobile ? "top 95%" : "top 85%",
         toggleActions: "play reverse play reverse",
       },
     });
 
-    gsap.set(".hub-topic-card", { opacity: 0, y: 25, scale: 0.96 });
+    gsap.set(".hub-topic-card", { opacity: 0, y: initialY, scale: 0.96 });
     ScrollTrigger.batch(".hub-topic-card", {
       onEnter: (elements) => {
         gsap.to(elements, {
@@ -71,15 +75,6 @@ export function LearningHubPreview() {
           duration: 0.55,
           stagger: 0.08,
           ease: "power3.out",
-          overwrite: true,
-        });
-      },
-      onLeave: (elements) => {
-        gsap.to(elements, {
-          opacity: 0,
-          y: -20,
-          scale: 0.96,
-          duration: 0.3,
           overwrite: true,
         });
       },
@@ -97,14 +92,13 @@ export function LearningHubPreview() {
       onLeaveBack: (elements) => {
         gsap.to(elements, {
           opacity: 0,
-          y: 25,
+          y: initialY,
           scale: 0.96,
           duration: 0.3,
           overwrite: true,
         });
       },
-      start: "top 85%",
-      end: "bottom 15%",
+      start: batchStart,
     });
   }, { scope: containerRef });
 

@@ -10,7 +10,7 @@ import { PixelHeading } from "@/components/ui/pixel-heading-character";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const ECOSYSTEM_NODES = [
-  { name: "AI", link: "https://aws.amazon.com/ai/" },
+  { name: "Artificial Intelligence", link: "https://aws.amazon.com/ai/" },
   { name: "Skill Builder", link: "https://explore.skillbuilder.aws/" },
   { name: "AWS Educate", link: "https://aws.amazon.com/education/awseducate/" },
   { name: "Community Builders", link: "https://aws.amazon.com/developer/community/community-builders/" },
@@ -82,6 +82,16 @@ export function AboutEcosystem() {
           overwrite: true,
         });
       },
+      onEnterBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          stagger: 0.06,
+          ease: "back.out(1.7)",
+          overwrite: true,
+        });
+      },
       onLeaveBack: (elements) => {
         gsap.to(elements, {
           opacity: 0,
@@ -90,7 +100,7 @@ export function AboutEcosystem() {
           overwrite: true,
         });
       },
-      start: "top 80%",
+      start: "center bottom",
     });
 
     const refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 200);
