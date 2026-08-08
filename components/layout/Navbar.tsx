@@ -15,9 +15,7 @@ import { useState } from "react";
 import { useRecruitment } from "@/hooks/useRecruitment";
 
 export function Navbar() {
-  const { isOpen } = useRecruitment();
-  const buttonText = isOpen ? "Register" : "Join Community";
-  const buttonHref = isOpen ? "/register" : "/community";
+  const MEETUP_URL = "https://www.meetup.com/tulas-university-dehradun/";
 
   const navItems = [
     {
@@ -56,8 +54,8 @@ export function Navbar() {
           <NavbarLogo />
           <NavItems items={navItems} />
           <div className="flex items-center gap-4">
-            <NavbarButton as={Link} href={buttonHref} variant="primary">
-              {buttonText}
+            <NavbarButton as="a" href={MEETUP_URL} target="_blank" rel="noopener noreferrer" variant="primary">
+              Join Community
             </NavbarButton>
           </div>
         </NavBody>
@@ -88,13 +86,15 @@ export function Navbar() {
             ))}
             <div className="mt-2 flex w-full flex-col gap-3 border-t border-white/5 pt-3">
               <NavbarButton
-                as={Link}
-                href={buttonHref}
+                as="a"
+                href={MEETUP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
                 className="w-full"
               >
-                {buttonText}
+                Join Community
               </NavbarButton>
             </div>
           </MobileNavMenu>

@@ -1,202 +1,252 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { Cloud, Terminal, Cpu } from "lucide-react";
-import { PixelHeading } from "@/components/ui/pixel-heading-character";
+import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { ArrowRight, Zap, Star, Users } from "lucide-react";
+import { RecruitmentCountdown } from "@/components/recruitment/RecruitmentCountdown";
 
+/* ─── Animated Number Counter ────────────────────────────── */
+function Counter({ to, label }: { to: number; label: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !started.current) {
+        started.current = true;
+        let start = 0;
+        const step = Math.ceil(to / 40);
+        const timer = setInterval(() => {
+          start += step;
+          if (start >= to) { setCount(to); clearInterval(timer); } else setCount(start);
+        }, 35);
+      }
+    }, { threshold: 0.5 });
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [to]);
+
+  return (
+    <div ref={ref} className="text-center">
+      <div className="text-3xl sm:text-4xl font-bold font-display text-text-primary tabular-nums">
+        {count}<span className="text-primary-light">+</span>
+      </div>
+      <div className="text-xs text-muted font-mono mt-1 uppercase tracking-widest">{label}</div>
+    </div>
+  );
+}
+
+/* ─── Floating Word Tag ─────────────────────────────────── */
+function FloatingTag({ text, className }: { text: string; className: string }) {
+  return (
+    <motion.div
+      animate={{ y: [0, -8, 0], rotate: [-1, 1, -1] }}
+      transition={{ duration: 5 + Math.random() * 4, repeat: Infinity, ease: "easeInOut" }}
+      className={`absolute px-3 py-1.5 rounded-full backdrop-blur-md bg-bg-surface/70 border border-border text-xs font-mono text-text-secondary shadow-lg pointer-events-none select-none ${className}`}
+    >
+      {text}
+    </motion.div>
+  );
+}
+
+/* ─── Main Hero ──────────────────────────────────────────── */
 export function TeamHero() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [8, -8]), { stiffness: 80, damping: 20 });
+  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-8, 8]), { stiffness: 80, damping: 20 });
 
-  // Canvas particle network with primary purple & accent glowing nodes
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    mouseX.set(e.clientX - rect.left - rect.width / 2);
+    mouseY.set(e.clientY - rect.top - rect.height / 2);
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-
-    let animationFrameId: number;
-    let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
-    let height = (canvas.height = canvas.parentElement?.clientHeight || 600);
-
-    const handleResize = () => {
-      if (!canvas || !canvas.parentElement) return;
-      width = canvas.width = canvas.parentElement.clientWidth;
-      height = canvas.height = canvas.parentElement.clientHeight;
+    let id: number;
+    const resize = () => {
+      canvas.width = canvas.parentElement?.clientWidth ?? window.innerWidth;
+      canvas.height = canvas.parentElement?.clientHeight ?? 800;
     };
-    window.addEventListener("resize", handleResize);
+    resize();
+    window.addEventListener("resize", resize);
 
-    interface Particle {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      size: number;
-      color: string;
-      alpha: number;
-    }
-
-    const colors = ["#7C3AED", "#A78BFA", "#C084FC", "#38BDF8", "#8B5CF6"];
-    const particles: Particle[] = Array.from({ length: 40 }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
-      size: Math.random() * 2 + 1.2,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      alpha: Math.random() * 0.5 + 0.3,
+    const particles = Array.from({ length: 55 }, () => ({
+      x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.28, vy: (Math.random() - 0.5) * 0.28,
+      size: Math.random() * 1.8 + 0.8,
+      color: ["#7C3AED", "#A78BFA", "#C084FC", "#38BDF8", "#8B5CF6"][Math.floor(Math.random() * 5)],
     }));
 
-    const draw = () => {
-      ctx.clearRect(0, 0, width, height);
-
-      // Draw connection lines
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.hypot(dx, dy);
-
-          if (dist < 130) {
-            const lineAlpha = (1 - dist / 130) * 0.2;
+    const tick = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, i) => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        particles.slice(i + 1).forEach(q => {
+          const d = Math.hypot(p.x - q.x, p.y - q.y);
+          if (d < 120) {
             ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(167, 139, 250, ${lineAlpha})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
+            ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = `rgba(167,139,250,${(1 - d / 120) * 0.15})`;
+            ctx.lineWidth = 0.8; ctx.stroke();
           }
-        }
-      }
-
-      // Draw particles
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < 0 || p.x > width) p.vx *= -1;
-        if (p.y < 0 || p.y > height) p.vy *= -1;
-
+        });
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.alpha;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = p.color;
-        ctx.fill();
-        ctx.globalAlpha = 1.0;
-        ctx.shadowBlur = 0;
+        ctx.shadowBlur = 6; ctx.shadowColor = p.color;
+        ctx.fill(); ctx.shadowBlur = 0;
       });
-
-      animationFrameId = requestAnimationFrame(draw);
+      id = requestAnimationFrame(tick);
     };
-
-    draw();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      cancelAnimationFrame(animationFrameId);
-    };
+    tick();
+    return () => { cancelAnimationFrame(id); window.removeEventListener("resize", resize); };
   }, []);
 
   return (
-    <div className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-36 pb-24 md:pt-44 md:pb-28 px-4 sm:px-6">
-      {/* Background canvas */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none z-0"
-      />
+    <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}
+      className="relative min-h-[100vh] flex items-center justify-center overflow-hidden pt-28 pb-20 px-4 sm:px-6"
+    >
+      {/* Canvas bg */}
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-0" />
 
-      {/* Floating Gradient Ambient Glows matching site theme */}
-      <div className="pointer-events-none absolute left-1/2 top-1/4 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[550px] rounded-full bg-primary/12 blur-[130px]" />
-      <div className="pointer-events-none absolute right-1/4 top-1/3 h-[350px] w-[350px] rounded-full bg-accent/8 blur-[130px]" />
+      {/* Gradient orbs */}
+      <div className="pointer-events-none absolute -top-24 left-1/4 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-0 right-1/4 w-[350px] h-[350px] rounded-full bg-accent/8 blur-[100px]" />
 
-      {/* Floating AWS & Tech Badges with navbar clearance */}
-      <motion.div
-        animate={{ y: [0, -10, 0], rotate: [0, 4, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-36 left-6 lg:left-20 hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-bg-surface/80 backdrop-blur-md border border-border text-primary-light text-xs font-mono shadow-lg z-10"
-      >
-        <Image src="/logos/AWS_logo.svg" alt="AWS" width={22} height={14} className="h-3.5 w-auto brightness-200" />
-        <span>AWS Cloud</span>
-      </motion.div>
+      {/* Floating tags */}
+      <FloatingTag text="☁️ AWS Cloud" className="top-36 left-8 lg:left-28" />
+      <FloatingTag text="🚀 Open to All Years" className="top-40 right-8 lg:right-28" />
+      <FloatingTag text="⚡ 6 Builder Wings" className="bottom-36 left-8 lg:left-36" />
+      <FloatingTag text="🎯 2026 Core Team" className="bottom-32 right-8 lg:right-36" />
 
-      <motion.div
-        animate={{ y: [0, 12, 0], rotate: [0, -4, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute bottom-28 left-10 lg:left-24 hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-bg-surface/80 backdrop-blur-md border border-border text-text-secondary text-xs font-mono shadow-lg z-10"
-      >
-        <Terminal className="w-3.5 h-3.5 text-primary-light" />
-        <span>Serverless</span>
-      </motion.div>
-
-      <motion.div
-        animate={{ y: [0, -12, 0], rotate: [0, 5, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute top-40 right-6 lg:right-20 hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-bg-surface/80 backdrop-blur-md border border-border text-text-secondary text-xs font-mono shadow-lg z-10"
-      >
-        <Cpu className="w-3.5 h-3.5 text-accent" />
-        <span>Cloud AI</span>
-      </motion.div>
-
-      {/* Main Hero Content */}
-      <div className="relative z-10 max-w-4xl mx-auto text-center">
-        {/* Eyebrow Label */}
-        <motion.p
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-[11px] uppercase tracking-[0.16em] text-muted font-mono"
+      {/* Main content */}
+      <div className="relative z-10 max-w-5xl mx-auto text-center">
+        {/* Status pill */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/25 text-xs font-mono text-primary-light mb-8"
         >
-          AWS Student Builders Group
-        </motion.p>
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+          </span>
+          COHORT 2026 · WING APPLICATIONS NOW OPEN
+        </motion.div>
 
-        {/* Main Title matching site font-display and pixel text gradient */}
-        <div className="relative">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 sm:w-96 md:w-[500px] h-24 bg-[#7C3AED]/25 blur-3xl rounded-full pointer-events-none z-0" />
+        {/* 3D tilt headline card */}
+        <motion.div
+          style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+          className="perspective-1000"
+        >
           <motion.h1
-            initial={{ opacity: 0, y: 25 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="relative z-10 mt-4 text-4xl sm:text-6xl md:text-7xl font-semibold leading-[1.08] tracking-tight text-text-primary font-display"
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="text-5xl sm:text-7xl md:text-8xl font-bold font-display leading-[0.95] tracking-tight text-text-primary"
           >
-            Meet the{" "}
-            <PixelHeading mode="uniform" className="text-gradient">
-              Builders.
-            </PixelHeading>
+            The Builders
+            <br />
+            <span className="relative inline-block">
+              <span className="bg-gradient-to-r from-primary-light via-accent to-purple-300 bg-clip-text text-transparent">
+                of Tomorrow.
+              </span>
+              {/* Underline glow */}
+              <span className="absolute -bottom-2 left-0 right-0 h-[3px] bg-gradient-to-r from-primary/0 via-primary to-primary/0 blur-sm" />
+            </span>
           </motion.h1>
-        </div>
+        </motion.div>
 
-        {/* Subtitle matching site text-text-secondary */}
+        {/* Reveal badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.25 }}
+          className="mt-8 inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-bg-card border border-border backdrop-blur-sm"
+        >
+          <div className="flex items-center gap-1.5 text-warning">
+            <Star className="w-4 h-4 fill-warning" />
+            <Star className="w-3 h-3 fill-warning/60" />
+          </div>
+          <span className="text-sm font-medium text-text-secondary">
+            Core Team Reveal — <span className="text-text-primary font-semibold">Coming Soon</span>. Secure your wing now.
+          </span>
+        </motion.div>
+
+        {/* Subtitle */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="mt-6 sm:mt-8 text-[15px] sm:text-[18px] md:text-[20px] leading-relaxed text-text-secondary max-w-2xl mx-auto font-normal"
+          transition={{ duration: 0.7, delay: 0.35 }}
+          className="mt-6 text-base sm:text-lg text-text-secondary max-w-xl mx-auto leading-relaxed"
         >
-          Behind every workshop, hackathon, and successful event is a passionate team dedicated to empowering the next generation of cloud innovators.
+          6 specialized Builder Wings. Limited slots. Open to every branch and year at Tula's University.
         </motion.p>
 
+        {/* CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.45 }}
+          className="mt-8 flex flex-wrap items-center justify-center gap-4"
+        >
+          <a
+            href="#wings"
+            className="group relative px-8 py-4 rounded-2xl bg-primary hover:bg-primary-hover text-white font-bold text-sm overflow-hidden shadow-[0_0_30px_-5px_rgba(124,58,237,0.6)] hover:shadow-[0_0_45px_-5px_rgba(124,58,237,0.8)] transition-all duration-300 hover:scale-[1.03]"
+          >
+            <span className="relative z-10 flex items-center gap-2">
+              Explore Builder Wings
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </span>
+            <span className="absolute inset-0 bg-gradient-to-r from-primary via-purple-500 to-accent opacity-0 group-hover:opacity-100 transition-opacity" />
+          </a>
+          <a
+            href="/register"
+            className="px-8 py-4 rounded-2xl bg-bg-card border border-border hover:border-primary/50 text-text-secondary hover:text-text-primary font-bold text-sm transition-all duration-300 hover:scale-[1.02] backdrop-blur-sm"
+           >
+            Submit Application
+          </a>
+        </motion.div>
+
+        {/* Recruitment countdown — only visible when applications are open */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="mt-6 flex justify-center"
+        >
+          <RecruitmentCountdown />
+        </motion.div>
       </div>
 
-      {/* Scroll Indicator - Anchored at bottom center of Hero */}
+      {/* Scroll indicator */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.8 }}
-        className="absolute bottom-5 sm:bottom-8 left-1/2 -translate-x-1/2 z-20 inline-flex flex-col items-center gap-2 cursor-pointer group"
-        onClick={() => {
-          document.getElementById("leadership")?.scrollIntoView({ behavior: "smooth" });
-        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2"
       >
-        <span className="text-[11px] font-mono uppercase tracking-[0.16em] text-muted group-hover:text-primary-light transition-colors">
-          Scroll to explore
-        </span>
-        <div className="w-5 h-9 rounded-full border border-border flex justify-center p-1 group-hover:border-primary-light transition-colors bg-bg-surface/50 backdrop-blur-sm">
+        <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted">scroll</span>
+        <div className="w-5 h-9 rounded-full border border-border/50 flex justify-center pt-1.5">
           <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ y: [0, 12, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity }}
             className="w-1.5 h-1.5 rounded-full bg-primary-light"
           />
         </div>

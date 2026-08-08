@@ -1,288 +1,302 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import LightRays from "@/components/ui/light-rays";
-import CursorGrid from "@/components/ui/cursor-grid";
+import { useSearchParams } from "next/navigation";
 import { MultiStepLoader as Loader } from "@/components/ui/multi-step-loader";
-import { Stepper } from "@/components/features/register/Stepper";
-import { Stage, Row, Field } from "@/components/features/register/FormStage";
-import { CustomSelect } from "@/components/features/register/CustomSelect";
-import { SuccessScreen } from "@/components/features/register/SuccessScreen";
-import { ThemeStyles } from "@/components/features/register/ThemeStyles";
-import type { ApplicationFormData, ApplicationStageInfo } from "@/types/application";
 import { useRecruitment } from "@/hooks/useRecruitment";
 import { ClosedRegistrations } from "@/components/recruitment/ClosedRegistrations";
-import { FileUploadCard, UploadedFile } from "@/components/ui/file-upload-card";
+import LightRays from "@/components/ui/light-rays";
+import CursorGrid from "@/components/ui/cursor-grid";
+import { ThemeStyles } from "@/components/features/register/ThemeStyles";
+import { SuccessScreen } from "@/components/features/register/SuccessScreen";
+import { ArrowRight, ArrowLeft, User, Sparkles, CheckCircle2, ChevronDown } from "lucide-react";
 
-const REGISTRATION_LOADING_STATES = [
-  { text: "Validating applicant details & resume PDF..." },
-  { text: "Uploading PDF resume to AWS S3 storage..." },
-  { text: "Deployment complete. Generating receipt..." },
+/* ─── Config ─────────────────────────────────────────────── */
+const LOADING_STATES = [
+  { text: "Validating your application details..." },
+  { text: "Securely submitting to AWS SBG..." },
+  { text: "Application deployed successfully!" },
+];
+
+const WINGS = [
+  { id: "technology", label: "Technology", emoji: "💻" },
+  { id: "cloud",      label: "Cloud",      emoji: "☁️" },
+  { id: "design",    label: "Design",     emoji: "🎨" },
+  { id: "events",    label: "Events & Ops",emoji: "📅" },
+  { id: "media",     label: "Media",      emoji: "🎬" },
+  { id: "outreach",  label: "Outreach",   emoji: "📣" },
 ];
 
 const COURSES = ["B.Tech", "B.Sc", "BCA", "MCA", "BBA", "MBA", "Other"];
-const BRANCHES = ["CSE", "AI/ML", "Data Science", "Cyber Security", "Other"];
+const BRANCHES = ["CSE", "AI/ML", "Data Science", "Cyber Security", "ECE", "ME", "Other"];
 const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
-const AWS_SERVICES = [
-  "EC2", "Lambda", "Elastic Beanstalk", "Lightsail", "Batch", "App Runner", "ECS", "EKS", "Fargate",
-  "S3", "EBS", "EFS", "FSx", "Storage Gateway", "Backup",
-  "RDS", "Aurora", "DynamoDB", "ElastiCache", "Redshift", "DocumentDB", "Neptune", "Keyspaces", "Timestream",
-  "VPC", "Route 53", "CloudFront", "Global Accelerator", "API Gateway", "Direct Connect", "Transit Gateway", "Elastic Load Balancer (ELB)",
-  "IAM", "Cognito", "KMS", "Secrets Manager", "Certificate Manager (ACM)", "WAF", "Shield", "GuardDuty", "Inspector", "Security Hub", "Macie",
-  "CloudWatch", "CloudTrail", "Systems Manager", "AWS Config", "Trusted Advisor", "Organizations",
-  "SQS", "SNS", "EventBridge", "MQ", "Step Functions",
-  "CodeCommit", "CodeBuild", "CodeDeploy", "CodePipeline", "CloudFormation", "CDK",
-  "Athena", "Glue", "EMR", "Kinesis", "QuickSight", "Lake Formation", "OpenSearch",
-  "SageMaker", "Bedrock", "Rekognition", "Comprehend", "Textract", "Polly", "Transcribe", "Translate", "Lex",
-  "Amplify", "AppSync", "IoT Core", "DataSync", "Migration Hub", "Database Migration Service (DMS)",
-  "Cost Explorer", "Budgets", "SES", "Pinpoint",
-];
-
-const INTEREST_AREAS = [
-  "AWS", "Web Dev", "AI/ML", "App Dev", "UI/UX",
-  "DevOps", "Cyber Security", "Graphic Design", "Content", "Marketing",
-];
-
-const STAGES: ApplicationStageInfo[] = [
-  { id: 1, label: "Personal Info" },
-  { id: 2, label: "Academic Details" },
-  { id: 3, label: "Technical Profile" },
-  { id: 4, label: "Questions" },
-  { id: 5, label: "Resume" },
+// Balanced across all 6 wings — tech, creative, ops, media, social
+const INTERESTS = [
+  "AWS & Cloud",      "Web / App Development", "AI & Machine Learning",
+  "UI/UX Design",     "Graphic Design",         "Photography",
+  "Video Editing",    "Content & Copywriting",  "Social Media",
+  "Event Planning",   "Public Relations",       "Sponsorships & Outreach",
+  "DevOps & Linux",   "Cyber Security",         "Teaching & Mentoring",
 ];
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\+91 \d{10}$/;
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-const initialForm: ApplicationFormData = {
-  fullName: "",
-  universityEmail: "",
-  personalEmail: "",
-  phoneNumber: "",
-  rollNumber: "",
-  course: "",
-  branch: "",
-  branchOther: "",
-  year: "",
-  interestAreas: [],
-  githubUrl: "",
-  linkedinUrl: "",
-  portfolioUrl: "",
-  whyJoin: "",
-  leadershipExperience: "",
-  usedAws: "",
-  awsServices: [],
+interface Form {
+  fullName: string;
+  universityEmail: string;
+  phoneNumber: string;
+  rollNumber: string;
+  course: string;
+  branch: string;
+  year: string;
+  wings: string[];    // up to 2
+  interests: string[];
+  whyJoin: string;
+  contribution: string;
+  socialLink: string;
+}
+
+const INIT: Form = {
+  fullName: "", universityEmail: "", phoneNumber: "",
+  rollNumber: "", course: "", branch: "", year: "",
+  wings: [], interests: [], whyJoin: "", contribution: "", socialLink: "",
 };
 
+/* ─── Helpers ────────────────────────────────────────────── */
+function Field({
+  label, hint, error, required, children,
+}: {
+  label: string; hint?: string; error?: string; required?: boolean; children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center justify-between">
+        <label className="text-[11px] font-mono uppercase tracking-[0.15em] text-white/50">
+          {label}{required && <span className="text-primary-light ml-1">*</span>}
+        </label>
+        {hint && <span className="text-[10px] font-mono text-white/30">{hint}</span>}
+      </div>
+      {children}
+      {error && (
+        <motion.p
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-[11px] font-mono text-red-400"
+        >
+          ✕ {error}
+        </motion.p>
+      )}
+    </div>
+  );
+}
+
+function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <input
+      {...props}
+      className="w-full bg-white/[0.04] border border-white/[0.10] hover:border-white/[0.18] focus:border-primary/50 focus:bg-white/[0.06] rounded-xl px-4 py-3 text-sm text-text-primary placeholder:text-white/25 outline-none transition-all duration-200 font-sans"
+    />
+  );
+}
+
+function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  return (
+    <textarea
+      {...props}
+      className="w-full bg-white/[0.04] border border-white/[0.10] hover:border-white/[0.18] focus:border-primary/50 focus:bg-white/[0.06] rounded-xl px-4 py-3 text-sm text-text-primary placeholder:text-white/25 outline-none transition-all duration-200 font-sans resize-none"
+    />
+  );
+}
+
+function Select({
+  value, onChange, options, placeholder,
+}: {
+  value: string; onChange: (v: string) => void; options: string[]; placeholder: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between bg-white/[0.04] border border-white/[0.10] hover:border-white/[0.18] rounded-xl px-4 py-3 text-sm outline-none transition-all duration-200 text-left"
+      >
+        <span className={value ? "text-text-primary" : "text-white/25"}>{value || placeholder}</span>
+        <ChevronDown className={`w-4 h-4 text-white/30 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -8, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.97 }}
+            transition={{ duration: 0.18 }}
+            className="absolute z-50 top-[calc(100%+6px)] left-0 right-0 bg-[#1a1a1f] border border-white/[0.10] rounded-xl overflow-hidden shadow-xl max-h-52 overflow-y-auto"
+          >
+            {options.map(opt => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => { onChange(opt); setOpen(false); }}
+                className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-white/[0.06] ${value === opt ? "text-primary-light" : "text-text-secondary"}`}
+              >
+                {opt}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ─── Progress Bar ───────────────────────────────────────── */
+function ProgressBar({ step }: { step: number }) {
+  return (
+    <div className="flex items-center gap-3 mb-10">
+      {[1, 2].map(s => (
+        <React.Fragment key={s}>
+          <div className="flex items-center gap-2">
+            <div
+              className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-mono font-bold transition-all duration-400 ${
+                s < step
+                  ? "bg-primary text-white"
+                  : s === step
+                  ? "bg-primary/20 border border-primary/50 text-primary-light"
+                  : "bg-white/[0.05] border border-white/[0.08] text-white/30"
+              }`}
+            >
+              {s < step ? <CheckCircle2 className="w-3.5 h-3.5" /> : s}
+            </div>
+            <span className={`text-xs font-mono hidden sm:block transition-colors ${s === step ? "text-text-secondary" : "text-white/25"}`}>
+              {s === 1 ? "Your Info" : "Your Vibe"}
+            </span>
+          </div>
+          {s < 2 && (
+            <div className="flex-1 h-px bg-white/[0.06] relative overflow-hidden">
+              <motion.div
+                animate={{ scaleX: step > s ? 1 : 0 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-0 bg-gradient-to-r from-primary to-accent origin-left"
+              />
+            </div>
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+/* ─── Page ───────────────────────────────────────────────── */
 export default function RegisterPage() {
+  const searchParams = useSearchParams();
   const { mounted, isOpen } = useRecruitment();
-  const [stage, setStage] = useState(1);
-  const [form, setForm] = useState<ApplicationFormData>(initialForm);
+  const [step, setStep] = useState(1);
+
+  // Pre-select wing from URL param (e.g. ?wing=Design)
+  const preWing = searchParams.get("wing") ?? "";
+  const matchedWing = WINGS.find(w =>
+    preWing.toLowerCase().includes(w.label.toLowerCase())
+  );
+  const [form, setForm] = useState<Form>({
+    ...INIT,
+    wings: matchedWing ? [matchedWing.label] : [],
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [resume, setResume] = useState<File | null>(null);
-  const [resumeProgress, setResumeProgress] = useState(0);
-  const [resumeStatus, setResumeStatus] = useState<"uploading" | "completed" | "error">("uploading");
-  const [dragActive, setDragActive] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [result, setResult] = useState<any>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const stepperRef = useRef<HTMLDivElement>(null);
-  const isFirstRender = useRef(true);
-  const [awsSearch, setAwsSearch] = useState("");
-  const [showAwsDropdown, setShowAwsDropdown] = useState(false);
 
-  const scrollToStepper = () => {
-    if (stepperRef.current) {
-      const yOffset = -110;
-      const y = stepperRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
-    }
-  };
-
-  useEffect(() => {
-    // Always scroll to top of page when mounting /register
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-
-    const handleHashChange = () => {
-      const hash = window.location.hash;
-      const match = hash.match(/^#step-(\d)$/);
-      const targetStage = match ? parseInt(match[1], 10) : 1;
-
-      if (targetStage >= 1 && targetStage <= STAGES.length) {
-        setStage(targetStage);
-      } else {
-        setStage(1);
-      }
-    };
-
-    if (window.location.hash && window.location.hash !== "#step-1") {
-      handleHashChange();
-    }
-
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
-  }, []);
-
-  const update = (key: keyof ApplicationFormData, value: any) => {
-    setForm((f) => ({ ...f, [key]: value }));
-    if (errors[key as string]) {
-      setErrors((e) => {
-        const newErrors = { ...e };
-        delete newErrors[key as string];
-        return newErrors;
-      });
-    }
+  const update = (key: keyof Form, value: any) => {
+    setForm(f => ({ ...f, [key]: value }));
+    setErrors(e => { const n = { ...e }; delete n[key]; return n; });
   };
 
   const toggleInterest = (area: string) => {
-    setForm((f) => {
-      const has = f.interestAreas.includes(area);
-      return {
-        ...f,
-        interestAreas: has ? f.interestAreas.filter((a) => a !== area) : [...f.interestAreas, area],
-      };
+    setForm(f => {
+      const has = f.interests.includes(area);
+      return { ...f, interests: has ? f.interests.filter(a => a !== area) : [...f.interests, area] };
     });
-    if (errors.interestAreas) {
-      setErrors((e) => {
-        const newErrors = { ...e };
-        delete newErrors.interestAreas;
-        return newErrors;
-      });
-    }
+    setErrors(e => { const n = { ...e }; delete n.interests; return n; });
   };
 
-  function validateStage(n: number) {
+  const toggleWing = (label: string) => {
+    setForm(f => {
+      if (f.wings.includes(label)) {
+        return { ...f, wings: f.wings.filter(w => w !== label) };
+      }
+      if (f.wings.length >= 2) return f; // max 2
+      return { ...f, wings: [...f.wings, label] };
+    });
+    setErrors(e => { const n = { ...e }; delete n.wings; return n; });
+  };
+
+  function validateStep1() {
     const e: Record<string, string> = {};
-    if (n === 1) {
-      if (!form.fullName.trim()) e.fullName = "Required.";
-      if (!EMAIL_RE.test(form.universityEmail)) e.universityEmail = "Enter a valid email.";
-      if (!EMAIL_RE.test(form.personalEmail)) e.personalEmail = "Enter a valid email.";
-      if (!PHONE_RE.test(form.phoneNumber)) e.phoneNumber = "Enter a valid phone number.";
-    }
-    if (n === 2) {
-      if (!form.rollNumber.trim()) e.rollNumber = "Required.";
-      if (!form.course) e.course = "Required.";
-      if (form.course === "B.Tech" && !form.branch) e.branch = "Required.";
-      if (form.course === "B.Tech" && form.branch === "Other" && !form.branchOther.trim()) e.branchOther = "Please specify your branch.";
-      if (!form.year) e.year = "Required.";
-    }
-    if (n === 3) {
-      if (form.interestAreas.length === 0) e.interestAreas = "Select at least one area.";
-      if (form.githubUrl && !/^https?:\/\/.+/.test(form.githubUrl)) e.githubUrl = "Include https://";
-      if (form.linkedinUrl && !/^https?:\/\/.+/.test(form.linkedinUrl)) e.linkedinUrl = "Include https://";
-      if (form.portfolioUrl && !/^https?:\/\/.+/.test(form.portfolioUrl)) e.portfolioUrl = "Include https://";
-    }
-    if (n === 4) {
-      if (!form.whyJoin.trim() || form.whyJoin.trim().length < 20) e.whyJoin = "A couple of sentences, please.";
-      if (!form.usedAws) e.usedAws = "Required.";
-      if (form.usedAws === "Yes" && form.awsServices.length === 0) e.awsServices = "Select at least one service.";
-    }
-    if (n === 5) {
-      if (!resume) e.resume = "A resume PDF is required.";
-    }
+    if (!form.fullName.trim()) e.fullName = "Required";
+    if (!EMAIL_RE.test(form.universityEmail)) e.universityEmail = "Enter a valid email";
+    if (!PHONE_RE.test(form.phoneNumber)) e.phoneNumber = "Format: +91 XXXXXXXXXX";
+    if (!form.rollNumber.trim()) e.rollNumber = "Required";
+    if (!form.course) e.course = "Required";
+    if (!form.year) e.year = "Required";
+    if (form.wings.length === 0) e.wings = "Select at least one wing";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
 
-  const goNext = () => {
-    if (validateStage(stage)) {
-      const next = Math.min(stage + 1, STAGES.length);
-      setStage(next);
-      window.location.hash = `step-${next}`;
-      setTimeout(scrollToStepper, 50);
-    }
-  };
-
-  const goBack = () => {
-    const prev = Math.max(stage - 1, 1);
-    setStage(prev);
-    if (prev === 1) {
-      if (window.location.hash) {
-        window.history.back();
-      }
-    } else {
-      window.location.hash = `step-${prev}`;
-    }
-    setTimeout(scrollToStepper, 50);
-  };
-
-  function handleFile(file: File | undefined | null) {
-    if (!file) return;
-    const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
-    if (!isPdf) {
-      setErrors((e) => ({ ...e, resume: "Only PDF files are accepted." }));
-      return;
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      setErrors((e) => ({ ...e, resume: "File must be under 5MB." }));
-      return;
-    }
-    setErrors((e) => {
-      const newErrors = { ...e };
-      delete newErrors.resume;
-      return newErrors;
-    });
-    setResume(file);
-    setResumeProgress(5);
-    setResumeStatus("uploading");
-
-    let p = 5;
-    const interval = setInterval(() => {
-      p += Math.floor(Math.random() * 20) + 15;
-      if (p >= 100) {
-        setResumeProgress(100);
-        setResumeStatus("completed");
-        clearInterval(interval);
-      } else {
-        setResumeProgress(p);
-      }
-    }, 120);
+  function validateStep2() {
+    const e: Record<string, string> = {};
+    if (form.interests.length === 0) e.interests = "Pick at least one";
+    if (!form.whyJoin.trim() || form.whyJoin.trim().length < 20)
+      e.whyJoin = "Write at least a sentence or two";
+    setErrors(e);
+    return Object.keys(e).length === 0;
   }
 
+  const goNext = () => { if (validateStep1()) setStep(2); };
+  const goBack = () => { setStep(1); };
+
   async function handleSubmit() {
-    if (!validateStage(5)) return;
+    if (!validateStep2()) return;
     setSubmitting(true);
     setSubmitError("");
-
     try {
       const fd = new FormData();
       fd.append("fullName", form.fullName.trim());
       fd.append("universityEmail", form.universityEmail.trim());
-      fd.append("personalEmail", form.personalEmail.trim());
+      fd.append("personalEmail", form.universityEmail.trim());
       fd.append("phoneNumber", form.phoneNumber.trim());
       fd.append("rollNumber", form.rollNumber.trim());
       fd.append("course", form.course);
-      fd.append("branch", form.branch === "Other" ? form.branchOther.trim() : form.branch);
+      fd.append("branch", form.branch || "N/A");
       fd.append("year", form.year);
-      fd.append("interestAreas", JSON.stringify(form.interestAreas));
-      fd.append("githubUrl", form.githubUrl.trim());
-      fd.append("linkedinUrl", form.linkedinUrl.trim());
-      fd.append("portfolioUrl", form.portfolioUrl.trim());
+      fd.append("wing", form.wings.join(" + "));
+      fd.append("interestAreas", JSON.stringify(form.interests));
       fd.append("whyJoin", form.whyJoin.trim());
-      fd.append("leadershipExperience", form.leadershipExperience.trim());
-      fd.append("usedAws", form.usedAws);
-      if (form.usedAws === "Yes") {
-        fd.append("awsServices", JSON.stringify(form.awsServices));
-      }
-      if (resume) {
-        fd.append("resume", resume);
-      }
+      fd.append("githubUrl", form.contribution.trim());
+      fd.append("linkedinUrl", form.socialLink.trim());
+      fd.append("usedAws", "Not specified");
+      fd.append("leadershipExperience", "");
 
       const [res] = await Promise.all([
-        fetch(`/api/register`, { method: "POST", body: fd }),
-        new Promise((r) => setTimeout(r, 4800)),
+        fetch("/api/register", { method: "POST", body: fd }),
+        new Promise(r => setTimeout(r, 4000)),
       ]);
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Submission failed. Please try again.");
-      }
+      if (!res.ok) throw new Error(data.error || "Submission failed. Please try again.");
       setResult(data);
     } catch (err: any) {
       setSubmitError(err.message || "Something went wrong. Please try again.");
@@ -295,330 +309,324 @@ export default function RegisterPage() {
   if (result) return <SuccessScreen result={result} />;
 
   return (
-    <div className="register-page-theme relative min-h-screen bg-noise bg-bg w-full overflow-x-hidden text-[#efecf5] font-sans">
-      <Loader loadingStates={REGISTRATION_LOADING_STATES} loading={submitting} duration={1500} />
-      
-      <div className="pointer-events-none absolute left-1/2 top-0 h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px] opacity-60" />
-      <div className="pointer-events-none absolute -left-[20%] top-[30%] h-[500px] w-[500px] rounded-full bg-primary/15 blur-[120px] opacity-50" />
-      <div className="pointer-events-none absolute -right-[20%] bottom-[10%] h-[600px] w-[600px] rounded-full bg-primary/10 blur-[120px] opacity-50" />
-
-      <div style={{ position: "absolute", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
-        <CursorGrid
-          cellSize={64}
-          color="#A855F7"
-          radius={160}
-          falloff="smooth"
-          holdTime={350}
-          fadeDuration={700}
-          lineWidth={1}
-          maxOpacity={0.4}
-          fillOpacity={0.08}
-          gridOpacity={0.07}
-          cellRadius={4}
-          clickPulse={true}
-          pulseSpeed={500}
-        />
-      </div>
-
-      <div style={{ position: "absolute", inset: 0, zIndex: 0, overflow: "hidden", opacity: 0.35, pointerEvents: "none" }}>
-        <LightRays
-          raysOrigin="top-center"
-          raysColor="#A855F7"
-          raysSpeed={0.8}
-          lightSpread={0.8}
-          rayLength={1.2}
-          followMouse={false}
-          mouseInfluence={0}
-          noiseAmount={0.1}
-          distortion={0.05}
-          saturation={1.4}
-        />
-      </div>
+    <div className="register-page-theme relative min-h-screen bg-bg w-full overflow-x-hidden text-text-primary font-sans">
+      <Loader loadingStates={LOADING_STATES} loading={submitting} duration={1300} />
       <ThemeStyles />
 
-      <main className="w-full max-w-[820px] mx-auto px-6 sm:px-8 md:px-12 pt-[100px] md:pt-[140px] pb-[100px] md:pb-[140px] mb-12 md:mb-16 relative z-10 box-border">
-        <div className="intro mb-8 md:mb-12">
-          <div className="eyebrow">Application · 2026 Cohort</div>
-          <h1>
-            Deploy your<br />
-            <em>application.</em>
+      {/* Background effects */}
+      <div className="pointer-events-none absolute left-1/2 top-0 h-[600px] w-[700px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px] opacity-60" />
+      <div className="pointer-events-none absolute -left-[15%] top-[40%] h-[400px] w-[400px] rounded-full bg-primary/10 blur-[100px] opacity-40" />
+      <div className="pointer-events-none absolute -right-[15%] bottom-[10%] h-[400px] w-[400px] rounded-full bg-accent/8 blur-[100px] opacity-40" />
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <CursorGrid cellSize={64} color="#A855F7" radius={150} falloff="smooth" holdTime={350}
+          fadeDuration={700} lineWidth={1} maxOpacity={0.35} fillOpacity={0.06}
+          gridOpacity={0.06} cellRadius={4} clickPulse={true} pulseSpeed={500} />
+      </div>
+      <div className="absolute inset-0 z-0 overflow-hidden opacity-25 pointer-events-none">
+        <LightRays raysOrigin="top-center" raysColor="#A855F7" raysSpeed={0.6} lightSpread={0.7}
+          rayLength={1.1} followMouse={false} mouseInfluence={0} noiseAmount={0.1}
+          distortion={0.04} saturation={1.3} />
+      </div>
+
+      <main className="relative z-10 w-full max-w-[600px] mx-auto px-5 sm:px-8 pt-28 md:pt-36 pb-24">
+
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-10"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-mono text-primary-light tracking-widest mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            COHORT 2026 · APPLICATIONS OPEN
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-bold font-display tracking-tight leading-[1.05] mb-3">
+            Join the<br />
+            <span className="bg-gradient-to-r from-primary-light via-accent to-purple-300 bg-clip-text text-transparent">
+              Builder Team.
+            </span>
           </h1>
-          <p className="sub">Five stages, about 6 minutes. We'll reach out to shortlisted applicants for an interview.</p>
-        </div>
+          <p className="text-sm text-text-secondary leading-relaxed">
+            2 quick steps · Under 3 minutes · All branches welcome
+          </p>
+        </motion.div>
 
-        <div ref={stepperRef} className="scroll-mt-28">
-          <Stepper stage={stage} stages={STAGES} />
-        </div>
+        {/* Progress */}
+        <ProgressBar step={step} />
 
-        <div className="form-card">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={stage}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            >
-              {stage === 1 && (
-                <Stage title="Personal Information" note="stage 01 / 05">
-                  <Field label="Full Name" error={errors.fullName} required>
-                    <input value={form.fullName} onChange={(e) => update("fullName", e.target.value)} placeholder="Your shubh name" />
+        {/* Form card */}
+        <div className="relative rounded-3xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-sm overflow-hidden">
+          {/* Card top accent */}
+          <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+
+          <div className="p-6 sm:p-8">
+            <AnimatePresence mode="wait">
+
+              {/* ── Step 1 ────────────────────────── */}
+              {step === 1 && (
+                <motion.div
+                  key="step1"
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -30 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  className="space-y-5"
+                >
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="w-8 h-8 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center">
+                      <User className="w-4 h-4 text-primary-light" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-text-primary">Your Info</p>
+                      <p className="text-[11px] text-muted font-mono">Step 1 of 2</p>
+                    </div>
+                  </div>
+
+                  <Field label="Full Name" required error={errors.fullName}>
+                    <Input
+                      value={form.fullName}
+                      onChange={e => update("fullName", e.target.value)}
+                      placeholder="Your full name"
+                    />
                   </Field>
-                  <Row>
-                    <Field label="University Email" error={errors.universityEmail} required>
-                      <input type="email" value={form.universityEmail} onChange={(e) => update("universityEmail", e.target.value)} placeholder="you@tulas.edu.in" />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Field label="University Email" required error={errors.universityEmail}>
+                      <Input
+                        type="email"
+                        value={form.universityEmail}
+                        onChange={e => update("universityEmail", e.target.value)}
+                        placeholder="you@tulas.edu.in"
+                      />
                     </Field>
-                    <Field label="Personal Email" error={errors.personalEmail} required>
-                      <input type="email" value={form.personalEmail} onChange={(e) => update("personalEmail", e.target.value)} placeholder="you@gmail.com" />
-                    </Field>
-                  </Row>
-                  <Row>
-                    <Field label="Phone Number" error={errors.phoneNumber} required>
-                      <input
+                    <Field label="Phone Number" required error={errors.phoneNumber}>
+                      <Input
                         type="tel"
                         value={form.phoneNumber}
-                        onChange={(e) => {
+                        onChange={e => {
                           let raw = e.target.value;
                           if (raw.startsWith("+91 ")) raw = raw.substring(4);
                           else if (raw.startsWith("+91")) raw = raw.substring(3);
-                          let digits = raw.replace(/\D/g, "").substring(0, 10);
+                          const digits = raw.replace(/\D/g, "").substring(0, 10);
                           update("phoneNumber", digits.length > 0 ? "+91 " + digits : "");
                         }}
                         placeholder="+91 XXXXXXXXXX"
                       />
                     </Field>
-                    <div />
-                  </Row>
-                </Stage>
-              )}
+                  </div>
 
-              {stage === 2 && (
-                <Stage title="Academic Details" note="stage 02 / 05">
-                  <Row>
-                    <Field label="Course" error={errors.course} required>
-                      <CustomSelect
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Field label="Roll Number" required error={errors.rollNumber}>
+                      <Input
+                        value={form.rollNumber}
+                        onChange={e => update("rollNumber", e.target.value.replace(/\D/g, ""))}
+                        placeholder="2201234567"
+                      />
+                    </Field>
+                    <Field label="Year" required error={errors.year}>
+                      <Select
+                        value={form.year}
+                        onChange={v => update("year", v)}
+                        options={YEARS}
+                        placeholder="Select year"
+                      />
+                    </Field>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Field label="Course" required error={errors.course}>
+                      <Select
                         value={form.course}
-                        onChange={(val) => {
-                          update("course", val);
-                          if (val !== "B.Tech") {
-                            update("branch", "");
-                            update("branchOther", "");
-                          }
-                        }}
+                        onChange={v => { update("course", v); update("branch", ""); }}
                         options={COURSES}
                         placeholder="Select course"
                       />
                     </Field>
                     {form.course === "B.Tech" && (
-                      <Field label="Branch" error={errors.branch} required>
-                        <CustomSelect
+                      <Field label="Branch" error={errors.branch}>
+                        <Select
                           value={form.branch}
-                          onChange={(val) => {
-                            update("branch", val);
-                            if (val !== "Other") {
-                              update("branchOther", "");
-                            }
-                          }}
+                          onChange={v => update("branch", v)}
                           options={BRANCHES}
                           placeholder="Select branch"
                         />
                       </Field>
                     )}
-                  </Row>
-                  {form.course === "B.Tech" && form.branch === "Other" && (
-                    <Row>
-                      <Field label="Specify Branch" error={errors.branchOther} required>
-                        <input value={form.branchOther} onChange={(e) => update("branchOther", e.target.value)} placeholder="e.g. Biotechnology" />
-                      </Field>
-                      <div />
-                    </Row>
-                  )}
-                  <Row>
-                    <Field label="Roll Number" error={errors.rollNumber} required>
-                      <input value={form.rollNumber} onChange={(e) => update("rollNumber", e.target.value.replace(/\D/g, ""))} placeholder="2201234567" />
-                    </Field>
-                    <Field label="Year" error={errors.year} required>
-                      <CustomSelect
-                        value={form.year}
-                        onChange={(val) => update("year", val)}
-                        options={YEARS}
-                        placeholder="Select year"
-                      />
-                    </Field>
-                  </Row>
-                </Stage>
+                  </div>
+
+                  {/* Wing chip selector — multi, max 2 */}
+                  <Field
+                    label="Choose Your Wing(s)"
+                    hint={`${form.wings.length}/2 selected`}
+                    required
+                    error={errors.wings}
+                  >
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
+                      {WINGS.map(wing => {
+                        const active = form.wings.includes(wing.label);
+                        const maxed = !active && form.wings.length >= 2;
+                        return (
+                          <button
+                            key={wing.id}
+                            type="button"
+                            onClick={() => toggleWing(wing.label)}
+                            disabled={maxed}
+                            className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium transition-all duration-200 ${
+                              active
+                                ? "bg-primary/20 border-primary/50 text-primary-light shadow-[0_0_14px_-4px_rgba(124,58,237,0.5)]"
+                                : maxed
+                                ? "bg-white/[0.02] border-white/[0.05] text-white/20 cursor-not-allowed"
+                                : "bg-white/[0.03] border-white/[0.08] text-white/50 hover:border-white/[0.18] hover:text-white/80"
+                            }`}
+                          >
+                            <span className="text-base leading-none">{wing.emoji}</span>
+                            <span className="text-xs">{wing.label}</span>
+                            {active && (
+                              <span className="ml-auto text-primary-light text-[10px] font-mono">✓</span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {form.wings.length === 2 && (
+                      <p className="text-[10px] font-mono text-muted mt-1.5">
+                        Max 2 wings selected. Remove one to change.
+                      </p>
+                    )}
+                  </Field>
+                </motion.div>
               )}
 
-              {stage === 3 && (
-                <Stage title="Technical Profile" note="stage 03 / 05">
-                  <Field label="Areas of Interest" error={errors.interestAreas} hint="Select all that apply" required>
-                    <div className="checkbox-grid">
-                      {INTEREST_AREAS.map((area) => (
-                        <label key={area} className={`chip ${form.interestAreas.includes(area) ? "chip-active" : ""}`}>
-                          <input
-                            type="checkbox"
-                            checked={form.interestAreas.includes(area)}
-                            onChange={() => toggleInterest(area)}
-                          />
-                          <span className="chip-dot" />
-                          {area}
-                        </label>
-                      ))}
+              {step === 2 && (
+                <motion.div
+                  key="step2"
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -30 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  className="space-y-5"
+                >
+                  <div className="flex items-center gap-2 mb-6">
+                    <div className="w-8 h-8 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
+                      <Sparkles className="w-4 h-4 text-accent" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-text-primary">About You</p>
+                      <p className="text-[11px] text-muted font-mono">Step 2 of 2</p>
+                    </div>
+                  </div>
+
+                  {/* Universal interest chips */}
+                  <Field label="What are you into?" hint="Pick all that apply" required error={errors.interests}>
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {INTERESTS.map(area => {
+                        const active = form.interests.includes(area);
+                        return (
+                          <button
+                            key={area}
+                            type="button"
+                            onClick={() => toggleInterest(area)}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-mono border transition-all duration-200 ${
+                              active
+                                ? "bg-primary/20 border-primary/50 text-primary-light scale-[1.02]"
+                                : "bg-white/[0.03] border-white/[0.08] text-white/45 hover:border-white/[0.18] hover:text-white/70"
+                            }`}
+                          >
+                            {area}
+                          </button>
+                        );
+                      })}
                     </div>
                   </Field>
-                  <Row>
-                    <Field label="GitHub" error={errors.githubUrl}>
-                      <input value={form.githubUrl} onChange={(e) => update("githubUrl", e.target.value)} placeholder="https://github.com/username" />
-                    </Field>
-                    <Field label="LinkedIn" error={errors.linkedinUrl}>
-                      <input value={form.linkedinUrl} onChange={(e) => update("linkedinUrl", e.target.value)} placeholder="https://linkedin.com/in/username" />
-                    </Field>
-                  </Row>
-                  <Field label="Portfolio" hint="Optional" error={errors.portfolioUrl}>
-                    <input value={form.portfolioUrl} onChange={(e) => update("portfolioUrl", e.target.value)} placeholder="https://yourportfolio.com" />
-                  </Field>
-                </Stage>
-              )}
 
-              {stage === 4 && (
-                <Stage title="Application Questions" note="stage 04 / 05">
-                  <Field label="Why do you want to join(in brief)?" error={errors.whyJoin} required>
-                    <textarea rows={4} value={form.whyJoin} onChange={(e) => update("whyJoin", e.target.value)} placeholder="Tell us what draws you to the club..." />
-                  </Field>
-
-                  <Field label="Have you used any AWS services before?" error={errors.usedAws} required>
-                    <CustomSelect
-                      value={form.usedAws}
-                      onChange={(val) => update("usedAws", val)}
-                      options={["Yes", "No"]}
-                      placeholder="Select option"
+                  {/* Why join — universal question */}
+                  <Field
+                    label="What draws you to AWS SBG?"
+                    hint={`${form.whyJoin.length} chars`}
+                    required
+                    error={errors.whyJoin}
+                  >
+                    <Textarea
+                      rows={4}
+                      value={form.whyJoin}
+                      onChange={e => update("whyJoin", e.target.value)}
+                      placeholder="Could be anything — a project you loved, an event you organised, a video you made, or a skill you want to grow. Tell us your story."
                     />
                   </Field>
 
-                  {form.usedAws === "Yes" && (
-                    <Field label="Which AWS services have you used?" error={errors.awsServices} required>
-                      <div style={{ position: "relative" }}>
-                        {form.awsServices.length > 0 && (
-                          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "8px" }}>
-                            {form.awsServices.map((svc) => (
-                              <div key={svc} style={{ background: "var(--accent)", color: "#000", padding: "4px 8px", borderRadius: "4px", fontSize: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
-                                {svc}
-                                <button type="button" onClick={() => update("awsServices", form.awsServices.filter((s) => s !== svc))} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>×</button>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        <input
-                          value={awsSearch}
-                          onChange={(e) => {
-                            setAwsSearch(e.target.value);
-                            setShowAwsDropdown(true);
-                          }}
-                          onFocus={() => setShowAwsDropdown(true)}
-                          onBlur={() => setTimeout(() => setShowAwsDropdown(false), 200)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              const matches = AWS_SERVICES.filter((s) =>
-                                s.toLowerCase().includes(awsSearch.toLowerCase()) &&
-                                !form.awsServices.includes(s)
-                              );
-                              if (matches.length > 0) {
-                                const firstMatch = matches[0];
-                                update("awsServices", [...form.awsServices, firstMatch]);
-                                setAwsSearch("");
-                                setShowAwsDropdown(false);
-                              }
-                            }
-                          }}
-                          placeholder="Search AWS services..."
-                        />
-                        {showAwsDropdown && awsSearch && (
-                          <div
-                            data-lenis-prevent
-                            onWheel={(e) => e.stopPropagation()}
-                            style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "var(--surface)", border: "1px solid var(--line)", zIndex: 10, maxHeight: "150px", overflowY: "auto", overscrollBehavior: "contain" }}
-                          >
-                            {AWS_SERVICES.filter((s) => s.toLowerCase().includes(awsSearch.toLowerCase()) && !form.awsServices.includes(s)).map((svc) => (
-                              <div
-                                key={svc}
-                                onMouseDown={() => {
-                                  update("awsServices", [...form.awsServices, svc]);
-                                  setAwsSearch("");
-                                  setShowAwsDropdown(false);
-                                }}
-                                style={{ padding: "8px 12px", cursor: "pointer", borderBottom: "1px solid var(--line)" }}
-                              >
-                                {svc}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </Field>
-                  )}
-
-                  <Field label="Previous leadership experience?" hint="Optional">
-                    <textarea rows={3} value={form.leadershipExperience} onChange={(e) => update("leadershipExperience", e.target.value)} placeholder="Clubs, teams, projects you've led" />
-                  </Field>
-                </Stage>
-              )}
-
-              {stage === 5 && (
-                <Stage title="Resume Upload" note="stage 05 / 05">
-                  <Field label="Resume" error={errors.resume} hint="PDF only · Max 5MB" required>
-                    <FileUploadCard
-                      accept="application/pdf"
-                      maxSizeMB={5}
-                      showHeader={false}
-                      files={
-                        resume
-                          ? [
-                              {
-                                id: "resume-pdf",
-                                file: resume,
-                                progress: resumeProgress,
-                                status: resumeStatus,
-                              },
-                            ]
-                          : []
-                      }
-                      onFilesChange={(files) => {
-                        if (files.length > 0) {
-                          handleFile(files[0]);
-                        }
-                      }}
-                      onFileRemove={() => {
-                        setResume(null);
-                      }}
+                  {/* Contribution — works for all wings */}
+                  <Field label="Something you've made or done" hint="Optional — link or describe">
+                    <Input
+                      value={form.contribution}
+                      onChange={e => update("contribution", e.target.value)}
+                      placeholder="e.g. a design, event, video, article, project link..."
                     />
                   </Field>
-                </Stage>
+
+                  {/* Single social link — any platform */}
+                  <Field label="Your best social / portfolio link" hint="Optional">
+                    <Input
+                      value={form.socialLink}
+                      onChange={e => update("socialLink", e.target.value)}
+                      placeholder="Instagram, LinkedIn, GitHub, Behance, YouTube..."
+                    />
+                  </Field>
+                </motion.div>
               )}
-            </motion.div>
-          </AnimatePresence>
+            </AnimatePresence>
 
-          {submitError && <div className="submit-error mono">✕ {submitError}</div>}
+            {/* Error */}
+            {submitError && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-5 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-xs font-mono text-red-400"
+              >
+                ✕ {submitError}
+              </motion.div>
+            )}
 
-          <div className="stage-actions">
-            {stage > 1 ? (
-              <button className="btn-secondary" onClick={goBack} disabled={submitting}>
-                ← Back
-              </button>
-            ) : (
-              <span />
-            )}
-            {stage < STAGES.length ? (
-              <button className="btn-primary" onClick={goNext}>
-                Continue →
-              </button>
-            ) : (
-              <button className="btn-primary" onClick={handleSubmit} disabled={submitting}>
-                {submitting ? "Deploying…" : "Deploy Application →"}
-              </button>
-            )}
+            {/* Actions */}
+            <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/[0.06]">
+              {step > 1 ? (
+                <button
+                  onClick={goBack}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] text-white/50 hover:text-white/80 text-sm font-mono transition-all"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back
+                </button>
+              ) : (
+                <span />
+              )}
+
+              {step < 2 ? (
+                <button
+                  onClick={goNext}
+                  className="group flex items-center gap-2 px-7 py-3 rounded-xl bg-primary hover:bg-primary-hover text-white font-semibold text-sm shadow-[0_0_24px_-6px_rgba(124,58,237,0.6)] hover:shadow-[0_0_36px_-4px_rgba(124,58,237,0.8)] hover:scale-[1.02] transition-all duration-300"
+                >
+                  Continue
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              ) : (
+                <button
+                  onClick={handleSubmit}
+                  disabled={submitting}
+                  className="group flex items-center gap-2 px-7 py-3 rounded-xl bg-primary hover:bg-primary-hover text-white font-semibold text-sm shadow-[0_0_24px_-6px_rgba(124,58,237,0.6)] hover:shadow-[0_0_36px_-4px_rgba(124,58,237,0.8)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-60 disabled:scale-100 disabled:cursor-not-allowed"
+                >
+                  {submitting ? "Submitting…" : "Submit Application"}
+                  {!submitting && <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />}
+                </button>
+              )}
+            </div>
           </div>
         </div>
+
+        {/* Footer note */}
+        <p className="text-center text-[11px] text-muted font-mono mt-6">
+          We'll reach out to shortlisted applicants by email · No spam, ever.
+        </p>
       </main>
     </div>
   );

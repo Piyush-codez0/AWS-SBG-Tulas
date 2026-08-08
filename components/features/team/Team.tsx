@@ -4,45 +4,59 @@ import * as React from "react";
 import LightRays from "@/components/ui/light-rays";
 
 import { TeamHero } from "./TeamHero";
+import { TeamSelectionRoadmap } from "./TeamSelectionRoadmap";
+import { TeamWingsHiring } from "./TeamWingsHiring";
 import { TeamLeadership } from "./TeamLeadership";
-import { TeamNetworkConstellation } from "./TeamNetworkConstellation";
-import { TeamDepartments } from "./TeamDepartments";
+import { TeamFAQ } from "./TeamFAQ";
 import { TeamCTA } from "./TeamCTA";
 
 export function Team() {
   return (
-    <section className="bg-grid bg-noise relative overflow-hidden bg-bg min-h-screen text-text-primary">
+    <div className="relative bg-bg text-text-primary overflow-hidden">
 
-      {/* Dynamic WebGL Light Rays Layer */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 0, overflow: "hidden", opacity: 0.2 }}>
+      {/* Subtle WebGL Light Rays background */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-15">
         <LightRays
           raysOrigin="top-center"
           raysColor="#A855F7"
-          raysSpeed={0.6}
-          lightSpread={0.8}
+          raysSpeed={0.5}
+          lightSpread={0.7}
           rayLength={1.2}
           followMouse={false}
           mouseInfluence={0}
           noiseAmount={0.1}
-          distortion={0.05}
+          distortion={0.04}
           saturation={1.4}
         />
       </div>
 
-      {/* Section 1: Hero Section */}
+      {/* ─── 1. Hero ─────────────────────────────────── */}
       <TeamHero />
 
-      {/* Section 2: Leadership (2-Column Layout: Faculty Coordinator & SBG Leader) */}
-      <TeamLeadership />
+      {/* ─── 2. How Selection Works ──────────────────── */}
+      <div className="border-t border-border/40">
+        <TeamSelectionRoadmap />
+      </div>
 
-      {/* Section 3 (⭐ WOW Feature): Interactive Team Network Constellation */}
-      <TeamNetworkConstellation />
+      {/* ─── 3. Builder Wings Directory ──────────────── */}
+      <div className="border-t border-border/40">
+        <TeamWingsHiring />
+      </div>
 
-      {/* Section 4: Our Departments & Collapsible Member Grids */}
-      <TeamDepartments />
+      {/* ─── 4. Advisory Leadership ──────────────────── */}
+      <div className="border-t border-border/40">
+        <TeamLeadership />
+      </div>
 
-      {/* Section 5: Become One of Us CTA */}
-      <TeamCTA />
-    </section>
+      {/* ─── 5. FAQ ──────────────────────────────────── */}
+      <div className="border-t border-border/40">
+        <TeamFAQ />
+      </div>
+
+      {/* ─── 6. Join CTA ─────────────────────────────── */}
+      <div className="border-t border-border/40">
+        <TeamCTA />
+      </div>
+    </div>
   );
 }

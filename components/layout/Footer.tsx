@@ -6,12 +6,6 @@ import Image from "next/image";
 import { Linkedin, Instagram, Mail } from "lucide-react";
 import { ArrowRight } from "@/components/animate-ui/icons/arrow-right";
 import { Sparkles } from "@/components/animate-ui/icons/sparkles";
-import { Send } from "@/components/animate-ui/icons/send";
-import { Check } from "@/components/animate-ui/icons/check";
-import { Button } from "@/components/ui/button";
-import { subscribeToNewsletter } from "@/actions/newsletter";
-import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "sonner";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -40,7 +34,7 @@ const FOOTER_LINKS = [
   {
     heading: "Connect",
     links: [
-      { label: "Meetup", href: "https://www.meetup.com/aws-sbg-at-tulas-university/", hoverClass: "group-hover:text-[#F64060]", arrowColor: "group-hover:text-[#F64060]" },
+      { label: "Meetup", href: "https://www.meetup.com/tulas-university-dehradun/", hoverClass: "group-hover:text-[#F64060]", arrowColor: "group-hover:text-[#F64060]" },
       { label: "WhatsApp Channel", href: "https://whatsapp.com/channel/0029VbDJ4jD6WaKnCQZRWF2Z", hoverClass: "group-hover:text-[#25D366]", arrowColor: "group-hover:text-[#25D366]" },
       { label: "LinkedIn", href: "#", hoverClass: "group-hover:text-[#0A66C2]", arrowColor: "group-hover:text-[#0A66C2]" },
       { label: "Instagram", href: "https://www.instagram.com/aws.sbgtulas", hoverClass: "group-hover:bg-gradient-to-r group-hover:from-[#f09433] group-hover:via-[#dc2743] group-hover:to-[#bc1888] group-hover:bg-clip-text group-hover:text-transparent", arrowColor: "group-hover:text-[#E4405F]" },
@@ -80,7 +74,7 @@ const WhatsAppIcon = ({ size = 24, className = "", ...props }: any) => (
 const SOCIALS = [
   {
     icon: MeetupIcon,
-    href: "https://www.meetup.com/aws-sbg-at-tulas-university/",
+    href: "https://www.meetup.com/tulas-university-dehradun/",
     label: "Meetup",
     hoverClass: "hover:text-[#F64060] hover:bg-[#F64060]/15 hover:border-[#F64060]/40 hover:shadow-[0_0_15px_rgba(246,64,96,0.35)]",
   },
@@ -111,10 +105,6 @@ const SOCIALS = [
 ];
 
 export function Footer() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showToast, setShowToast] = useState(false);
   const footerRef = useRef<HTMLElement>(null);
 
   useGSAP(() => {
@@ -163,189 +153,38 @@ export function Footer() {
     return () => clearTimeout(refreshTimer);
   }, { scope: footerRef });
 
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    
-    setStatus("loading");
-    setErrorMessage("");
-    
-    const result = await subscribeToNewsletter(email);
-    
-    if (result.success) {
-      setStatus("success");
-      setEmail("");
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 5000);
-      try {
-        toast.success("Subscribed to AWS SBG Newsletter! 🎉", {
-          description: "You'll receive updates on upcoming workshops, hackathons, and cloud events.",
-        });
-      } catch (_) {}
-    } else {
-      setStatus("error");
-      const err = result.error || "Something went wrong.";
-      setErrorMessage(err);
-      try {
-        toast.error("Subscription failed", {
-          description: err,
-        });
-      } catch (_) {}
-    }
-  };
-
   return (
     <footer ref={footerRef} className="relative z-10 border-t border-white/[0.05] bg-bg overflow-hidden">
-      {/* Hidden SVG defs for Instagram gradient */}
-      <svg width="0" height="0" className="absolute pointer-events-none" aria-hidden="true">
-        <defs>
-          <linearGradient id="insta-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#f09433" />
-            <stop offset="25%" stopColor="#e6683c" />
-            <stop offset="50%" stopColor="#dc2743" />
-            <stop offset="75%" stopColor="#cc2366" />
-            <stop offset="100%" stopColor="#bc1888" />
-          </linearGradient>
-        </defs>
-      </svg>
-      {/* Floating Toast Notification Banner */}
-      <AnimatePresence>
-        {showToast && (
-          <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-6 right-6 z-[999999] flex items-center gap-3.5 rounded-2xl border border-emerald-500/40 bg-[#0c0618]/95 p-4 pr-6 text-sm text-white shadow-[0_0_35px_rgba(16,185,129,0.35)] backdrop-blur-2xl"
-          >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
-              ✓
-            </div>
-            <div>
-              <div className="font-semibold text-white tracking-wide">Subscribed to AWS SBG Newsletter! 🎉</div>
-              <div className="text-xs text-white/70 mt-0.5">You will receive updates on upcoming workshops & hackathons.</div>
-            </div>
-            <button
-              onClick={() => setShowToast(false)}
-              className="ml-2 text-white/50 hover:text-white transition-colors text-lg font-mono"
-            >
-              ×
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
       {/* Decorative gradient blur */}
       <div
         aria-hidden
         className="footer-glow pointer-events-none absolute left-1/2 top-0 h-[300px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]"
       />
-      <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay pointer-events-none" />
-
       <div className="relative mx-auto max-w-content px-4 sm:px-6 pb-12 pt-16 md:pt-20">
         <div className="grid gap-12 lg:gap-16 lg:grid-cols-12">
-          {/* Brand & Newsletter */}
-          <div className="footer-brand-col flex flex-col gap-8 lg:col-span-5">
-            <div className="flex flex-col gap-4">
-              <Link
-                href="/"
-                className="flex items-center gap-3 font-display text-lg font-semibold tracking-tight text-text-primary transition-opacity hover:opacity-80"
-              >
-                <div className="relative h-10 w-10 overflow-hidden rounded-xl bg-white/[0.05] p-1.5 ring-1 ring-white/10">
-                  <Image 
-                    src="/logos/SBG_logo.png" 
-                    alt="AWS SBG Logo" 
-                    fill 
-                    className="object-contain p-1"
-                  />
-                </div>
-                AWS Student Builder Group
-              </Link>
-              <p className="max-w-[320px] text-[15px] leading-relaxed text-text-secondary">
-                A student-led community at Tula&apos;s University, Dehradun dedicated to building, 
-                learning, and deploying real-world applications on AWS.
-              </p>
-            </div>
 
-            {/* Newsletter Subscription */}
-            <div className="relative overflow-hidden flex flex-col gap-3 rounded-2xl border border-white/[0.05] bg-white/[0.02] p-5 backdrop-blur-sm mt-2 hover:border-primary/20 hover:bg-white/[0.04] transition-all duration-300 group/card">
-              {/* Top accent glow line */}
-              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-              
-              <h4 className="text-sm font-medium text-text-primary flex items-center gap-2">
-                <Sparkles size={14} className="text-accent" animate loop />
-                Join our newsletter
-              </h4>
-              <p className="text-[13px] text-text-secondary leading-relaxed max-w-[320px]">
-                Get updates on upcoming workshops, cloud events, and hackathons straight to your inbox.
-              </p>
-              <AnimatePresence mode="wait">
-                {status === "success" ? (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, scale: 0.97 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
-                    className="mt-2 flex items-center gap-2 rounded-xl bg-green-500/10 px-4 py-3 text-sm text-green-400 border border-green-500/20"
-                  >
-                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-500/20">
-                      <Check size={12} className="text-green-400" animate />
-                    </div>
-                    Thanks for subscribing!
-                  </motion.div>
-                ) : (
-                  <motion.form
-                    key="form"
-                    initial={{ opacity: 0, scale: 0.97 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.97 }}
-                    transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
-                    className="mt-2 relative flex flex-col max-w-[360px]"
-                    onSubmit={handleSubscribe}
-                  >
-                  <div className="relative flex flex-col sm:flex-row sm:items-center">
-                    <div className="relative w-full">
-                      <Send size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        disabled={status === "loading"}
-                        placeholder="Enter your email address"
-                        className="w-full rounded-2xl sm:rounded-full border border-white/10 bg-white/[0.02] py-3 pl-10 pr-4 sm:pr-[115px] text-sm text-text-primary outline-none transition-all placeholder:text-muted focus:border-primary/50 focus:bg-white/[0.05] focus:ring-1 focus:ring-primary/50 disabled:opacity-50"
-                        required
-                      />
-                    </div>
-                    <Button
-                      size="sm"
-                      disabled={status === "loading"}
-                      className="mt-3 sm:mt-0 sm:absolute sm:right-1 sm:top-1 sm:bottom-1 sm:h-auto rounded-2xl sm:rounded-full bg-gradient-to-r from-primary to-accent text-white hover:brightness-110 shadow-[0_0_15px_rgba(124,58,237,0.2)] hover:shadow-[0_0_20px_rgba(124,58,237,0.35)] transition-all duration-200 shrink-0 group px-5 py-3 sm:py-1.5 font-medium disabled:opacity-70 w-full sm:w-auto justify-center border-none"
-                    >
-                      {status === "loading" ? (
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white" />
-                      ) : (
-                        <>
-                          Subscribe
-                          <ArrowRight size={14} className="ml-1.5" animateOnHover />
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                  {status === "error" && (
-                    <p className="mt-2 text-xs text-red-400 pl-2">{errorMessage}</p>
-                  )}
-                </motion.form>
-                )}
-              </AnimatePresence>
-            </div>
+          {/* Brand column */}
+          <div className="footer-brand-col flex flex-col gap-6 lg:col-span-5">
+            <Link
+              href="/"
+              className="flex items-center gap-3 font-display text-lg font-semibold tracking-tight text-text-primary transition-opacity hover:opacity-80 w-fit"
+            >
+              <div className="relative h-10 w-10 overflow-hidden rounded-xl bg-white/[0.05] p-1.5 ring-1 ring-white/10">
+                <Image src="/logos/SBG_logo.png" alt="AWS SBG Logo" fill className="object-contain p-1" />
+              </div>
+              AWS Student Builder Group
+            </Link>
+            <p className="max-w-[320px] text-[15px] leading-relaxed text-text-secondary">
+              A student-led community at Tula&apos;s University, Dehradun dedicated to building,
+              learning, and deploying real-world applications on AWS.
+            </p>
           </div>
- 
+
           {/* Link columns */}
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-7 lg:pl-10">
             {FOOTER_LINKS.map((col) => (
               <div key={col.heading} className="footer-link-col">
-                <h4 className="font-display text-[15px] font-semibold text-text-primary">
-                  {col.heading}
-                </h4>
+                <h4 className="font-display text-[15px] font-semibold text-text-primary">{col.heading}</h4>
                 <ul className="mt-5 flex flex-col gap-3.5">
                   {col.links.map((link) => {
                     const isExternal = link.href.startsWith("http") || link.href.startsWith("mailto");
@@ -354,20 +193,12 @@ export function Footer() {
                     return (
                       <li key={link.label}>
                         {isExternal ? (
-                          <a
-                            href={link.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="group flex w-fit items-center gap-1.5 text-[14px] text-text-secondary transition-colors"
-                          >
+                          <a href={link.href} target="_blank" rel="noopener noreferrer" className="group flex w-fit items-center gap-1.5 text-[14px] text-text-secondary transition-colors">
                             <span className={`transition-all duration-200 ${hoverClass}`}>{link.label}</span>
                             <ArrowRight size={14} className={`-translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 ${arrowColor}`} animateOnHover />
                           </a>
                         ) : (
-                          <Link
-                            href={link.href}
-                            className="group flex w-fit items-center gap-1.5 text-[14px] text-text-secondary transition-colors"
-                          >
+                          <Link href={link.href} className="group flex w-fit items-center gap-1.5 text-[14px] text-text-secondary transition-colors">
                             <span className={`transition-all duration-200 ${hoverClass}`}>{link.label}</span>
                             <ArrowRight size={14} className={`-translate-x-1 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 ${arrowColor}`} animateOnHover />
                           </Link>
@@ -387,24 +218,15 @@ export function Footer() {
             {SOCIALS.map((social) => {
               const Icon = social.icon;
               return (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={social.label}
-                  className={`flex h-9 w-9 items-center justify-center rounded-full border border-white/5 bg-white/[0.03] text-text-secondary transition-all duration-300 ${social.hoverClass}`}
-                >
+                <a key={social.label} href={social.href} aria-label={social.label} target="_blank" rel="noopener noreferrer" className={`flex h-9 w-9 items-center justify-center rounded-full border border-white/5 bg-white/[0.03] text-text-secondary transition-all duration-300 ${social.hoverClass}`}>
                   <Icon size={16} />
                 </a>
               );
             })}
           </div>
-          
-          <div className="flex flex-col items-center gap-1.5 sm:items-end">
-            <p className="text-[13px] text-muted">
-              © {new Date().getFullYear()}&nbsp;&nbsp;AWS SBG, Tula&apos;s University. All rights reserved.
-            </p>
-            
-          </div>
+          <p className="text-[13px] text-muted">
+            © {new Date().getFullYear()}&nbsp;&nbsp;AWS SBG, Tula&apos;s University. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

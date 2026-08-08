@@ -36,7 +36,7 @@ export function RecruitmentCountdown({
       {showTitle && (
         <div className="mb-3 flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-primary-light font-mono">
           <Sparkles size={14} className="text-accent" animate loop />
-          <span>Registration Closes In</span>
+          <span>Applications Close In</span>
         </div>
       )}
 

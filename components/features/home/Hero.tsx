@@ -9,7 +9,6 @@ import { FlipWords } from "@/components/ui/flip-words";
 import { SparklesText } from "@/components/ui/sparkles-text";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import { RecruitmentCTA } from "@/components/recruitment/RecruitmentCTA";
-import { RecruitmentCountdown } from "@/components/recruitment/RecruitmentCountdown";
 import { useRecruitment } from "@/hooks/useRecruitment";
 
 export function Hero() {
@@ -93,12 +92,17 @@ export function Hero() {
           {/* 4. CTA Buttons & Countdown */}
           <div className="animate-fade-up-delay-3 mt-6 sm:mt-8 lg:mt-10 flex flex-col items-start gap-5 sm:gap-6 w-full">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-6 w-full sm:w-auto">
-              <RecruitmentCTA
-                variant="border-gradient"
-                openText="Register Now"
-                closedText="Join Community"
-                className="w-full sm:w-auto text-center justify-center"
-              />
+              <a
+                href="https://www.meetup.com/tulas-university-dehradun/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(buttonVariants({ size: "lg" }), "group font-inter uppercase tracking-wider bg-[#F64060] hover:bg-[#e03050] border-0 text-white px-6 sm:px-7 py-3.5 text-xs sm:text-sm flex items-center justify-center w-full sm:w-auto active:scale-[0.98] transition-all shadow-[0_0_24px_-4px_rgba(246,64,96,0.6)] hover:shadow-[0_0_36px_-4px_rgba(246,64,96,0.8)]")}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" className="mr-2">
+                  <path d="M21.16 11.23c-1.35-1.92-3.13-2.61-4.81-2.07-1 .31-1.74 1.07-2.18 1.96a4.29 4.29 0 0 0-4.04-1.96c-1.63.15-2.85 1.15-3.4 2.45-.19-.4-.44-.76-.78-1.07-1.12-1.07-2.6-1.11-3.6-.1-1.03 1.03-1.07 2.62.1 3.73.54.51 1.25.75 1.95.73-1.03 1.05-1 2.7.07 3.76 1.05 1.03 2.72 1.02 3.78-.05.57-.57.88-1.32.93-2.1.84.58 1.83.74 2.7.53 1.1-.28 2.05-1 2.62-1.94 1.16 1.54 3.03 1.95 4.67 1.06 1.7-.93 2.37-3.04 1.99-4.93z"/>
+                </svg>
+                Join on Meetup
+              </a>
 
               <Link
                 href="/about"
@@ -108,13 +112,9 @@ export function Hero() {
                 <span>About SBG</span>
               </Link>
             </div>
-
-            {/* Live Countdown Timer (Visible only when OPEN) */}
-            <RecruitmentCountdown className="w-full sm:w-auto" />
           </div>
         </div>
       </div>
     </section>
   );
 }
-
